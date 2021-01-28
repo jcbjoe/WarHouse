@@ -3,12 +3,12 @@
 using UnrealBuildTool;
 using System.Collections.Generic;
 
-public class WarhouseEditorTarget : TargetRules
+public class MyProjectEditorTarget : TargetRules
 {
-	public WarhouseEditorTarget(TargetInfo Target) : base(Target)
+	public MyProjectEditorTarget(TargetInfo Target) : base(Target)
 	{
 		Type = TargetType.Editor;
 		DefaultBuildSettings = BuildSettingsVersion.V2;
-		ExtraModuleNames.Add("Warhouse");
+		ExtraModuleNames.Add("MyProject");
 	}
 }
