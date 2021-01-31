@@ -16,8 +16,12 @@ AWarehousePackage::AWarehousePackage()
 	// Load the Cube mesh
 	UStaticMesh* cubeMesh = ConstructorHelpers::FObjectFinder<UStaticMesh>(TEXT("StaticMesh'/Engine/BasicShapes/Cube.Cube'")).Object;
 
-	// Set the component's mesh
+	UMaterial* glowMaterial = ConstructorHelpers::FObjectFinder<UMaterial>(TEXT("Material'/Game/Assets/JoeAssets/Package/Glow.Glow'")).Object;
+
 	cubeMeshComponent->SetStaticMesh(cubeMesh);
+	cubeMeshComponent->SetMaterial(0, glowMaterial);
+
+	cubeMeshComponent->SetRelativeScale3D({ 0.5f,0.5f,0.5f });
 
 	cubeMeshComponent->SetSimulatePhysics(true);
 
@@ -28,7 +32,7 @@ AWarehousePackage::AWarehousePackage()
 	collisionMesh = CreateDefaultSubobject<UBoxComponent>(FName("Collision Mesh"));
 
 	collisionMesh->SetRelativeLocation({ 0.0,0.0,0.0 });
-	collisionMesh->SetBoxExtent({ 50.0,50.0,50.0 });
+	collisionMesh->SetBoxExtent({ 100.0,100.0,100.0 });
 
 	collisionMesh->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);
 
