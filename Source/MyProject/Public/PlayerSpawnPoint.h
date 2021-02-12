@@ -4,34 +4,27 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
-#include "PlayerSpawnPoint.h"
-#include "WarhousePawn.h"
-#include "PlayerManager.generated.h"
+#include "PlayerSpawnPoint.generated.h"
 
 UCLASS()
-class MYPROJECT_API APlayerManager : public AActor
+class MYPROJECT_API APlayerSpawnPoint : public AActor
 {
 	GENERATED_BODY()
 	
 public:	
 	// Sets default values for this actor's properties
-	APlayerManager();
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "SpawnPoints")
-	TArray<APlayerSpawnPoint*> spawnPoints;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "SpawnPoints")
-		int PlayerCount = 1;
+	APlayerSpawnPoint();
 
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-private:
-	TArray<AWarhousePawn*> playerList;
-
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
+
+private:
+	UPROPERTY(VisibleAnywhere, Category = "SpawnLocationGuide")
+		UStaticMeshComponent* ship;
 
 };

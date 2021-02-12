@@ -40,7 +40,17 @@ AWarhousePawn::AWarhousePawn()
 	collisionMesh->OnComponentBeginOverlap.AddDynamic(this, &AWarhousePawn::OnOverlapBegin);
 
 	collisionMesh->OnComponentEndOverlap.AddDynamic(this, &AWarhousePawn::OnOverlapEnd);
+
+	PhysicsHandle = CreateDefaultSubobject<UPhysicsHandleComponent>(TEXT("PhysicsHandle"));
+
+	HeldLocation = CreateDefaultSubobject<USceneComponent>(FName("HoldLocation"));
+
+	HeldLocation->AttachToComponent(ShipMeshComponent, FAttachmentTransformRules::KeepRelativeTransform);
+
+	HeldLocation->SetRelativeLocation({ 125,0,0, });
+
 }
+
 
 void AWarhousePawn::BeginPlay()
 {
@@ -65,6 +75,8 @@ void AWarhousePawn::SetupPlayerInputComponent(class UInputComponent* PlayerInput
 
 void AWarhousePawn::Tick(float DeltaSeconds)
 {
+	PhysicsHandle->SetTargetLocation(HeldLocation->GetComponentLocation());
+	
 	// Find movement direction
 	const float ForwardValue = GetInputAxisValue(MoveForwardBinding);
 	const float RightValue = GetInputAxisValue(MoveRightBinding);
@@ -95,29 +107,26 @@ void AWarhousePawn::Tick(float DeltaSeconds)
 void AWarhousePawn::OnPickupPressed() {
 	UE_LOG(LogTemp, Warning, TEXT("Package pickup pressed"));
 
-	if (isCollidingPackage && !hasPickedUpPackage) {
+	if (isCollidingPackage && PhysicsHandle->GetGrabbedComponent() == nullptr) {
 		UE_LOG(LogTemp, Warning, TEXT("Picking up"));
-		hasPickedUpPackage = true;
 		isCollidingPackage = false;
-		pickedUpPackage = packageCollidingWith;
-		packageCollidingWith = nullptr;
 
-		auto test = this->GetAttachParentSocketName();
-		pickedUpPackage->AttachToActor(this, FAttachmentTransformRules(EAttachmentRule::KeepRelative, true), test);
+		PhysicsHandle->GrabComponentAtLocation(objCollidingWith, "None", objCollidingWith->GetComponentLocation());
+		//auto test = this->GetAttachParentSocketName();
+		//pickedUpPackage->AttachToActor(this, FAttachmentTransformRules(EAttachmentRule::KeepRelative, true), test);
 
-		auto loc = pickedUpPackage->GetActorLocation();
-		loc.X = 90;
-		loc.Y = 0;
-		loc.Z = 10;
-		pickedUpPackage->SetActorRelativeLocation(loc);
+		//auto loc = pickedUpPackage->GetActorLocation();
+		//loc.X = 90;
+		//loc.Y = 0;
+		//loc.Z = 10;
+		//pickedUpPackage->SetActorRelativeLocation(loc);
 	}
-	else if (hasPickedUpPackage) {
+	else if (PhysicsHandle->GetGrabbedComponent() != nullptr) {
+		PhysicsHandle->ReleaseComponent();/*
 		pickedUpPackage->DetachFromActor(FDetachmentTransformRules::KeepWorldTransform);
-		pickedUpPackage->cubeMeshComponent->SetSimulatePhysics(true);
-		hasPickedUpPackage = false;
-		pickedUpPackage = nullptr;
+		pickedUpPackage->cubeMeshComponent->SetSimulatePhysics(true);*/
 	}
-	
+
 }
 
 void AWarhousePawn::OnOverlapBegin(UPrimitiveComponent* OverlapComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
@@ -129,7 +138,7 @@ void AWarhousePawn::OnOverlapBegin(UPrimitiveComponent* OverlapComponent, AActor
 	if (OtherActor->IsA(AWarehousePackage::StaticClass())) {
 		UE_LOG(LogTemp, Warning, TEXT("ITS A PACKAGE"));
 		isCollidingPackage = true;
-		packageCollidingWith = Cast<AWarehousePackage>(OtherActor);
+		objCollidingWith = OtherComp;
 	}
 	else {
 		UE_LOG(LogTemp, Warning, TEXT("ITS NOT PACKAGE :("));
@@ -139,8 +148,8 @@ void AWarhousePawn::OnOverlapBegin(UPrimitiveComponent* OverlapComponent, AActor
 
 void AWarhousePawn::OnOverlapEnd(UPrimitiveComponent* OverlapComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex) {
 	if (isCollidingPackage) {
-		if (OtherActor == packageCollidingWith) {
-			packageCollidingWith = nullptr;
+		if (OtherComp == objCollidingWith) {
+			objCollidingWith = nullptr;
 			isCollidingPackage = false;
 		}
 	}
