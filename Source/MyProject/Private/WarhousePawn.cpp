@@ -1,6 +1,9 @@
 // Copyright Epic Games, Inc. All Rights Reserved.
 
 #include "WarhousePawn.h"
+
+#include <string>
+
 #include "TimerManager.h"
 #include "UObject/ConstructorHelpers.h"
 #include "Camera/CameraComponent.h"
@@ -47,7 +50,7 @@ AWarhousePawn::AWarhousePawn()
 
 	HeldLocation->AttachToComponent(ShipMeshComponent, FAttachmentTransformRules::KeepRelativeTransform);
 
-	HeldLocation->SetRelativeLocation({ 125,0,0, });
+	HeldLocation->SetRelativeLocation({ 150,0,0, });
 
 }
 
@@ -76,7 +79,7 @@ void AWarhousePawn::SetupPlayerInputComponent(class UInputComponent* PlayerInput
 void AWarhousePawn::Tick(float DeltaSeconds)
 {
 	PhysicsHandle->SetTargetLocation(HeldLocation->GetComponentLocation());
-	
+
 	// Find movement direction
 	const float ForwardValue = GetInputAxisValue(MoveForwardBinding);
 	const float RightValue = GetInputAxisValue(MoveRightBinding);
@@ -91,14 +94,26 @@ void AWarhousePawn::Tick(float DeltaSeconds)
 	if (Movement.SizeSquared() > 0.0f)
 	{
 		const FRotator NewRotation = Movement.Rotation();
-		FHitResult Hit(1.f);
-		RootComponent->MoveComponent(Movement, NewRotation, true, &Hit);
 
-		if (Hit.IsValidBlockingHit())
+		auto rot = FMath::Lerp(GetActorRotation(), NewRotation, 0.05f);
+		FHitResult Hit(1.f);
+		RootComponent->MoveComponent(Movement, rot, true, &Hit);
+
+		if (Hit.IsValidBlockingHit() && (Hit.Actor == nullptr || !Hit.Actor->GetClass()->IsChildOf(AWarehousePackage::StaticClass())))
 		{
-			const FVector Normal2D = Hit.Normal.GetSafeNormal2D();
+			const FVector Normal2D = Hit.Normal.GetSafeNormal2D() * 1.3;
 			const FVector Deflection = FVector::VectorPlaneProject(Movement, Normal2D) * (1.f - Hit.Time);
-			RootComponent->MoveComponent(Deflection, NewRotation, true);
+			RootComponent->MoveComponent(Deflection, rot, true);
+		}
+	}
+
+	if (PhysicsHandle->GetGrabbedComponent() != nullptr)
+	{
+		float distance = FVector::Dist(GetActorLocation(), PhysicsHandle->GetGrabbedComponent()->GetComponentLocation());
+		if (distance > 350)
+		{
+			// Package is to far away, drop it!
+			PhysicsHandle->ReleaseComponent();
 		}
 	}
 
@@ -112,19 +127,10 @@ void AWarhousePawn::OnPickupPressed() {
 		isCollidingPackage = false;
 
 		PhysicsHandle->GrabComponentAtLocation(objCollidingWith, "None", objCollidingWith->GetComponentLocation());
-		//auto test = this->GetAttachParentSocketName();
-		//pickedUpPackage->AttachToActor(this, FAttachmentTransformRules(EAttachmentRule::KeepRelative, true), test);
 
-		//auto loc = pickedUpPackage->GetActorLocation();
-		//loc.X = 90;
-		//loc.Y = 0;
-		//loc.Z = 10;
-		//pickedUpPackage->SetActorRelativeLocation(loc);
 	}
 	else if (PhysicsHandle->GetGrabbedComponent() != nullptr) {
-		PhysicsHandle->ReleaseComponent();/*
-		pickedUpPackage->DetachFromActor(FDetachmentTransformRules::KeepWorldTransform);
-		pickedUpPackage->cubeMeshComponent->SetSimulatePhysics(true);*/
+		PhysicsHandle->ReleaseComponent();
 	}
 
 }
