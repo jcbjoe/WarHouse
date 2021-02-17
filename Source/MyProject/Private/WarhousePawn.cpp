@@ -4,6 +4,7 @@
 
 #include <string>
 
+#include "EditorCategoryUtils.h"
 #include "TimerManager.h"
 #include "UObject/ConstructorHelpers.h"
 #include "Camera/CameraComponent.h"
@@ -13,13 +14,16 @@
 #include "Engine/CollisionProfile.h"
 #include "Engine/StaticMesh.h"
 #include "Kismet/GameplayStatics.h"
-
+#include "Kismet/KismetMathLibrary.h"
+#include "Math/UnrealMathVectorConstants.h"
 #include "Sound/SoundBase.h"
 
 const FName AWarhousePawn::MoveForwardBinding("MoveForward");
 const FName AWarhousePawn::MoveRightBinding("MoveRight");
 const FName AWarhousePawn::PickupBinding("PickupDrop");
 
+const FName AWarhousePawn::ArmForwardBinding("ArmForward");
+const FName AWarhousePawn::ArmRightBinding("ArmRight");
 
 AWarhousePawn::AWarhousePawn()
 {
@@ -50,8 +54,8 @@ AWarhousePawn::AWarhousePawn()
 
 	HeldLocation->AttachToComponent(ShipMeshComponent, FAttachmentTransformRules::KeepRelativeTransform);
 
+	//HeldLocation->SetRelativeLocation({ 150,0,0, });
 	HeldLocation->SetRelativeLocation({ 150,0,0, });
-
 }
 
 
@@ -74,15 +78,49 @@ void AWarhousePawn::SetupPlayerInputComponent(class UInputComponent* PlayerInput
 	PlayerInputComponent->BindAxis(MoveForwardBinding);
 	PlayerInputComponent->BindAxis(MoveRightBinding);
 	PlayerInputComponent->BindAction(PickupBinding, IE_Pressed, this, &AWarhousePawn::OnPickupPressed);
+
+	PlayerInputComponent->BindAxis(ArmForwardBinding);
+	PlayerInputComponent->BindAxis(ArmRightBinding);
 }
 
 void AWarhousePawn::Tick(float DeltaSeconds)
 {
-	PhysicsHandle->SetTargetLocation(HeldLocation->GetComponentLocation());
 
 	// Find movement direction
 	const float ForwardValue = GetInputAxisValue(MoveForwardBinding);
 	const float RightValue = GetInputAxisValue(MoveRightBinding);
+
+	const float ArmForwardValue = GetInputAxisValue(ArmForwardBinding);
+	const float ArmRightValue = GetInputAxisValue(ArmRightBinding);
+
+	auto yaw = 360 - (FMath::RadiansToDegrees(FMath::Atan2(ArmRightValue, ArmForwardValue)) + 180);
+	//GEngine->AddOnScreenDebugMessage(-10, 1.f, FColor::Yellow, FString::Printf(TEXT("%f"), yaw));
+
+	//auto FinalFrontResultLoc = (HeldLocation->GetComponentLocation() - RootComponent->GetComponentLocation());
+	//FRotationMatrix FirstFrontRotmatix(FRotator(0.f, 1.f, 0.0f));
+
+	//FinalFrontResultLoc = FirstFrontRotmatix.TransformVector(FinalFrontResultLoc);
+
+	//auto dot =FVector::DotProduct(FinalFrontResultLoc.ForwardVector, GetActorLocation().ForwardVector);
+	//auto test = UKismetMathLibrary::DegAcos(dot);
+	//GEngine->AddOnScreenDebugMessage(-10, 1.f, FColor::Yellow, FString::Printf(TEXT("Angle: %f"), test));
+	//
+	//FinalFrontResultLoc.Z = -FinalFrontResultLoc.Z;
+	//FinalFrontResultLoc = (FinalFrontResultLoc + RootComponent->GetComponentLocation());
+
+	//HeldLocation->SetWorldLocation(FinalFrontResultLoc);
+
+	//HeldLocation->SetWorldRotation(FRotator::MakeFromEuler({0,0,90}));
+
+	float angle = yaw;
+	
+	float x = (150 * FMath::Cos(angle * UKismetMathLibrary::GetPI() / 180.f)) + GetActorLocation().X;
+	float y = (150 * FMath::Sin(angle * UKismetMathLibrary::GetPI() / 180.f)) + GetActorLocation().Y;
+
+	auto trans = FVector(x, y, GetActorLocation().Z);
+	
+	PhysicsHandle->SetTargetLocation(trans);
+	
 
 	// Clamp max size so that (X=1, Y=1) doesn't cause faster movement in diagonal directions
 	const FVector MoveDirection = FVector(ForwardValue, RightValue, 0.f).GetClampedToMaxSize(1.0f);

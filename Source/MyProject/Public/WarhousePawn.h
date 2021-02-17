@@ -10,6 +10,7 @@
 
 #include "WarhousePawn.generated.h"
 
+class USpringArmComponent;
 UCLASS(Blueprintable)
 class AWarhousePawn : public APawn
 {
@@ -36,6 +37,9 @@ public:
 	static const FName MoveForwardBinding;
 	static const FName MoveRightBinding;
 	static const FName PickupBinding;
+
+	static const FName ArmForwardBinding;
+	static const FName ArmRightBinding;
 
 	/** Returns ShipMeshComponent subobject **/
 	FORCEINLINE class UStaticMeshComponent* GetShipMeshComponent() const { return ShipMeshComponent; }
