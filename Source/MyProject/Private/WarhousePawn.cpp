@@ -122,13 +122,15 @@ void AWarhousePawn::Tick(float DeltaSeconds)
 	beamEmitter->SetBeamSourcePoint(0, target, 0);
 	beamEmitter->SetBeamTargetPoint(0, trans, 0);
 
-	if(ArmForwardValue == 0 && ArmRightValue == 0)
+	if (ArmForwardValue == 0 && ArmRightValue == 0)
 	{
 		beamEmitter->SetVisibility(false);
 		if (isCollidingPackage && PhysicsHandle->GetGrabbedComponent() != nullptr) {
+			PhysicsHandle->GetGrabbedComponent()->SetAllPhysicsLinearVelocity(FVector(0, 0, 0));
 			PhysicsHandle->ReleaseComponent();
 		}
-	} else
+	}
+	else
 	{
 		beamEmitter->SetVisibility(true);
 
@@ -143,13 +145,13 @@ void AWarhousePawn::Tick(float DeltaSeconds)
 					TraceParams.AddIgnoredActor(*actor);
 				}
 			}
-			
+
 			GetWorld()->DebugDrawTraceTag = "Trace";
 			bool bIsHit = GetWorld()->LineTraceSingleByChannel(hit, GetActorLocation(), trans, ECC_GameTraceChannel3, TraceParams);
-			if(bIsHit)
+			if (bIsHit)
 			{
 				UE_LOG(LogTemp, Warning, TEXT("Raytrace hit!"));
-				if (hit.Actor->IsA(AWarehousePackage::StaticClass())) {
+				if (hit.Actor != nullptr && hit.Actor->IsA(AWarehousePackage::StaticClass())) {
 					UE_LOG(LogTemp, Warning, TEXT("Raytrace hit - package!"));
 					UPrimitiveComponent* component = reinterpret_cast<UPrimitiveComponent*>(hit.GetActor()->GetRootComponent());
 					PhysicsHandle->GrabComponentAtLocation(component, "None", component->GetComponentLocation());
