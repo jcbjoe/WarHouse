@@ -13,7 +13,7 @@ APackageManager::APackageManager()
 
 void APackageManager::SpawnPackage(FPackageDataStructure pds)
 {
-	FVector* Location(0);
+	FVector* Location(0); //temp location
 	APackageBase* spawnedPackage = (APackageBase*)GetWorld()->SpawnActor(APackageBase::StaticClass(),Location);
 	//APackageBase* spawnedPackage = (APackageBase*)GetWorld()->SpawnActor(APackageBase::StaticClass(), NAME_None, &Location);
 	spawnedPackage->InitialisePackage(pds);
