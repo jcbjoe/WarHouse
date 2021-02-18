@@ -16,7 +16,9 @@
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "Math/UnrealMathVectorConstants.h"
+#include "Particles/ParticleSystemComponent.h"
 #include "Sound/SoundBase.h"
+#include "EngineUtils.h"
 
 const FName AWarhousePawn::MoveForwardBinding("MoveForward");
 const FName AWarhousePawn::MoveRightBinding("MoveRight");
@@ -56,7 +58,18 @@ AWarhousePawn::AWarhousePawn()
 
 	//HeldLocation->SetRelativeLocation({ 150,0,0, });
 	HeldLocation->SetRelativeLocation({ 150,0,0, });
+
+	ConstructorHelpers::FObjectFinder<UParticleSystem> emitter(TEXT("/Game/Assets/JoeAssets/Beam/Beam.Beam"));
+
+	UParticleSystem* templateEmitter = emitter.Object;
+
+
+	beamEmitter = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("Beam"));
+	beamEmitter->Template = templateEmitter;
+
+	beamEmitter->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);
 }
+
 
 
 void AWarhousePawn::BeginPlay()
@@ -94,33 +107,57 @@ void AWarhousePawn::Tick(float DeltaSeconds)
 	const float ArmRightValue = GetInputAxisValue(ArmRightBinding);
 
 	auto yaw = 360 - (FMath::RadiansToDegrees(FMath::Atan2(ArmRightValue, ArmForwardValue)) + 180);
-	//GEngine->AddOnScreenDebugMessage(-10, 1.f, FColor::Yellow, FString::Printf(TEXT("%f"), yaw));
-
-	//auto FinalFrontResultLoc = (HeldLocation->GetComponentLocation() - RootComponent->GetComponentLocation());
-	//FRotationMatrix FirstFrontRotmatix(FRotator(0.f, 1.f, 0.0f));
-
-	//FinalFrontResultLoc = FirstFrontRotmatix.TransformVector(FinalFrontResultLoc);
-
-	//auto dot =FVector::DotProduct(FinalFrontResultLoc.ForwardVector, GetActorLocation().ForwardVector);
-	//auto test = UKismetMathLibrary::DegAcos(dot);
-	//GEngine->AddOnScreenDebugMessage(-10, 1.f, FColor::Yellow, FString::Printf(TEXT("Angle: %f"), test));
-	//
-	//FinalFrontResultLoc.Z = -FinalFrontResultLoc.Z;
-	//FinalFrontResultLoc = (FinalFrontResultLoc + RootComponent->GetComponentLocation());
-
-	//HeldLocation->SetWorldLocation(FinalFrontResultLoc);
-
-	//HeldLocation->SetWorldRotation(FRotator::MakeFromEuler({0,0,90}));
 
 	float angle = yaw;
-	
+
 	float x = (150 * FMath::Cos(angle * UKismetMathLibrary::GetPI() / 180.f)) + GetActorLocation().X;
 	float y = (150 * FMath::Sin(angle * UKismetMathLibrary::GetPI() / 180.f)) + GetActorLocation().Y;
 
 	auto trans = FVector(x, y, GetActorLocation().Z);
-	
+
 	PhysicsHandle->SetTargetLocation(trans);
-	
+
+	auto target = GetActorLocation();
+	target.Y += 10;
+	beamEmitter->SetBeamSourcePoint(0, target, 0);
+	beamEmitter->SetBeamTargetPoint(0, trans, 0);
+
+	if(ArmForwardValue == 0 && ArmRightValue == 0)
+	{
+		beamEmitter->SetVisibility(false);
+		if (isCollidingPackage && PhysicsHandle->GetGrabbedComponent() != nullptr) {
+			PhysicsHandle->ReleaseComponent();
+		}
+	} else
+	{
+		beamEmitter->SetVisibility(true);
+
+		if (isCollidingPackage && PhysicsHandle->GetGrabbedComponent() == nullptr) {
+			FHitResult hit = FHitResult(ForceInit);
+			FCollisionQueryParams TraceParams(FName(TEXT("InteractTrace")), true, this);
+			TraceParams.TraceTag = "Trace";
+
+			for (TActorIterator<AActor> actor(GetWorld()); actor; ++actor)
+			{
+				if (!actor->IsA(AWarehousePackage::StaticClass())) {
+					TraceParams.AddIgnoredActor(*actor);
+				}
+			}
+			
+			GetWorld()->DebugDrawTraceTag = "Trace";
+			bool bIsHit = GetWorld()->LineTraceSingleByChannel(hit, GetActorLocation(), trans, ECC_GameTraceChannel3, TraceParams);
+			if(bIsHit)
+			{
+				UE_LOG(LogTemp, Warning, TEXT("Raytrace hit!"));
+				if (hit.Actor->IsA(AWarehousePackage::StaticClass())) {
+					UE_LOG(LogTemp, Warning, TEXT("Raytrace hit - package!"));
+					UPrimitiveComponent* component = reinterpret_cast<UPrimitiveComponent*>(hit.GetActor()->GetRootComponent());
+					PhysicsHandle->GrabComponentAtLocation(component, "None", component->GetComponentLocation());
+				}
+			}
+		}
+	}
+
 
 	// Clamp max size so that (X=1, Y=1) doesn't cause faster movement in diagonal directions
 	const FVector MoveDirection = FVector(ForwardValue, RightValue, 0.f).GetClampedToMaxSize(1.0f);

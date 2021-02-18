@@ -7,7 +7,7 @@
 #include "Components/BoxComponent.h"
 #include "WarehousePackage.h"
 #include "PhysicsEngine/PhysicsHandleComponent.h"
-
+#include "Particles/ParticleSystem.h"
 #include "WarhousePawn.generated.h"
 
 class USpringArmComponent;
@@ -62,6 +62,8 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category = "Components")
 		USceneComponent* HeldLocation;
 
+	UPROPERTY(EditDefaultsOnly, Category = "Components")
+		UParticleSystemComponent* beamEmitter;
 private:
 	virtual void BeginPlay() override;
 
