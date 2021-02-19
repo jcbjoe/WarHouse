@@ -68,6 +68,8 @@ AWarhousePawn::AWarhousePawn()
 	beamEmitter->Template = templateEmitter;
 
 	beamEmitter->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);
+
+
 }
 
 
@@ -120,14 +122,25 @@ void AWarhousePawn::Tick(float DeltaSeconds)
 	auto target = GetActorLocation();
 	target.Y += 10;
 	beamEmitter->SetBeamSourcePoint(0, target, 0);
-	beamEmitter->SetBeamTargetPoint(0, trans, 0);
+	if (PhysicsHandle->GetGrabbedComponent() == nullptr) {
+		beamEmitter->SetBeamTargetPoint(0, trans, 0);
+	}
+	else
+	{
+		beamEmitter->SetBeamTargetPoint(0, PhysicsHandle->GetGrabbedComponent()->GetComponentLocation(), 0);
+	}
 
 	if (ArmForwardValue == 0 && ArmRightValue == 0)
 	{
 		beamEmitter->SetVisibility(false);
-		if (isCollidingPackage && PhysicsHandle->GetGrabbedComponent() != nullptr) {
-			PhysicsHandle->GetGrabbedComponent()->SetAllPhysicsLinearVelocity(FVector(0, 0, 0));
+		if (PhysicsHandle->GetGrabbedComponent() != nullptr) {
+			//PhysicsHandle->GetGrabbedComponent()->SetAllPhysicsLinearVelocity(FVector(0, 0, 0));
+			auto item = PhysicsHandle->GetGrabbedComponent();
 			PhysicsHandle->ReleaseComponent();
+
+			auto velocity = item->GetPhysicsLinearVelocity();
+			item->SetAllPhysicsLinearVelocity(velocity.GetClampedToMaxSize(1000));
+
 		}
 	}
 	else
@@ -137,7 +150,6 @@ void AWarhousePawn::Tick(float DeltaSeconds)
 		if (isCollidingPackage && PhysicsHandle->GetGrabbedComponent() == nullptr) {
 			FHitResult hit = FHitResult(ForceInit);
 			FCollisionQueryParams TraceParams(FName(TEXT("InteractTrace")), true, this);
-			TraceParams.TraceTag = "Trace";
 
 			for (TActorIterator<AActor> actor(GetWorld()); actor; ++actor)
 			{
@@ -146,13 +158,10 @@ void AWarhousePawn::Tick(float DeltaSeconds)
 				}
 			}
 
-			GetWorld()->DebugDrawTraceTag = "Trace";
 			bool bIsHit = GetWorld()->LineTraceSingleByChannel(hit, GetActorLocation(), trans, ECC_GameTraceChannel3, TraceParams);
 			if (bIsHit)
 			{
-				UE_LOG(LogTemp, Warning, TEXT("Raytrace hit!"));
 				if (hit.Actor != nullptr && hit.Actor->IsA(AWarehousePackage::StaticClass())) {
-					UE_LOG(LogTemp, Warning, TEXT("Raytrace hit - package!"));
 					UPrimitiveComponent* component = reinterpret_cast<UPrimitiveComponent*>(hit.GetActor()->GetRootComponent());
 					PhysicsHandle->GrabComponentAtLocation(component, "None", component->GetComponentLocation());
 				}
