@@ -33,6 +33,8 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Box Collision")
 	UBoxComponent* collisionMesh = nullptr;
+
+	bool isBeingHeld = false;
 	
 private:
 

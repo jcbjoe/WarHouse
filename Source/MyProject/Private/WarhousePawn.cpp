@@ -134,7 +134,7 @@ void AWarhousePawn::Tick(float DeltaSeconds)
 	{
 		beamEmitter->SetVisibility(false);
 		if (PhysicsHandle->GetGrabbedComponent() != nullptr) {
-			//PhysicsHandle->GetGrabbedComponent()->SetAllPhysicsLinearVelocity(FVector(0, 0, 0));
+			((AWarehousePackage*)PhysicsHandle->GetGrabbedComponent()->GetOwner())->isBeingHeld = false;
 			auto item = PhysicsHandle->GetGrabbedComponent();
 			PhysicsHandle->ReleaseComponent();
 
@@ -164,6 +164,8 @@ void AWarhousePawn::Tick(float DeltaSeconds)
 				if (hit.Actor != nullptr && hit.Actor->IsA(AWarehousePackage::StaticClass())) {
 					UPrimitiveComponent* component = reinterpret_cast<UPrimitiveComponent*>(hit.GetActor()->GetRootComponent());
 					PhysicsHandle->GrabComponentAtLocation(component, "None", component->GetComponentLocation());
+					auto package = (AWarehousePackage*)hit.GetActor();
+					package->isBeingHeld = true;
 				}
 			}
 		}
@@ -199,6 +201,8 @@ void AWarhousePawn::Tick(float DeltaSeconds)
 		if (distance > 350)
 		{
 			// Package is to far away, drop it!
+			((AWarehousePackage*)PhysicsHandle->GetGrabbedComponent()->GetOwner())->isBeingHeld = false;
+			
 			PhysicsHandle->ReleaseComponent();
 		}
 	}
