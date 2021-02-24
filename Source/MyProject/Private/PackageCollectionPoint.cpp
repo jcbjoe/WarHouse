@@ -2,6 +2,8 @@
 
 #include "GameManager.h"
 #include "Kismet/GameplayStatics.h"
+#include "Kismet/KismetMathLibrary.h"
+#include "PackageProgressBar.h"
 #include "PackageCollectionPoint.h"
 
 // Sets default values
@@ -40,16 +42,20 @@ void APackageCollectionPoint::Tick(float DeltaTime)
 
 	TArray<AWarehousePackage*> packagesToRemove;
 
-	for (auto package : packages)
+	for (TPair<AWarehousePackage*, float>& package : packages)
 	{
 		if (package.Key->isBeingHeld)
 		{
-			package.Value = FDateTime::Now();
+			package.Value = 0;
+			package.Key->progressBar->SetVisibility(false);
 		}
 		else
 		{
-			auto difference = (FDateTime::Now() - package.Value).GetSeconds();
-			if (difference > 5)
+			package.Value += DeltaTime;
+			auto newVal = UKismetMathLibrary::MapRangeClamped(package.Value, 0, 5, 0, 1);
+			reinterpret_cast<UPackageProgressBar*>(package.Key->progressBar->GetUserWidgetObject())->progressBarFillAmount = newVal;
+			package.Key->progressBar->SetVisibility(true);
+			if (package.Value >= 5)
 			{
 				packagesToRemove.Add(package.Key);
 			}
@@ -58,7 +64,6 @@ void APackageCollectionPoint::Tick(float DeltaTime)
 
 	for (auto packageToRemove : packagesToRemove)
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, TEXT("Package Destroyed"));
 		packages.Remove(packageToRemove);
 		packageToRemove->Destroy();
 
@@ -90,11 +95,9 @@ void APackageCollectionPoint::Tick(float DeltaTime)
 void APackageCollectionPoint::OnOverlapBegin(UPrimitiveComponent* OverlapComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	if (OtherActor->IsA(AWarehousePackage::StaticClass())) {
-		auto date = FDateTime::Now();
 		auto package = reinterpret_cast<AWarehousePackage*>(OtherActor);
 		if (packages.Contains(package)) return;
-		packages.Add(package, date);
-		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, TEXT("Package added"));
+		packages.Add(package, 0);
 	}
 }
 
@@ -102,6 +105,6 @@ void APackageCollectionPoint::OnOverlapEnd(UPrimitiveComponent* OverlapComponent
 	if (OtherActor->IsA(AWarehousePackage::StaticClass())) {
 		auto package = reinterpret_cast<AWarehousePackage*>(OtherActor);
 		packages.Remove(package);
-		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, TEXT("Package removed"));
+		package->progressBar->SetVisibility(false);
 	}
 }

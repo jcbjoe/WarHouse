@@ -39,6 +39,6 @@ public:
 	UFUNCTION()
 		void OnOverlapEnd(UPrimitiveComponent* OverlapComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 
-	TMap<AWarehousePackage*, FDateTime> packages; 
+	TMap<AWarehousePackage*, float> packages; 
 
 };
