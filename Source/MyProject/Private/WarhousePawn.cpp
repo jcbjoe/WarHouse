@@ -197,17 +197,16 @@ void AWarhousePawn::Tick(float DeltaSeconds)
 			RootComponent->MoveComponent(Deflection, rot, true);
 		}
 
-		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, FString::Printf(TEXT("%f"), (MovingBatteryDrain * DeltaSeconds)));
 		_batteryCharge -= (MovingBatteryDrain * DeltaSeconds);
 	} else
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, FString::Printf(TEXT("%f"), (NonMovingBatteryDrain * DeltaSeconds)));
+		
 		_batteryCharge -= (NonMovingBatteryDrain * DeltaSeconds);
 	}
 
 	if (PhysicsHandle->GetGrabbedComponent() != nullptr)
 	{
-		_batteryCharge -= (NonMovingBatteryDrain * DeltaSeconds);
+		_batteryCharge -= (HoldingBatteryDrain * DeltaSeconds);
 		
 		float distance = FVector::Dist(GetActorLocation(), PhysicsHandle->GetGrabbedComponent()->GetComponentLocation());
 		if (distance > 350)
