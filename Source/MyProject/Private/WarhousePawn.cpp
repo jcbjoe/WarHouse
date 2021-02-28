@@ -19,6 +19,7 @@
 #include "Particles/ParticleSystemComponent.h"
 #include "Sound/SoundBase.h"
 #include "EngineUtils.h"
+#include "PackageProgressBar.h"
 
 const FName AWarhousePawn::MoveForwardBinding("MoveForward");
 const FName AWarhousePawn::MoveRightBinding("MoveRight");
@@ -39,17 +40,6 @@ AWarhousePawn::AWarhousePawn()
 	// Movement
 	MoveSpeed = 1000.0f;
 
-	collisionMesh = CreateDefaultSubobject<UBoxComponent>(FName("Collision Mesh"));
-
-	collisionMesh->SetRelativeLocation({ 16.0,0.0,7.0 });
-	collisionMesh->SetBoxExtent({ 88.0,50.0,35.0 });
-
-	collisionMesh->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);
-
-	collisionMesh->OnComponentBeginOverlap.AddDynamic(this, &AWarhousePawn::OnOverlapBegin);
-
-	collisionMesh->OnComponentEndOverlap.AddDynamic(this, &AWarhousePawn::OnOverlapEnd);
-
 	PhysicsHandle = CreateDefaultSubobject<UPhysicsHandleComponent>(TEXT("PhysicsHandle"));
 
 	HeldLocation = CreateDefaultSubobject<USceneComponent>(FName("HoldLocation"));
@@ -69,10 +59,19 @@ AWarhousePawn::AWarhousePawn()
 
 	beamEmitter->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);
 
+	progressBar = CreateDefaultSubobject<UWidgetComponent>(FName("ProgressBar"));
+
+	progressBar->SetupAttachment(RootComponent);
+
+	progressBar->SetWidgetSpace(EWidgetSpace::World);
+
+	static ConstructorHelpers::FClassFinder<UUserWidget> progressbarWidget(TEXT("/Game/UI/PackageCollectionBar"));
+
+	progressBar->SetWidgetClass(progressbarWidget.Class);
+
+	progressBar->SetDrawSize(FVector2D(200, 30));
 
 }
-
-
 
 void AWarhousePawn::BeginPlay()
 {
@@ -83,6 +82,11 @@ void AWarhousePawn::BeginPlay()
 	location.Z = 195;
 
 	SetActorLocation(location);
+
+	TArray<AActor*> cameras;
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ACameraActor::StaticClass(), cameras);
+
+	cam = (ACameraActor*)cameras[0];
 }
 
 void AWarhousePawn::SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent)
@@ -92,7 +96,6 @@ void AWarhousePawn::SetupPlayerInputComponent(class UInputComponent* PlayerInput
 	// set up gameplay key bindings
 	PlayerInputComponent->BindAxis(MoveForwardBinding);
 	PlayerInputComponent->BindAxis(MoveRightBinding);
-	PlayerInputComponent->BindAction(PickupBinding, IE_Pressed, this, &AWarhousePawn::OnPickupPressed);
 
 	PlayerInputComponent->BindAxis(ArmForwardBinding);
 	PlayerInputComponent->BindAxis(ArmRightBinding);
@@ -134,7 +137,7 @@ void AWarhousePawn::Tick(float DeltaSeconds)
 	{
 		beamEmitter->SetVisibility(false);
 		if (PhysicsHandle->GetGrabbedComponent() != nullptr) {
-			//PhysicsHandle->GetGrabbedComponent()->SetAllPhysicsLinearVelocity(FVector(0, 0, 0));
+			((AWarehousePackage*)PhysicsHandle->GetGrabbedComponent()->GetOwner())->isBeingHeld = false;
 			auto item = PhysicsHandle->GetGrabbedComponent();
 			PhysicsHandle->ReleaseComponent();
 
@@ -147,7 +150,7 @@ void AWarhousePawn::Tick(float DeltaSeconds)
 	{
 		beamEmitter->SetVisibility(true);
 
-		if (isCollidingPackage && PhysicsHandle->GetGrabbedComponent() == nullptr) {
+		if (PhysicsHandle->GetGrabbedComponent() == nullptr) {
 			FHitResult hit = FHitResult(ForceInit);
 			FCollisionQueryParams TraceParams(FName(TEXT("InteractTrace")), true, this);
 
@@ -164,6 +167,8 @@ void AWarhousePawn::Tick(float DeltaSeconds)
 				if (hit.Actor != nullptr && hit.Actor->IsA(AWarehousePackage::StaticClass())) {
 					UPrimitiveComponent* component = reinterpret_cast<UPrimitiveComponent*>(hit.GetActor()->GetRootComponent());
 					PhysicsHandle->GrabComponentAtLocation(component, "None", component->GetComponentLocation());
+					auto package = (AWarehousePackage*)hit.GetActor();
+					package->isBeingHeld = true;
 				}
 			}
 		}
@@ -199,50 +204,20 @@ void AWarhousePawn::Tick(float DeltaSeconds)
 		if (distance > 350)
 		{
 			// Package is to far away, drop it!
+			((AWarehousePackage*)PhysicsHandle->GetGrabbedComponent()->GetOwner())->isBeingHeld = false;
+			
 			PhysicsHandle->ReleaseComponent();
 		}
 	}
 
-}
+	reinterpret_cast<UPackageProgressBar*>(progressBar->GetUserWidgetObject())->progressBarFillAmount = _batteryCharge / 100;
 
-void AWarhousePawn::OnPickupPressed() {
-	UE_LOG(LogTemp, Warning, TEXT("Package pickup pressed"));
+	auto rot = UKismetMathLibrary::FindLookAtRotation(progressBar->GetComponentLocation(), cam->GetActorLocation());
+	rot.Yaw = 180;
+	progressBar->SetWorldRotation(rot);
 
-	if (isCollidingPackage && PhysicsHandle->GetGrabbedComponent() == nullptr) {
-		UE_LOG(LogTemp, Warning, TEXT("Picking up"));
-		isCollidingPackage = false;
+	auto newLoc = GetActorLocation();
+	newLoc.Z += 75;
+	progressBar->SetWorldLocation(newLoc);
 
-		PhysicsHandle->GrabComponentAtLocation(objCollidingWith, "None", objCollidingWith->GetComponentLocation());
-
-	}
-	else if (PhysicsHandle->GetGrabbedComponent() != nullptr) {
-		PhysicsHandle->ReleaseComponent();
-	}
-
-}
-
-void AWarhousePawn::OnOverlapBegin(UPrimitiveComponent* OverlapComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
-{
-
-	auto otherActorName = OtherActor->GetName();
-
-
-	if (OtherActor->IsA(AWarehousePackage::StaticClass())) {
-		UE_LOG(LogTemp, Warning, TEXT("ITS A PACKAGE"));
-		isCollidingPackage = true;
-		objCollidingWith = OtherComp;
-	}
-	else {
-		UE_LOG(LogTemp, Warning, TEXT("ITS NOT PACKAGE :("));
-	}
-
-}
-
-void AWarhousePawn::OnOverlapEnd(UPrimitiveComponent* OverlapComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex) {
-	if (isCollidingPackage) {
-		if (OtherComp == objCollidingWith) {
-			objCollidingWith = nullptr;
-			isCollidingPackage = false;
-		}
-	}
 }

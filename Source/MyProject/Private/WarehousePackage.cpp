@@ -1,12 +1,14 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-
+#include "Kismet/KismetMathLibrary.h"
 #include "WarehousePackage.h"
+
+#include "Kismet/GameplayStatics.h"
 
 // Sets default values
 AWarehousePackage::AWarehousePackage()
 {
- 	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
+	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
 
@@ -31,10 +33,24 @@ AWarehousePackage::AWarehousePackage()
 
 	collisionMesh = CreateDefaultSubobject<UBoxComponent>(FName("Collision Mesh"));
 
-	collisionMesh->SetRelativeLocation({ 0.0,0.0,0.0 });
 	collisionMesh->SetBoxExtent({ 100.0,100.0,100.0 });
 
-	collisionMesh->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);
+	collisionMesh->SetupAttachment(RootComponent);
+
+
+	progressBar = CreateDefaultSubobject<UWidgetComponent>(FName("ProgressBar"));
+
+	progressBar->SetupAttachment(RootComponent);
+
+	progressBar->SetWidgetSpace(EWidgetSpace::World);
+
+	static ConstructorHelpers::FClassFinder<UUserWidget> progressbarWidget(TEXT("/Game/UI/PackageCollectionBar"));
+
+	progressBar->SetWidgetClass(progressbarWidget.Class);
+
+	progressBar->SetDrawSize(FVector2D(200, 30));
+
+	progressBar->SetVisibility(false);
 
 }
 
@@ -42,7 +58,10 @@ AWarehousePackage::AWarehousePackage()
 void AWarehousePackage::BeginPlay()
 {
 	Super::BeginPlay();
-	
+	TArray<AActor*> cameras;
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ACameraActor::StaticClass(), cameras);
+
+	cam = (ACameraActor*)cameras[0];
 }
 
 // Called every frame
@@ -50,12 +69,14 @@ void AWarehousePackage::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	if(progressBar->IsVisible())
+	{
+		auto rot = UKismetMathLibrary::FindLookAtRotation(progressBar->GetComponentLocation(), cam->GetActorLocation());
+		progressBar->SetWorldRotation(rot);
+
+		auto newLoc = GetActorLocation();
+		newLoc.Z += 75;
+		progressBar->SetWorldLocation(newLoc);
+	}
+
 }
-
-// Called to bind functionality to input
-void AWarehousePackage::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
-{
-	Super::SetupPlayerInputComponent(PlayerInputComponent);
-
-}
-

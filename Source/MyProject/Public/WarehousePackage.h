@@ -3,13 +3,15 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/Pawn.h"
+#include "GameFramework/Actor.h"
 #include "Components/BoxComponent.h"
+#include "Components/WidgetComponent.h"
+#include "Camera/CameraActor.h"
 #include "WarehousePackage.generated.h"
 
 
 UCLASS()
-class MYPROJECT_API AWarehousePackage : public APawn
+class MYPROJECT_API AWarehousePackage : public AActor
 {
 	GENERATED_BODY()
 
@@ -21,21 +23,24 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-public:	
+public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
-
-	// Called to bind functionality to input
-	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Cube")
 		UStaticMeshComponent* cubeMeshComponent;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Box Collision")
-	UBoxComponent* collisionMesh = nullptr;
-	
+		UBoxComponent* collisionMesh = nullptr;
+
+	bool isBeingHeld = false;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Progress Bar")
+		UWidgetComponent* progressBar;
+
 private:
 
+	ACameraActor* cam;
 
 
 };

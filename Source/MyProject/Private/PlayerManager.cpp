@@ -21,8 +21,6 @@ void APlayerManager::BeginPlay()
 {
 	Super::BeginPlay();
 
-	
-
 	TArray<AActor*> playerControllers;
 	UGameplayStatics::GetAllActorsOfClass(GetWorld(), APlayerController::StaticClass(), playerControllers);
 	for (AActor* controller : playerControllers)
