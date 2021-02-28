@@ -196,10 +196,19 @@ void AWarhousePawn::Tick(float DeltaSeconds)
 			const FVector Deflection = FVector::VectorPlaneProject(Movement, Normal2D) * (1.f - Hit.Time);
 			RootComponent->MoveComponent(Deflection, rot, true);
 		}
+
+		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, FString::Printf(TEXT("%f"), (MovingBatteryDrain * DeltaSeconds)));
+		_batteryCharge -= (MovingBatteryDrain * DeltaSeconds);
+	} else
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, FString::Printf(TEXT("%f"), (NonMovingBatteryDrain * DeltaSeconds)));
+		_batteryCharge -= (NonMovingBatteryDrain * DeltaSeconds);
 	}
 
 	if (PhysicsHandle->GetGrabbedComponent() != nullptr)
 	{
+		_batteryCharge -= (NonMovingBatteryDrain * DeltaSeconds);
+		
 		float distance = FVector::Dist(GetActorLocation(), PhysicsHandle->GetGrabbedComponent()->GetComponentLocation());
 		if (distance > 350)
 		{
@@ -219,5 +228,6 @@ void AWarhousePawn::Tick(float DeltaSeconds)
 	auto newLoc = GetActorLocation();
 	newLoc.Z += 75;
 	progressBar->SetWorldLocation(newLoc);
+
 
 }

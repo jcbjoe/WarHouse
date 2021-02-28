@@ -55,6 +55,11 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Progress Bar")
 		UWidgetComponent* progressBar;
+
+	
+	float MovingBatteryDrain = 2.5;
+	float NonMovingBatteryDrain = 1.25;
+	float HoldingBatteryDrain = -2.5;
 private:
 	virtual void BeginPlay() override;
 
