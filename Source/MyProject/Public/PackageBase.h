@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 #pragma once
 
@@ -13,27 +13,27 @@ UCLASS()
 class MYPROJECT_API APackageBase : public AActor
 {
 	GENERATED_BODY()
-	
-public:	
+
+public:
 	// Sets default values for this actor's properties
 	APackageBase();
 
-	void InitialisePackage(FPackageDataStructure pds);
+	void InitialisePackage(FConfigPackage pds);
 
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Mesh")
-	UStaticMeshComponent* PackageMesh;
+		UStaticMeshComponent* PackageMesh;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Box Collision")
-	UBoxComponent* collisionMesh = nullptr;
+		UBoxComponent* collisionMesh = nullptr;
 
 	int PackageValue;
 	float PackageWeight;
 
-public:	
+public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 

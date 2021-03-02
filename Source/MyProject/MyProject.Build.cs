@@ -8,7 +8,7 @@ public class MyProject : ModuleRules
 	{
 		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
 
-		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "CableComponent" });
+		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "CableComponent", "Json", "JsonUtilities" });
 
 		PrivateDependencyModuleNames.AddRange(new string[] { "CableComponent" });
 		PrivateIncludePathModuleNames.AddRange(new string[] { "CableComponent" });

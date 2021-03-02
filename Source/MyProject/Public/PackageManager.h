@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 #pragma once
 
@@ -11,24 +11,27 @@ UCLASS()
 class MYPROJECT_API APackageManager : public AActor
 {
 	GENERATED_BODY()
-	
-public:	
+
+public:
 	// Sets default values for this actor's properties
 	APackageManager();
 	//variables
-	//need a tarray of spawn locations? or are we already having them in the level and activating them? meaning a tarray of packages
-
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data")
+		int TotalPackagesAmount = 10;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "SpawnLocations")
+		TArray<AActor*> SpawnPackageLocations;
 	//functions
 	void GetPackageDetails();
-	void SpawnPackage(FPackageDataStructure pds);
+	void SpawnPackage(FConfigPackage pi);
+	void GetSpawnLocations();
 
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-	FPackageDataStructure pds;
+	FConfigPackage PackageInfo;
 
-public:	
+public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 

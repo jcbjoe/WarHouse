@@ -1,0 +1,35 @@
+﻿{
+  "GameTimer": 100,
+  "packages": [
+    {
+      "PackageName": "Guitar",
+      "ModelReference": "/Game/Geometry/Meshes/1M_Cube.1M_Cube",
+      "ValueRange": [
+        100,
+        200
+      ],
+      "Rarity": 10,
+      "PackageWeight": 10
+    },
+    {
+      "PackageName": "TV",
+      "ModelReference": "/Game/Geometry/Meshes/1M_Cube.1M_Cube",
+      "ValueRange": [
+        500,
+        600
+      ],
+      "Rarity": 4,
+      "PackageWeight": 10
+    },
+    {
+      "PackageName": "iPad",
+      "ModelReference": "/Game/Geometry/Meshes/1M_Cube.1M_Cube",
+      "ValueRange": [
+        250,
+        400
+      ],
+      "Rarity": 6,
+      "PackageWeight": 10
+    }
+  ]
+}
