@@ -31,6 +31,7 @@ protected:
 	UBoxComponent* collisionMesh = nullptr;
 
 	int PackageValue;
+	float PackageWeight;
 
 public:	
 	// Called every frame

@@ -11,6 +11,11 @@ APackageManager::APackageManager()
 
 }
 
+void APackageManager::GetPackageDetails()
+{
+
+}
+
 void APackageManager::SpawnPackage(FPackageDataStructure pds)
 {
 	FVector* Location(0); //temp location

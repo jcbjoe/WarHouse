@@ -20,4 +20,6 @@ public:
 	TArray<int> ValueRange;
 	UPROPERTY(EditAnywhere, Category = "Data Structure")
 	int Rarity;
+	UPROPERTY(EditAnywhere, Category = "Data Structure")
+	float PackageWeight;
 };

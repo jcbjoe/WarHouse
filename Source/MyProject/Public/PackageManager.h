@@ -15,6 +15,9 @@ class MYPROJECT_API APackageManager : public AActor
 public:	
 	// Sets default values for this actor's properties
 	APackageManager();
+	//variables
+	//need a tarray of spawn locations? or are we already having them in the level and activating them? meaning a tarray of packages
+
 	//functions
 	void GetPackageDetails();
 	void SpawnPackage(FPackageDataStructure pds);

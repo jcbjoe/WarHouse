@@ -19,6 +19,9 @@ void APackageBase::InitialisePackage(FPackageDataStructure pds)
 	
 	//assign random value from data structure value range
 	PackageValue = FMath::RandRange(pds.ValueRange[0], pds.ValueRange[1]);
+
+	//assign weight
+	PackageMesh->SetMassScale(NAME_None, pds.PackageWeight);
 }
 
 // Called when the game starts or when spawned
