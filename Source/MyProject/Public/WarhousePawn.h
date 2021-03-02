@@ -56,15 +56,23 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Progress Bar")
 		UWidgetComponent* progressBar;
 
-	
-	float MovingBatteryDrain = 2.5;
-	float NonMovingBatteryDrain = 1.25;
-	float HoldingBatteryDrain = -2.5;
+
+
+
 private:
 	virtual void BeginPlay() override;
 
 	float _batteryCharge = 100;
 
 	ACameraActor* cam;
+
+	bool isDead = false;
+
+	float MovingBatteryDrain = 5.0;
+	float NonMovingBatteryDrain = 2;
+	float HoldingBatteryDrain = -5.0;
+
+	float respawnSeconds = 5;
+	float respawnCounter = 0;
 
 };

@@ -19,6 +19,7 @@
 #include "Particles/ParticleSystemComponent.h"
 #include "Sound/SoundBase.h"
 #include "EngineUtils.h"
+#include "GameManager.h"
 #include "PackageProgressBar.h"
 
 const FName AWarhousePawn::MoveForwardBinding("MoveForward");
@@ -103,130 +104,173 @@ void AWarhousePawn::SetupPlayerInputComponent(class UInputComponent* PlayerInput
 
 void AWarhousePawn::Tick(float DeltaSeconds)
 {
+	if (!isDead) {
+		// Find movement direction
+		const float ForwardValue = GetInputAxisValue(MoveForwardBinding);
+		const float RightValue = GetInputAxisValue(MoveRightBinding);
 
-	// Find movement direction
-	const float ForwardValue = GetInputAxisValue(MoveForwardBinding);
-	const float RightValue = GetInputAxisValue(MoveRightBinding);
+		const float ArmForwardValue = GetInputAxisValue(ArmForwardBinding);
+		const float ArmRightValue = GetInputAxisValue(ArmRightBinding);
 
-	const float ArmForwardValue = GetInputAxisValue(ArmForwardBinding);
-	const float ArmRightValue = GetInputAxisValue(ArmRightBinding);
+		auto yaw = 360 - (FMath::RadiansToDegrees(FMath::Atan2(ArmRightValue, ArmForwardValue)) + 180);
 
-	auto yaw = 360 - (FMath::RadiansToDegrees(FMath::Atan2(ArmRightValue, ArmForwardValue)) + 180);
+		float angle = yaw;
 
-	float angle = yaw;
+		float x = (150 * FMath::Cos(angle * UKismetMathLibrary::GetPI() / 180.f)) + GetActorLocation().X;
+		float y = (150 * FMath::Sin(angle * UKismetMathLibrary::GetPI() / 180.f)) + GetActorLocation().Y;
 
-	float x = (150 * FMath::Cos(angle * UKismetMathLibrary::GetPI() / 180.f)) + GetActorLocation().X;
-	float y = (150 * FMath::Sin(angle * UKismetMathLibrary::GetPI() / 180.f)) + GetActorLocation().Y;
+		auto trans = FVector(x, y, GetActorLocation().Z);
 
-	auto trans = FVector(x, y, GetActorLocation().Z);
+		PhysicsHandle->SetTargetLocation(trans);
 
-	PhysicsHandle->SetTargetLocation(trans);
-
-	auto target = GetActorLocation();
-	target.Y += 10;
-	beamEmitter->SetBeamSourcePoint(0, target, 0);
-	if (PhysicsHandle->GetGrabbedComponent() == nullptr) {
-		beamEmitter->SetBeamTargetPoint(0, trans, 0);
-	}
-	else
-	{
-		beamEmitter->SetBeamTargetPoint(0, PhysicsHandle->GetGrabbedComponent()->GetComponentLocation(), 0);
-	}
-
-	if (ArmForwardValue == 0 && ArmRightValue == 0)
-	{
-		beamEmitter->SetVisibility(false);
-		if (PhysicsHandle->GetGrabbedComponent() != nullptr) {
-			((AWarehousePackage*)PhysicsHandle->GetGrabbedComponent()->GetOwner())->isBeingHeld = false;
-			auto item = PhysicsHandle->GetGrabbedComponent();
-			PhysicsHandle->ReleaseComponent();
-
-			auto velocity = item->GetPhysicsLinearVelocity();
-			item->SetAllPhysicsLinearVelocity(velocity.GetClampedToMaxSize(1000));
-
-		}
-	}
-	else
-	{
-		beamEmitter->SetVisibility(true);
-
+		auto target = GetActorLocation();
+		target.Y += 10;
+		beamEmitter->SetBeamSourcePoint(0, target, 0);
 		if (PhysicsHandle->GetGrabbedComponent() == nullptr) {
-			FHitResult hit = FHitResult(ForceInit);
-			FCollisionQueryParams TraceParams(FName(TEXT("InteractTrace")), true, this);
+			beamEmitter->SetBeamTargetPoint(0, trans, 0);
+		}
+		else
+		{
+			beamEmitter->SetBeamTargetPoint(0, PhysicsHandle->GetGrabbedComponent()->GetComponentLocation(), 0);
+		}
 
-			for (TActorIterator<AActor> actor(GetWorld()); actor; ++actor)
-			{
-				if (!actor->IsA(AWarehousePackage::StaticClass())) {
-					TraceParams.AddIgnoredActor(*actor);
-				}
+		if (ArmForwardValue == 0 && ArmRightValue == 0)
+		{
+			beamEmitter->SetVisibility(false);
+			if (PhysicsHandle->GetGrabbedComponent() != nullptr) {
+				((AWarehousePackage*)PhysicsHandle->GetGrabbedComponent()->GetOwner())->isBeingHeld = false;
+				auto item = PhysicsHandle->GetGrabbedComponent();
+				PhysicsHandle->ReleaseComponent();
+
+				auto velocity = item->GetPhysicsLinearVelocity();
+				item->SetAllPhysicsLinearVelocity(velocity.GetClampedToMaxSize(1000));
+
 			}
+		}
+		else
+		{
+			beamEmitter->SetVisibility(true);
 
-			bool bIsHit = GetWorld()->LineTraceSingleByChannel(hit, GetActorLocation(), trans, ECC_GameTraceChannel3, TraceParams);
-			if (bIsHit)
-			{
-				if (hit.Actor != nullptr && hit.Actor->IsA(AWarehousePackage::StaticClass())) {
-					UPrimitiveComponent* component = reinterpret_cast<UPrimitiveComponent*>(hit.GetActor()->GetRootComponent());
-					PhysicsHandle->GrabComponentAtLocation(component, "None", component->GetComponentLocation());
-					auto package = (AWarehousePackage*)hit.GetActor();
-					package->isBeingHeld = true;
+			if (PhysicsHandle->GetGrabbedComponent() == nullptr) {
+				FHitResult hit = FHitResult(ForceInit);
+				FCollisionQueryParams TraceParams(FName(TEXT("InteractTrace")), true, this);
+
+				for (TActorIterator<AActor> actor(GetWorld()); actor; ++actor)
+				{
+					if (!actor->IsA(AWarehousePackage::StaticClass())) {
+						TraceParams.AddIgnoredActor(*actor);
+					}
+				}
+
+				bool bIsHit = GetWorld()->LineTraceSingleByChannel(hit, GetActorLocation(), trans, ECC_GameTraceChannel3, TraceParams);
+				if (bIsHit)
+				{
+					if (hit.Actor != nullptr && hit.Actor->IsA(AWarehousePackage::StaticClass())) {
+						UPrimitiveComponent* component = reinterpret_cast<UPrimitiveComponent*>(hit.GetActor()->GetRootComponent());
+						PhysicsHandle->GrabComponentAtLocation(component, "None", component->GetComponentLocation());
+						auto package = (AWarehousePackage*)hit.GetActor();
+						package->isBeingHeld = true;
+					}
 				}
 			}
 		}
-	}
 
 
-	// Clamp max size so that (X=1, Y=1) doesn't cause faster movement in diagonal directions
-	const FVector MoveDirection = FVector(ForwardValue, RightValue, 0.f).GetClampedToMaxSize(1.0f);
+		// Clamp max size so that (X=1, Y=1) doesn't cause faster movement in diagonal directions
+		const FVector MoveDirection = FVector(ForwardValue, RightValue, 0.f).GetClampedToMaxSize(1.0f);
 
-	// Calculate  movement
-	const FVector Movement = MoveDirection * MoveSpeed * DeltaSeconds;
+		// Calculate  movement
+		const FVector Movement = MoveDirection * MoveSpeed * DeltaSeconds;
 
-	// If non-zero size, move this actor
-	if (Movement.SizeSquared() > 0.0f)
-	{
-		const FRotator NewRotation = Movement.Rotation();
-
-		auto rot = FMath::Lerp(GetActorRotation(), NewRotation, 0.05f);
-		FHitResult Hit(1.f);
-		RootComponent->MoveComponent(Movement, rot, true, &Hit);
-
-		if (Hit.IsValidBlockingHit() && (Hit.Actor == nullptr || !Hit.Actor->GetClass()->IsChildOf(AWarehousePackage::StaticClass())))
+		// If non-zero size, move this actor
+		if (Movement.SizeSquared() > 0.0f)
 		{
-			const FVector Normal2D = Hit.Normal.GetSafeNormal2D() * 1.3;
-			const FVector Deflection = FVector::VectorPlaneProject(Movement, Normal2D) * (1.f - Hit.Time);
-			RootComponent->MoveComponent(Deflection, rot, true);
+			const FRotator NewRotation = Movement.Rotation();
+
+			auto rot = FMath::Lerp(GetActorRotation(), NewRotation, 0.05f);
+			FHitResult Hit(1.f);
+			RootComponent->MoveComponent(Movement, rot, true, &Hit);
+
+			if (Hit.IsValidBlockingHit() && (Hit.Actor == nullptr || !Hit.Actor->GetClass()->IsChildOf(AWarehousePackage::StaticClass())))
+			{
+				const FVector Normal2D = Hit.Normal.GetSafeNormal2D() * 1.3;
+				const FVector Deflection = FVector::VectorPlaneProject(Movement, Normal2D) * (1.f - Hit.Time);
+				RootComponent->MoveComponent(Deflection, rot, true);
+			}
+
+			_batteryCharge -= (MovingBatteryDrain * DeltaSeconds);
+		}
+		else
+		{
+
+			_batteryCharge -= (NonMovingBatteryDrain * DeltaSeconds);
 		}
 
-		_batteryCharge -= (MovingBatteryDrain * DeltaSeconds);
-	} else
-	{
-		
-		_batteryCharge -= (NonMovingBatteryDrain * DeltaSeconds);
-	}
-
-	if (PhysicsHandle->GetGrabbedComponent() != nullptr)
-	{
-		_batteryCharge -= (HoldingBatteryDrain * DeltaSeconds);
-		
-		float distance = FVector::Dist(GetActorLocation(), PhysicsHandle->GetGrabbedComponent()->GetComponentLocation());
-		if (distance > 350)
+		if (PhysicsHandle->GetGrabbedComponent() != nullptr)
 		{
-			// Package is to far away, drop it!
-			((AWarehousePackage*)PhysicsHandle->GetGrabbedComponent()->GetOwner())->isBeingHeld = false;
+			_batteryCharge -= (HoldingBatteryDrain * DeltaSeconds);
+
+			float distance = FVector::Dist(GetActorLocation(), PhysicsHandle->GetGrabbedComponent()->GetComponentLocation());
+			if (distance > 350)
+			{
+				// Package is to far away, drop it!
+				((AWarehousePackage*)PhysicsHandle->GetGrabbedComponent()->GetOwner())->isBeingHeld = false;
+
+				PhysicsHandle->ReleaseComponent();
+			}
+		}
+
+		reinterpret_cast<UPackageProgressBar*>(progressBar->GetUserWidgetObject())->progressBarFillAmount = _batteryCharge / 100;
+
+		auto rot = UKismetMathLibrary::FindLookAtRotation(progressBar->GetComponentLocation(), cam->GetActorLocation());
+		rot.Yaw = 180;
+		progressBar->SetWorldRotation(rot);
+
+		auto newLoc = GetActorLocation();
+		newLoc.Z += 75;
+		progressBar->SetWorldLocation(newLoc);
+
+		if (_batteryCharge < 0)
+		{
+			isDead = true;
+			respawnCounter = 0;
+
+			auto pos = GetActorLocation();
+			pos.Z = -100;
+
+			SetActorLocation(pos);
+
+			beamEmitter->SetBeamSourcePoint(0, pos, 0);
+
+			beamEmitter->SetBeamTargetPoint(0, pos, 0);
 			
-			PhysicsHandle->ReleaseComponent();
+			if (PhysicsHandle->GetGrabbedComponent() != nullptr) {
+				PhysicsHandle->ReleaseComponent();
+			}
+			
+
+			//Explosion?
+
+			//Death Logic (position)
 		}
 	}
+	else
+	{
+		respawnCounter += DeltaSeconds;
+		if (respawnCounter > respawnSeconds) {
 
-	reinterpret_cast<UPackageProgressBar*>(progressBar->GetUserWidgetObject())->progressBarFillAmount = _batteryCharge / 100;
+			//Respawn Logic (position)
 
-	auto rot = UKismetMathLibrary::FindLookAtRotation(progressBar->GetComponentLocation(), cam->GetActorLocation());
-	rot.Yaw = 180;
-	progressBar->SetWorldRotation(rot);
+			auto gameManager = reinterpret_cast<AGameManager*>(UGameplayStatics::GetActorOfClass(GetWorld(), AGameManager::StaticClass()));
 
-	auto newLoc = GetActorLocation();
-	newLoc.Z += 75;
-	progressBar->SetWorldLocation(newLoc);
+			auto spawnPoint = gameManager->_playerManager->GetRandomSpawnpoint();
 
+			SetActorLocation(spawnPoint);
+
+			isDead = false;
+			respawnCounter = 0;
+			_batteryCharge = 100;
+		}
+	}
 
 }
