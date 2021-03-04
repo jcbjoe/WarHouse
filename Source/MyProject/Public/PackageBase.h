@@ -30,16 +30,8 @@ protected:
 		UBoxComponent* collisionMesh = nullptr;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Material")
 		UMaterial* meshMaterial;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Package")
-		FString PackageName;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Package")
-		FString ModelReference;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Package")
-		TArray<int> ValueRange;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Package")
-		int32 Rarity;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Package")
-		float PackageWeight;
+	UPROPERTY(VisibleAnywhere, Category = "Package")
+		FPackageDataStructure Package;
 
 	int PackageValue;
 

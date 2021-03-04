@@ -16,6 +16,12 @@ APackageBase::APackageBase()
 
 void APackageBase::InitialisePackage(FConfigPackage pi)
 {
+	Package.PackageName = pi.PackageName;
+	Package.ModelReference = pi.ModelReference;
+	Package.ValueRange = pi.ValueRange;
+	Package.Rarity = pi.Rarity;
+	Package.PackageWeight = pi.PackageWeight;
+
 	//assign static mesh from data structure
 	UStaticMesh* mesh = Cast<UStaticMesh>(StaticLoadObject(UStaticMesh::StaticClass(), NULL, *pi.ModelReference));
 	PackageMesh->SetStaticMesh(mesh);

@@ -27,12 +27,28 @@ FString APackageManager::GetPackageDetails()
 	return Result;
 }
 
-void APackageManager::SpawnPackage(FConfigPackage pds)
+void APackageManager::SpawnPackage(FConfig config, TArray<AActor*> SpawnPackageLocationsCopy)
 {
-	FVector* Location(0); //temp location
-	APackageBase* spawnedPackage = (APackageBase*)GetWorld()->SpawnActor(APackageBase::StaticClass(), Location);
-	//APackageBase* spawnedPackage = (APackageBase*)GetWorld()->SpawnActor(APackageBase::StaticClass(), NAME_None, &Location);
-	spawnedPackage->InitialisePackage(pds);
+	// Get random Spawnpoint
+	auto randomNumber = FMath::RandRange(0, SpawnPackageLocationsCopy.Num() - 1);
+	auto spawnPoint = SpawnPackageLocationsCopy[randomNumber];
+
+	// Remove the spawnpoint from the temporary spawnpoints so we dont spawn at the same place twice 
+	SpawnPackageLocationsCopy.Remove(spawnPoint);
+
+	// Get Random package type
+	auto jsonLength = config.packages.Num();
+	auto randomNumber2 = FMath::RandRange(0, jsonLength - 1);
+
+	auto packageType = config.packages[randomNumber2];
+
+	// Spawn Package
+	//FVector Location(0.0f, 0.0f, 0.0f);
+	FRotator Rotation(0.0f, 0.0f, 0.0f); //we may need to change this later to an actual rotation
+	FActorSpawnParameters SpawnInfo;
+
+	APackageBase* package = GetWorld()->SpawnActor<APackageBase>(spawnPoint->GetActorLocation(), Rotation, SpawnInfo);
+	package->InitialisePackage(packageType);
 }
 
 void APackageManager::GetSpawnLocations()
@@ -56,26 +72,7 @@ void APackageManager::BeginPlay()
 	auto spawnPointsCopy = SpawnPackageLocations;
 
 	for (int i = 0; i < TotalPackagesAmount; ++i) {
-		// Get random Spawnpoint
-		auto randomNumber = FMath::RandRange(0, spawnPointsCopy.Num() - 1);
-		auto spawnPoint = spawnPointsCopy[randomNumber];
-
-		// Remove the spawnpoint from the temporary spawnpoints so we dont spawn at the same place twice 
-		spawnPointsCopy.Remove(spawnPoint);
-
-		// Get Random package type
-		auto jsonLength = config.packages.Num();
-		auto randomNumber2 = FMath::RandRange(0, jsonLength - 1);
-
-		auto packageType = config.packages[randomNumber2];
-
-		// Spawn Package
-		FVector Location(0.0f, 0.0f, 0.0f);
-		FRotator Rotation(0.0f, 0.0f, 0.0f);
-		FActorSpawnParameters SpawnInfo;
-		APackageBase* package = GetWorld()->SpawnActor<APackageBase>(spawnPoint->GetActorLocation(), Rotation, SpawnInfo);
-		package->InitialisePackage(packageType);
-
+		SpawnPackage(config, SpawnPackageLocations);
 	}
 }
 

@@ -22,7 +22,7 @@ public:
 		TArray<AActor*> SpawnPackageLocations;
 	//functions
 	FString GetPackageDetails();
-	void SpawnPackage(FConfigPackage pi);
+	void SpawnPackage(FConfig config, TArray<AActor*> SpawnPackageLocations);
 	void GetSpawnLocations();
 
 protected:
