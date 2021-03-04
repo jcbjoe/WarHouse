@@ -21,7 +21,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "SpawnLocations")
 		TArray<AActor*> SpawnPackageLocations;
 	//functions
-	void GetPackageDetails();
+	FString GetPackageDetails();
 	void SpawnPackage(FConfigPackage pi);
 	void GetSpawnLocations();
 

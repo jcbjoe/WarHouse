@@ -10,6 +10,8 @@ APackageBase::APackageBase()
 	PrimaryActorTick.bCanEverTick = false; //package does not need to tick?
 	PackageMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("packageMesh"));
 	RootComponent = PackageMesh;
+	static ConstructorHelpers::FObjectFinder<UMaterial> FoundMaterial(TEXT("/Game/Assets/JoeAssets/Package/Glow.Glow"));
+	meshMaterial = FoundMaterial.Object;
 }
 
 void APackageBase::InitialisePackage(FConfigPackage pi)
@@ -22,12 +24,15 @@ void APackageBase::InitialisePackage(FConfigPackage pi)
 	//assign weight
 	PackageMesh->SetMassScale(NAME_None, pi.PackageWeight);
 	PackageMesh->SetSimulatePhysics(true);
+	//assign material
+	PackageMesh->SetMaterial(0, meshMaterial);
 }
 
 // Called when the game starts or when spawned
 void APackageBase::BeginPlay()
 {
 	Super::BeginPlay();
+
 }
 
 // Called every frame

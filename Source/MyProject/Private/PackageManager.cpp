@@ -15,12 +15,16 @@ APackageManager::APackageManager()
 
 }
 
-void APackageManager::GetPackageDetails()
+FString APackageManager::GetPackageDetails()
 {
+	//set json file name
+	FString FileName(TEXT("Config.json"));
+	//where we will store the resulting json
+	FString Result;
 	//get data from json file
+	FFileHelper::LoadFileToString(Result, *(FPaths::ProjectConfigDir() + FileName));
 
-	//create a package using json data
-
+	return Result;
 }
 
 void APackageManager::SpawnPackage(FConfigPackage pds)
@@ -41,11 +45,9 @@ void APackageManager::GetSpawnLocations()
 void APackageManager::BeginPlay()
 {
 	Super::BeginPlay();
-	//json stuff
-	FString FileName(TEXT("Config.json"));
-	FString Result;
-	auto test = FPaths::ProjectConfigDir();
-	FFileHelper::LoadFileToString(Result, *(FPaths::ProjectConfigDir() + FileName));
+	//get json data
+	FString Result = GetPackageDetails();
+	//pass package data into the config struct
 	FConfig config = FConfig(Result);
 	//find all spawn locations and store into a TArray
 	GetSpawnLocations();

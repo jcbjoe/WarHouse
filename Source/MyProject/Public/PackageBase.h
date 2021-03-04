@@ -26,12 +26,22 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Mesh")
 		UStaticMeshComponent* PackageMesh;
-
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Box Collision")
 		UBoxComponent* collisionMesh = nullptr;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Material")
+		UMaterial* meshMaterial;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Package")
+		FString PackageName;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Package")
+		FString ModelReference;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Package")
+		TArray<int> ValueRange;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Package")
+		int32 Rarity;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Package")
+		float PackageWeight;
 
 	int PackageValue;
-	float PackageWeight;
 
 public:
 	// Called every frame

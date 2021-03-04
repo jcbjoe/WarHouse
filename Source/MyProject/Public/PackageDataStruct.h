@@ -44,7 +44,7 @@ struct FConfigPackage
 		int32 Rarity;
 
 	UPROPERTY()
-		int32 PackageWeight;
+		float PackageWeight;
 
 	FConfigPackage() {};
 

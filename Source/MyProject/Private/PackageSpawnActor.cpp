@@ -3,6 +3,7 @@
 
 #include "PackageSpawnActor.h"
 
+
 // Sets default values
 APackageSpawnActor::APackageSpawnActor()
 {
@@ -10,6 +11,10 @@ APackageSpawnActor::APackageSpawnActor()
 	PrimaryActorTick.bCanEverTick = true;
 	const auto subObject = CreateDefaultSubobject<USceneComponent>(TEXT("PackageSpawnPoint"));
 	RootComponent = subObject;
+
+	//add billboard for editor visibility
+	BillboardComponent = CreateDefaultSubobject<UBillboardComponent>(TEXT("Billboard Comp"));
+	RootComponent->SetupAttachment(BillboardComponent);
 }
 
 // Called when the game starts or when spawned
