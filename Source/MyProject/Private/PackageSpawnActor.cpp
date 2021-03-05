@@ -12,9 +12,9 @@ APackageSpawnActor::APackageSpawnActor()
 	const auto subObject = CreateDefaultSubobject<USceneComponent>(TEXT("PackageSpawnPoint"));
 	RootComponent = subObject;
 
-	//add billboard for editor visibility
+	////add billboard for editor visibility
 	BillboardComponent = CreateDefaultSubobject<UBillboardComponent>(TEXT("Billboard Comp"));
-	RootComponent->SetupAttachment(BillboardComponent);
+	BillboardComponent->AttachTo(RootComponent);
 }
 
 // Called when the game starts or when spawned
