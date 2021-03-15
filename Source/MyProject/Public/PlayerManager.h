@@ -23,6 +23,12 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "SpawnPoints")
 		int PlayerCount = 1;
 
+	FVector GetRandomSpawnpoint()
+	{
+		int RandIndex = FMath::RandRange(0, spawnPoints.Num() - 1);
+		return spawnPoints[RandIndex]->GetActorLocation();
+	}
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
