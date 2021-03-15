@@ -28,7 +28,7 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Cube")
-		UStaticMeshComponent* cubeMeshComponent;
+	UStaticMeshComponent* cubeMeshComponent;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Box Collision")
 		UBoxComponent* collisionMesh = nullptr;
