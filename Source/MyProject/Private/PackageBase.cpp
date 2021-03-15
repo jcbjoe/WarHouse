@@ -2,6 +2,10 @@
 
 
 #include "PackageBase.h"
+#include "GameManager.h"
+#include "Kismet/GameplayStatics.h"
+#include "Kismet/KismetMathLibrary.h"
+#include "UObject/ConstructorHelpers.h"
 
 // Sets default values
 APackageBase::APackageBase()
@@ -12,6 +16,23 @@ APackageBase::APackageBase()
 	RootComponent = PackageMesh;
 	static ConstructorHelpers::FObjectFinder<UMaterial> FoundMaterial(TEXT("/Game/Assets/JoeAssets/Package/Glow.Glow"));
 	meshMaterial = FoundMaterial.Object;
+
+	progressBar = CreateDefaultSubobject<UWidgetComponent>(FName("ProgressBar"));
+
+	progressBar->SetupAttachment(RootComponent);
+
+	progressBar->SetWidgetSpace(EWidgetSpace::World);
+
+	static ConstructorHelpers::FClassFinder<UUserWidget> progressbarWidget(TEXT("/Game/UI/PackageCollectionBar"));
+
+	progressBar->SetWidgetClass(progressbarWidget.Class);
+
+	progressBar->SetDrawSize(FVector2D(200, 30));
+
+	progressBar->SetVisibility(false);
+
+	PrimaryActorTick.bCanEverTick = true;
+	PrimaryActorTick.bStartWithTickEnabled = true;
 }
 
 void APackageBase::InitialisePackage(FConfigPackage pi)
@@ -32,6 +53,8 @@ void APackageBase::InitialisePackage(FConfigPackage pi)
 	PackageMesh->SetSimulatePhysics(true);
 	//assign material
 	PackageMesh->SetMaterial(0, meshMaterial);
+
+	PackageMesh->SetRelativeScale3D({ 0.5f,0.5f,0.5f });
 }
 
 // Called when the game starts or when spawned
@@ -39,11 +62,30 @@ void APackageBase::BeginPlay()
 {
 	Super::BeginPlay();
 
+	TArray<AActor*> cameras;
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ACameraActor::StaticClass(), cameras);
+
+	cam = reinterpret_cast<ACameraActor*>(cameras[0]);
 }
 
 // Called every frame
 void APackageBase::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	if (progressBar->IsVisible())
+	{
+		TArray<AActor*> managers;
+		UGameplayStatics::GetAllActorsOfClass(GetWorld(), AGameManager::StaticClass(), managers);
+
+		AGameManager* manager = reinterpret_cast<AGameManager*>(managers[0]);
+		
+		auto rot = UKismetMathLibrary::FindLookAtRotation(progressBar->GetComponentLocation(), manager->MainCamera->GetActorLocation());
+		progressBar->SetWorldRotation(rot);
+
+		auto newLoc = GetActorLocation();
+		newLoc.Z += 75;
+		progressBar->SetWorldLocation(newLoc);
+	}
 
 }

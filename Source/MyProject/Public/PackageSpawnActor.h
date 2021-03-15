@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "Components/BillboardComponent.h"
+#include "Engine/Texture2D.h"
 #include "PackageSpawnActor.generated.h"
 
 UCLASS()
@@ -23,7 +24,7 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Billboard")
 		UBillboardComponent* BillboardComponent;
 	//Sprite for the Billboard Component
-	class UTexture2D* SpriteTexture;
+	UTexture2D* SpriteTexture;
 
 
 public:

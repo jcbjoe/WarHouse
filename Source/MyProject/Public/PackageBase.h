@@ -6,7 +6,8 @@
 #include "GameFramework/Actor.h"
 #include "Components/BoxComponent.h"
 #include "PackageDataStruct.h"
-#include "Math/UnrealMathUtility.h"
+#include "Components/WidgetComponent.h"
+#include "Camera/CameraActor.h"
 #include "PackageBase.generated.h"
 
 UCLASS()
@@ -35,8 +36,19 @@ protected:
 
 	int PackageValue;
 
-public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
+
+public:
+
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Progress Bar")
+		UWidgetComponent* progressBar;
+
+	bool isBeingHeld = false;
+
+private:
+
+	ACameraActor* cam;
 
 };

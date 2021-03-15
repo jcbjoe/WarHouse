@@ -17,9 +17,8 @@ public:
 	APackageManager();
 	//variables
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data")
-		int TotalPackagesAmount = 10;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "SpawnLocations")
-		TArray<AActor*> SpawnPackageLocations;
+		int TotalPackagesAmount = 1;
+		
 	//functions
 	FString GetPackageDetails();
 	void SpawnPackage(FConfig config, TArray<AActor*> SpawnPackageLocations);
@@ -30,6 +29,8 @@ protected:
 	virtual void BeginPlay() override;
 
 	FConfigPackage PackageInfo;
+
+	TArray<AActor*> SpawnPackageLocations;
 
 public:
 	// Called every frame

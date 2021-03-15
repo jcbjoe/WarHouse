@@ -3,14 +3,12 @@
 #pragma once
 
 #include "CoreMinimal.h"
+
+#include "Components/WidgetComponent.h"
 #include "GameFramework/Character.h"
-#include "Components/BoxComponent.h"
-#include "WarehousePackage.h"
 #include "PhysicsEngine/PhysicsHandleComponent.h"
-#include "Particles/ParticleSystem.h"
 #include "WarhousePawn.generated.h"
 
-class USpringArmComponent;
 UCLASS(Blueprintable)
 class AWarhousePawn : public APawn
 {

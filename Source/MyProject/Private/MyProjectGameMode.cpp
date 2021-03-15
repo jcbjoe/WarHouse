@@ -1,7 +1,6 @@
 // Copyright Epic Games, Inc. All Rights Reserved.
 
 #include "MyProjectGameMode.h"
-#include "WarhousePawn.h"
 
 AMyProjectGameMode::AMyProjectGameMode()
 {

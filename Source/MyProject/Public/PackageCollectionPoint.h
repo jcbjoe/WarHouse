@@ -6,15 +6,15 @@
 
 #include "Components/BoxComponent.h"
 #include "GameFramework/Actor.h"
-#include "WarehousePackage.h"
+#include "PackageBase.h"
 #include "PackageCollectionPoint.generated.h"
 
 UCLASS()
 class MYPROJECT_API APackageCollectionPoint : public AActor
 {
 	GENERATED_BODY()
-	
-public:	
+
+public:
 	// Sets default values for this actor's properties
 	APackageCollectionPoint();
 
@@ -22,15 +22,15 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-public:	
+public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
 	UPROPERTY(Category = Gameplay, EditAnywhere, BlueprintReadWrite)
-	UBoxComponent* boxComponent;
+		UBoxComponent* boxComponent;
 
 	UPROPERTY(Category = Gameplay, EditAnywhere, BlueprintReadWrite)
-	USceneComponent* base;
+		USceneComponent* base;
 
 
 	UFUNCTION()
@@ -39,6 +39,6 @@ public:
 	UFUNCTION()
 		void OnOverlapEnd(UPrimitiveComponent* OverlapComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 
-	TMap<AWarehousePackage*, float> packages; 
+	TMap<APackageBase*, float> packages;
 
 };

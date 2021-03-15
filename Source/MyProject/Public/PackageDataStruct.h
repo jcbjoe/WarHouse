@@ -3,7 +3,6 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Engine/UserDefinedStruct.h"
 #include "Runtime/JsonUtilities/Public/JsonObjectConverter.h"
 #include "PackageDataStruct.generated.h"
 

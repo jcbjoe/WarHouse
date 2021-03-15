@@ -40,9 +40,9 @@ void APackageCollectionPoint::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	TArray<AWarehousePackage*> packagesToRemove;
+	TArray<APackageBase*> packagesToRemove;
 
-	for (TPair<AWarehousePackage*, float>& package : packages)
+	for (TPair<APackageBase*, float>& package : packages)
 	{
 		if (package.Key->isBeingHeld)
 		{
@@ -70,7 +70,7 @@ void APackageCollectionPoint::Tick(float DeltaTime)
 		TArray<AActor*> managers;
 		UGameplayStatics::GetAllActorsOfClass(GetWorld(), AGameManager::StaticClass(), managers);
 
-		AGameManager* manager = (AGameManager*)managers[0];
+		AGameManager* manager = reinterpret_cast<AGameManager*>(managers[0]);
 
 		int index = 0;
 		bool found = true;
@@ -94,16 +94,16 @@ void APackageCollectionPoint::Tick(float DeltaTime)
 
 void APackageCollectionPoint::OnOverlapBegin(UPrimitiveComponent* OverlapComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	if (OtherActor->IsA(AWarehousePackage::StaticClass())) {
-		auto package = reinterpret_cast<AWarehousePackage*>(OtherActor);
+	if (OtherActor->IsA(APackageBase::StaticClass())) {
+		auto package = reinterpret_cast<APackageBase*>(OtherActor);
 		if (packages.Contains(package)) return;
 		packages.Add(package, 0);
 	}
 }
 
 void APackageCollectionPoint::OnOverlapEnd(UPrimitiveComponent* OverlapComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex) {
-	if (OtherActor->IsA(AWarehousePackage::StaticClass())) {
-		auto package = reinterpret_cast<AWarehousePackage*>(OtherActor);
+	if (OtherActor->IsA(APackageBase::StaticClass())) {
+		auto package = reinterpret_cast<APackageBase*>(OtherActor);
 		packages.Remove(package);
 		package->progressBar->SetVisibility(false);
 	}

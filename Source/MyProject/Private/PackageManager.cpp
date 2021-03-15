@@ -46,6 +46,7 @@ void APackageManager::SpawnPackage(FConfig config, TArray<AActor*> SpawnPackageL
 	//FVector Location(0.0f, 0.0f, 0.0f);
 	FRotator Rotation(0.0f, 0.0f, 0.0f); //we may need to change this later to an actual rotation
 	FActorSpawnParameters SpawnInfo;
+	SpawnInfo.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 
 	APackageBase* package = GetWorld()->SpawnActor<APackageBase>(spawnPoint->GetActorLocation(), Rotation, SpawnInfo);
 	package->InitialisePackage(packageType);

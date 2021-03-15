@@ -21,6 +21,7 @@
 #include "EngineUtils.h"
 #include "GameManager.h"
 #include "PackageProgressBar.h"
+#include "PackageBase.h"
 
 const FName AWarhousePawn::MoveForwardBinding("MoveForward");
 const FName AWarhousePawn::MoveRightBinding("MoveRight");
@@ -138,12 +139,15 @@ void AWarhousePawn::Tick(float DeltaSeconds)
 		{
 			beamEmitter->SetVisibility(false);
 			if (PhysicsHandle->GetGrabbedComponent() != nullptr) {
-				((AWarehousePackage*)PhysicsHandle->GetGrabbedComponent()->GetOwner())->isBeingHeld = false;
+				// Player has let go of package
+				reinterpret_cast<APackageBase*>(PhysicsHandle->GetGrabbedComponent()->GetOwner())->isBeingHeld = false;
 				auto item = PhysicsHandle->GetGrabbedComponent();
 				PhysicsHandle->ReleaseComponent();
 
 				auto velocity = item->GetPhysicsLinearVelocity();
 				item->SetAllPhysicsLinearVelocity(velocity.GetClampedToMaxSize(1000));
+
+				reinterpret_cast<APackageBase*>(item)->isBeingHeld = false;
 
 			}
 		}
@@ -157,7 +161,7 @@ void AWarhousePawn::Tick(float DeltaSeconds)
 
 				for (TActorIterator<AActor> actor(GetWorld()); actor; ++actor)
 				{
-					if (!actor->IsA(AWarehousePackage::StaticClass())) {
+					if (!actor->IsA(APackageBase::StaticClass())) {
 						TraceParams.AddIgnoredActor(*actor);
 					}
 				}
@@ -165,10 +169,10 @@ void AWarhousePawn::Tick(float DeltaSeconds)
 				bool bIsHit = GetWorld()->LineTraceSingleByChannel(hit, GetActorLocation(), trans, ECC_GameTraceChannel3, TraceParams);
 				if (bIsHit)
 				{
-					if (hit.Actor != nullptr && hit.Actor->IsA(AWarehousePackage::StaticClass())) {
+					if (hit.Actor != nullptr && hit.Actor->IsA(APackageBase::StaticClass())) {
 						UPrimitiveComponent* component = reinterpret_cast<UPrimitiveComponent*>(hit.GetActor()->GetRootComponent());
 						PhysicsHandle->GrabComponentAtLocation(component, "None", component->GetComponentLocation());
-						auto package = (AWarehousePackage*)hit.GetActor();
+						auto package = reinterpret_cast<APackageBase*>(hit.GetActor());
 						package->isBeingHeld = true;
 					}
 				}
@@ -191,7 +195,7 @@ void AWarhousePawn::Tick(float DeltaSeconds)
 			FHitResult Hit(1.f);
 			RootComponent->MoveComponent(Movement, rot, true, &Hit);
 
-			if (Hit.IsValidBlockingHit() && (Hit.Actor == nullptr || !Hit.Actor->GetClass()->IsChildOf(AWarehousePackage::StaticClass())))
+			if (Hit.IsValidBlockingHit() && (Hit.Actor == nullptr || !Hit.Actor->GetClass()->IsChildOf(APackageBase::StaticClass())))
 			{
 				const FVector Normal2D = Hit.Normal.GetSafeNormal2D() * 1.3;
 				const FVector Deflection = FVector::VectorPlaneProject(Movement, Normal2D) * (1.f - Hit.Time);
@@ -213,8 +217,8 @@ void AWarhousePawn::Tick(float DeltaSeconds)
 			float distance = FVector::Dist(GetActorLocation(), PhysicsHandle->GetGrabbedComponent()->GetComponentLocation());
 			if (distance > 350)
 			{
-				// Package is to far away, drop it!
-				((AWarehousePackage*)PhysicsHandle->GetGrabbedComponent()->GetOwner())->isBeingHeld = false;
+				//Package is to far away, drop it!
+				reinterpret_cast<APackageBase*>(PhysicsHandle->GetGrabbedComponent()->GetOwner())->isBeingHeld = false;
 
 				PhysicsHandle->ReleaseComponent();
 			}
@@ -243,11 +247,11 @@ void AWarhousePawn::Tick(float DeltaSeconds)
 			beamEmitter->SetBeamSourcePoint(0, pos, 0);
 
 			beamEmitter->SetBeamTargetPoint(0, pos, 0);
-			
+
 			if (PhysicsHandle->GetGrabbedComponent() != nullptr) {
 				PhysicsHandle->ReleaseComponent();
 			}
-			
+
 
 			//Explosion?
 
