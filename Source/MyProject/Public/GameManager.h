@@ -37,9 +37,6 @@ public:
 	UPROPERTY(Category = Gameplay, EditAnywhere, BlueprintReadWrite)
 		TArray<APackageCollectionPoint*> packageCollectionPoints;
 
-	UPROPERTY(Category = Gameplay, EditAnywhere, BlueprintReadWrite)
-	ACameraActor* MainCamera;
-
 	void IncrementPlayerScore(int playerIndex)
 	{
 		switch (playerIndex)

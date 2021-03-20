@@ -5,6 +5,7 @@
 #include "GameManager.h"
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetMathLibrary.h"
+#include "CameraManager.h"
 #include "UObject/ConstructorHelpers.h"
 
 // Sets default values
@@ -75,12 +76,12 @@ void APackageBase::Tick(float DeltaTime)
 
 	if (progressBar->IsVisible())
 	{
-		TArray<AActor*> managers;
-		UGameplayStatics::GetAllActorsOfClass(GetWorld(), AGameManager::StaticClass(), managers);
+		TArray<AActor*> cameraManagers;
+		UGameplayStatics::GetAllActorsOfClass(GetWorld(), ACameraManager::StaticClass(), cameraManagers);
 
-		AGameManager* manager = reinterpret_cast<AGameManager*>(managers[0]);
+		ACameraManager* cameraManager = reinterpret_cast<ACameraManager*>(cameraManagers[0]);
 		
-		auto rot = UKismetMathLibrary::FindLookAtRotation(progressBar->GetComponentLocation(), manager->MainCamera->GetActorLocation());
+		auto rot = UKismetMathLibrary::FindLookAtRotation(progressBar->GetComponentLocation(), cameraManager->GetCamera()->GetActorLocation());
 		progressBar->SetWorldRotation(rot);
 
 		auto newLoc = GetActorLocation();
