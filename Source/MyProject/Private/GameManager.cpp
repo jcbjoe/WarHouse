@@ -36,16 +36,16 @@ void AGameManager::IncrementPlayerScore(int playerIndex, int amount)
 	switch (playerIndex)
 	{
 	case 0:
-		player0Score++;
+		player0Score += amount;
 		break;
 	case 1:
-		player1Score++;
+		player1Score += amount;
 		break;
 	case 2:
-		player2Score++;
+		player2Score += amount;
 		break;
 	case 3:
-		player3Score++;
+		player3Score += amount;
 		break;
 	}
 

@@ -19,7 +19,7 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data")
-		int TotalPackagesAmount = 1;
+		int TotalPackagesAmount = 10;
 
 	FString GetPackageDetails();
 	void SpawnPackage(FConfig config, TArray<AActor*> SpawnPackageLocations);

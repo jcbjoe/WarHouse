@@ -32,7 +32,7 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Material")
 		UMaterial* meshMaterial;
 	UPROPERTY(VisibleAnywhere, Category = "Package")
-		FPackageDataStructure Package;
+		FConfigPackage Package;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Progress Bar")
 		UWidgetComponent* progressBar;
@@ -57,5 +57,7 @@ public:
 	void SetProgressBarFill(float amount);
 
 	void SetProgressBarVisability(bool visability);
+
+	int GetPackageValue();
 
 };

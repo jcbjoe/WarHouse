@@ -66,6 +66,7 @@ void APackageCollectionPoint::Tick(float DeltaTime)
 
 	for (auto packageToRemove : packagesToRemove)
 	{
+		const int packageValue = packageToRemove->GetPackageValue();
 		packages.Remove(packageToRemove);
 		packageToRemove->Destroy();
 
@@ -85,7 +86,7 @@ void APackageCollectionPoint::Tick(float DeltaTime)
 
 		if (!found) throw std::exception("This packageCollectionPoint has not been instanced in the GameManager object!");
 
-		manager->IncrementPlayerScore(index);
+		manager->IncrementPlayerScore(index, packageValue);
 	}
 
 	packagesToRemove.Empty();

@@ -139,9 +139,6 @@ void AWarhousePawn::Tick(float DeltaSeconds)
 				reinterpret_cast<APackageBase*>(PhysicsHandle->GetGrabbedComponent()->GetOwner())->EndHolding(this);
 				auto item = PhysicsHandle->GetGrabbedComponent();
 				
-				auto velocity = item->GetPhysicsLinearVelocity();
-				item->SetAllPhysicsLinearVelocity(velocity.GetClampedToMaxSize(1000));
-				
 				PhysicsHandle->ReleaseComponent();
 
 			}
@@ -166,7 +163,7 @@ void AWarhousePawn::Tick(float DeltaSeconds)
 				{
 					if (hit.Actor != nullptr && hit.Actor->IsA(APackageBase::StaticClass())) {
 						UPrimitiveComponent* component = reinterpret_cast<UPrimitiveComponent*>(hit.GetActor()->GetRootComponent());
-						PhysicsHandle->GrabComponentAtLocation(component, "None", component->GetComponentLocation());
+						PhysicsHandle->GrabComponentAtLocationWithRotation(component, "None", component->GetComponentLocation(), component->GetComponentRotation());
 						auto package = reinterpret_cast<APackageBase*>(hit.GetActor());
 						package->StartHolding(this);
 					}

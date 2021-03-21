@@ -7,24 +7,6 @@
 #include "PackageDataStruct.generated.h"
 
 USTRUCT()
-struct FPackageDataStructure
-{
-	GENERATED_BODY()
-
-public:
-	UPROPERTY(EditAnywhere, Category = "Data Structure")
-		FString PackageName;
-	UPROPERTY(EditAnywhere, Category = "Data Structure")
-		FString ModelReference;
-	UPROPERTY(EditAnywhere, Category = "Data Structure")
-		TArray<int> ValueRange;
-	UPROPERTY(EditAnywhere, Category = "Data Structure")
-		int Rarity;
-	UPROPERTY(EditAnywhere, Category = "Data Structure")
-		float PackageWeight;
-};
-
-USTRUCT()
 struct FConfigPackage
 {
 
@@ -35,6 +17,12 @@ struct FConfigPackage
 
 	UPROPERTY()
 		FString ModelReference;
+
+	UPROPERTY()
+		FString MaterialReference;
+	
+	UPROPERTY()
+		float Scale;
 
 	UPROPERTY()
 		TArray<int> ValueRange;
@@ -55,6 +43,9 @@ struct FConfig
 
 	GENERATED_BODY()
 
+		UPROPERTY()
+		float GameTimer;
+	
 		UPROPERTY()
 		TArray<FConfigPackage> packages;
 

@@ -4,6 +4,8 @@
     {
       "PackageName": "Guitar",
       "ModelReference": "/Game/Geometry/Meshes/1M_Cube.1M_Cube",
+      "MaterialReference": "/Game/Assets/JoeAssets/Package/Glow.Glow",
+      "Scale": 0.5,
       "ValueRange": [
         100,
         200
@@ -14,6 +16,8 @@
     {
       "PackageName": "TV",
       "ModelReference": "/Game/Geometry/Meshes/1M_Cube.1M_Cube",
+      "MaterialReference": "/Game/Assets/JoeAssets/Package/Glow.Glow",
+      "Scale": 0.5,
       "ValueRange": [
         500,
         600
@@ -23,7 +27,9 @@
     },
     {
       "PackageName": "iPad",
-      "ModelReference": "/Game/Geometry/Meshes/1M_Cube.1M_Cube",
+      "ModelReference": "/Game/Assets/JoeAssets/IPad/Ipad_Finished.Ipad_Finished",
+      "MaterialReference": "/Game/Assets/JoeAssets/IPad/IPadMaterial.IPadMaterial",
+      "Scale": 2.5,
       "ValueRange": [
         250,
         400

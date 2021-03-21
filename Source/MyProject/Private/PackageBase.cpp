@@ -40,24 +40,22 @@ APackageBase::APackageBase()
 
 void APackageBase::InitialisePackage(FConfigPackage pi)
 {
-	Package.PackageName = pi.PackageName;
-	Package.ModelReference = pi.ModelReference;
-	Package.ValueRange = pi.ValueRange;
-	Package.Rarity = pi.Rarity;
-	Package.PackageWeight = pi.PackageWeight;
+	Package = pi;
 
 	//assign static mesh from data structure
-	UStaticMesh* mesh = Cast<UStaticMesh>(StaticLoadObject(UStaticMesh::StaticClass(), NULL, *pi.ModelReference));
+	UStaticMesh* mesh = Cast<UStaticMesh>(StaticLoadObject(UStaticMesh::StaticClass(), NULL, *Package.ModelReference));
 	PackageMesh->SetStaticMesh(mesh);
-	//assign random value from data structure value range
-	PackageValue = FMath::RandRange(pi.ValueRange[0], pi.ValueRange[1]);
-	//assign weight
-	PackageMesh->SetMassScale(NAME_None, pi.PackageWeight);
-	PackageMesh->SetSimulatePhysics(true);
-	//assign material
-	PackageMesh->SetMaterial(0, meshMaterial);
 
-	PackageMesh->SetRelativeScale3D({ 0.5f,0.5f,0.5f });
+	UMaterial* mat = Cast<UMaterial>(StaticLoadObject(UMaterial::StaticClass(), NULL, *Package.MaterialReference));
+	PackageMesh->SetMaterial(0, mat);
+
+	PackageMesh->SetRelativeScale3D(FVector(Package.Scale));
+	
+	//assign random value from data structure value range
+	PackageValue = FMath::RandRange(Package.ValueRange[0], Package.ValueRange[1]);
+	//assign weight
+	PackageMesh->SetMassScale(NAME_None, Package.PackageWeight);
+	PackageMesh->SetSimulatePhysics(true);
 }
 
 // Called when the game starts or when spawned
@@ -108,4 +106,9 @@ void APackageBase::SetProgressBarFill(float amount)
 void APackageBase::SetProgressBarVisability(bool visability)
 {
 	progressBar->SetVisibility(visability);
+}
+
+int APackageBase::GetPackageValue()
+{
+	return PackageValue;
 }
