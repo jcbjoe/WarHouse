@@ -3,3 +3,7 @@
 
 #include "PackageProgressBar.h"
 
+const float UPackageProgressBar::GetProgressBarFillAmount()
+{
+	return progressBarFillAmount;
+}

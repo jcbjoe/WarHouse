@@ -64,3 +64,8 @@ void APlayerManager::Tick(float DeltaTime)
 
 }
 
+TArray<AWarhousePawn*> APlayerManager::GetPlayers()
+{
+	return playerList;
+}
+

@@ -22,10 +22,6 @@ class AWarhousePawn : public APawn
 public:
 	AWarhousePawn();
 
-	/* The speed our ship moves around the level */
-	UPROPERTY(Category = Gameplay, EditAnywhere, BlueprintReadWrite)
-		float MoveSpeed;
-
 	// Begin Actor Interface
 	virtual void Tick(float DeltaSeconds) override;
 	virtual void SetupPlayerInputComponent(class UInputComponent* InputComponent) override;
@@ -42,6 +38,7 @@ public:
 	/** Returns ShipMeshComponent subobject **/
 	FORCEINLINE class UStaticMeshComponent* GetShipMeshComponent() const { return ShipMeshComponent; }
 
+protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Components")
 		UPhysicsHandleComponent* PhysicsHandle;
 
@@ -54,15 +51,13 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Progress Bar")
 		UWidgetComponent* progressBar;
 
-
-
-
+	/* The speed our ship moves around the level */
+	UPROPERTY(Category = Gameplay, EditAnywhere, BlueprintReadWrite)
+		float MoveSpeed;
 private:
 	virtual void BeginPlay() override;
 
 	float _batteryCharge = 100;
-
-	ACameraActor* cam;
 
 	bool isDead = false;
 

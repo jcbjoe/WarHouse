@@ -6,6 +6,8 @@
 #include "PackageProgressBar.h"
 #include "PackageCollectionPoint.h"
 
+#include "WarhouseHelpers.h"
+
 // Sets default values
 APackageCollectionPoint::APackageCollectionPoint()
 {
@@ -44,17 +46,17 @@ void APackageCollectionPoint::Tick(float DeltaTime)
 
 	for (TPair<APackageBase*, float>& package : packages)
 	{
-		if (package.Key->isBeingHeld)
+		if (package.Key->GetHeldBy().Num() > 0)
 		{
 			package.Value = 0;
-			package.Key->progressBar->SetVisibility(false);
+			package.Key->SetProgressBarVisability(false);
 		}
 		else
 		{
 			package.Value += DeltaTime;
 			auto newVal = UKismetMathLibrary::MapRangeClamped(package.Value, 0, 5, 0, 1);
-			reinterpret_cast<UPackageProgressBar*>(package.Key->progressBar->GetUserWidgetObject())->progressBarFillAmount = newVal;
-			package.Key->progressBar->SetVisibility(true);
+			package.Key->SetProgressBarFill(newVal);
+			package.Key->SetProgressBarVisability(true);
 			if (package.Value >= 5)
 			{
 				packagesToRemove.Add(package.Key);
@@ -67,14 +69,11 @@ void APackageCollectionPoint::Tick(float DeltaTime)
 		packages.Remove(packageToRemove);
 		packageToRemove->Destroy();
 
-		TArray<AActor*> managers;
-		UGameplayStatics::GetAllActorsOfClass(GetWorld(), AGameManager::StaticClass(), managers);
-
-		AGameManager* manager = reinterpret_cast<AGameManager*>(managers[0]);
+		AGameManager* manager = WarhouseHelpers::GetGameManager(GetWorld());
 
 		int index = 0;
 		bool found = true;
-		for (auto collectionPoint : manager->packageCollectionPoints)
+		for (APackageCollectionPoint* collectionPoint : manager->GetCollectionPoints())
 		{
 			if (collectionPoint == this)
 			{
@@ -85,7 +84,8 @@ void APackageCollectionPoint::Tick(float DeltaTime)
 		}
 
 		if (!found) throw std::exception("This packageCollectionPoint has not been instanced in the GameManager object!");
-		else manager->IncrementPlayerScore(index);
+
+		manager->IncrementPlayerScore(index);
 	}
 
 	packagesToRemove.Empty();
@@ -105,6 +105,6 @@ void APackageCollectionPoint::OnOverlapEnd(UPrimitiveComponent* OverlapComponent
 	if (OtherActor->IsA(APackageBase::StaticClass())) {
 		auto package = reinterpret_cast<APackageBase*>(OtherActor);
 		packages.Remove(package);
-		package->progressBar->SetVisibility(false);
+		package->SetProgressBarVisability(false);
 	}
 }

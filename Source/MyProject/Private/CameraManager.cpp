@@ -3,6 +3,7 @@
 
 #include "CameraManager.h"
 #include "PlayerManager.h"
+#include "WarhouseHelpers.h"
 #include "Camera/CameraActor.h"
 #include "Camera/CameraComponent.h"
 #include "Kismet/GameplayStatics.h"
@@ -11,7 +12,7 @@
 // Sets default values
 ACameraManager::ACameraManager()
 {
- 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
+	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
 }
@@ -20,7 +21,7 @@ ACameraManager::ACameraManager()
 void ACameraManager::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
 }
 
 // Called every frame
@@ -28,21 +29,18 @@ void ACameraManager::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	TArray<AActor*> playerManagers;
-	UGameplayStatics::GetAllActorsOfClass(GetWorld(), APlayerManager::StaticClass(), playerManagers);
-
-	APlayerManager* PlayerManager = reinterpret_cast<APlayerManager*>(playerManagers[0]);
+	APlayerManager* PlayerManager = WarhouseHelpers::GetPlayerManager(GetWorld());
 
 	auto players = PlayerManager->GetPlayers();
 
 	FVector middlePos;
-	for(int i = 0; i < players.Num(); ++i)
+	for (int i = 0; i < players.Num(); ++i)
 	{
 		if (i == 0) middlePos = players[0]->GetActorLocation();
 		else middlePos = (middlePos + players[i]->GetActorLocation()) / 2;
 	}
 
-	auto loc = UKismetMathLibrary::FindLookAtRotation(MainCamera->GetActorLocation(), middlePos);
+	const FRotator loc = UKismetMathLibrary::FindLookAtRotation(MainCamera->GetActorLocation(), middlePos);
 
 	MainCamera->SetActorRotation(loc);
 
@@ -50,7 +48,7 @@ void ACameraManager::Tick(float DeltaTime)
 
 	for (int i = 0; i < players.Num(); ++i)
 	{
-		auto dist = FVector::Distance(players[0]->GetActorLocation(), middlePos);
+		const float dist = FVector::Distance(players[0]->GetActorLocation(), middlePos);
 		if (i == 0) maxDistance = dist;
 
 		if (dist > maxDistance) maxDistance = dist;
@@ -59,10 +57,8 @@ void ACameraManager::Tick(float DeltaTime)
 	const int minDist = 57;
 	const int maxDist = 2000;
 
-	float zoom  = 90 - UKismetMathLibrary::MapRangeClamped(maxDistance, minDist, maxDist, 45, 90);
+	const float zoom = 90 - UKismetMathLibrary::MapRangeClamped(maxDistance, minDist, maxDist, 45, 90);
 
-	GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, FString::Printf(TEXT("Zoom: %f"), zoom));
-	
 	MainCamera->GetCameraComponent()->FieldOfView = 90 - zoom;
 
 }

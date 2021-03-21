@@ -4,6 +4,7 @@
 #include "PackageManager.h"
 #include "PackageBase.h"
 #include "PackageSpawnActor.h"
+#include "WarhouseHelpers.h"
 #include "Kismet/GameplayStatics.h"
 #include "Misc/FileHelper.h"
 

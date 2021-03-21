@@ -14,14 +14,11 @@ class MYPROJECT_API UPackageProgressBar : public UUserWidget
 {
 	GENERATED_BODY()
 
-	
+
 public:
 
 	float progressBarFillAmount = 0;
 
 	UFUNCTION(BlueprintPure)
-	float GetProgressBarFillAmount()
-	{
-		return progressBarFillAmount;
-	}
+		const float GetProgressBarFillAmount();
 };
