@@ -7,6 +7,8 @@
 #include "Components/BoxComponent.h"
 #include "PackageDataStruct.h"
 #include "Components/WidgetComponent.h"
+#include "WarhousePawn.h"
+//This is needed, Not sure why VS is saying its not
 #include "Camera/CameraActor.h"
 #include "PackageBase.generated.h"
 
@@ -18,8 +20,6 @@ class MYPROJECT_API APackageBase : public AActor
 public:
 	// Sets default values for this actor's properties
 	APackageBase();
-
-	void InitialisePackage(FConfigPackage pds);
 
 protected:
 	// Called when the game starts or when spawned
@@ -34,21 +34,28 @@ protected:
 	UPROPERTY(VisibleAnywhere, Category = "Package")
 		FPackageDataStructure Package;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Progress Bar")
+		UWidgetComponent* progressBar;
+
 	int PackageValue;
 
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+	TArray<AWarhousePawn*> heldBy = TArray<AWarhousePawn*>();
+
 public:
 
+	void InitialisePackage(FConfigPackage pds);
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Progress Bar")
-		UWidgetComponent* progressBar;
+	void StartHolding(AWarhousePawn* player);
 
-	bool isBeingHeld = false;
+	void EndHolding(AWarhousePawn* player);
 
-private:
+	TArray<AWarhousePawn*> GetHeldBy() const;
 
-	ACameraActor* cam;
+	void SetProgressBarFill(float amount);
+
+	void SetProgressBarVisability(bool visability);
 
 };

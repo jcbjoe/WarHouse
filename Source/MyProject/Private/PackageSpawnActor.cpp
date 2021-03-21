@@ -14,7 +14,7 @@ APackageSpawnActor::APackageSpawnActor()
 
 	////add billboard for editor visibility
 	BillboardComponent = CreateDefaultSubobject<UBillboardComponent>(TEXT("Billboard Comp"));
-	BillboardComponent->AttachTo(RootComponent);
+	BillboardComponent->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);
 }
 
 // Called when the game starts or when spawned

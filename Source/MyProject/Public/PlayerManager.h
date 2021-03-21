@@ -12,13 +12,16 @@ UCLASS()
 class MYPROJECT_API APlayerManager : public AActor
 {
 	GENERATED_BODY()
-	
-public:	
+
+public:
 	// Sets default values for this actor's properties
 	APlayerManager();
 
+	// Called every frame
+	virtual void Tick(float DeltaTime) override;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "SpawnPoints")
-	TArray<APlayerSpawnPoint*> spawnPoints;
+		TArray<APlayerSpawnPoint*> spawnPoints;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "SpawnPoints")
 		int PlayerCount = 1;
@@ -29,15 +32,12 @@ public:
 		return spawnPoints[RandIndex]->GetActorLocation();
 	}
 
+	TArray<AWarhousePawn*> GetPlayers();
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
 private:
 	TArray<AWarhousePawn*> playerList;
-
-public:	
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
-
 };

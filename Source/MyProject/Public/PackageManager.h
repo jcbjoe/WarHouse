@@ -15,11 +15,12 @@ class MYPROJECT_API APackageManager : public AActor
 public:
 	// Sets default values for this actor's properties
 	APackageManager();
-	//variables
+
+	virtual void Tick(float DeltaTime) override;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data")
 		int TotalPackagesAmount = 1;
-		
-	//functions
+
 	FString GetPackageDetails();
 	void SpawnPackage(FConfig config, TArray<AActor*> SpawnPackageLocations);
 	void GetSpawnLocations();
@@ -32,8 +33,5 @@ protected:
 
 	TArray<AActor*> SpawnPackageLocations;
 
-public:
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
 
 };

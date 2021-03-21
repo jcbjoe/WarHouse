@@ -22,6 +22,7 @@
 #include "GameManager.h"
 #include "PackageProgressBar.h"
 #include "PackageBase.h"
+#include "WarhouseHelpers.h"
 
 const FName AWarhousePawn::MoveForwardBinding("MoveForward");
 const FName AWarhousePawn::MoveRightBinding("MoveRight");
@@ -84,11 +85,6 @@ void AWarhousePawn::BeginPlay()
 	location.Z = 195;
 
 	SetActorLocation(location);
-
-	TArray<AActor*> cameras;
-	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ACameraActor::StaticClass(), cameras);
-
-	cam = (ACameraActor*)cameras[0];
 }
 
 void AWarhousePawn::SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent)
@@ -140,14 +136,13 @@ void AWarhousePawn::Tick(float DeltaSeconds)
 			beamEmitter->SetVisibility(false);
 			if (PhysicsHandle->GetGrabbedComponent() != nullptr) {
 				// Player has let go of package
-				reinterpret_cast<APackageBase*>(PhysicsHandle->GetGrabbedComponent()->GetOwner())->isBeingHeld = false;
+				reinterpret_cast<APackageBase*>(PhysicsHandle->GetGrabbedComponent()->GetOwner())->EndHolding(this);
 				auto item = PhysicsHandle->GetGrabbedComponent();
-				PhysicsHandle->ReleaseComponent();
-
+				
 				auto velocity = item->GetPhysicsLinearVelocity();
 				item->SetAllPhysicsLinearVelocity(velocity.GetClampedToMaxSize(1000));
-
-				reinterpret_cast<APackageBase*>(item)->isBeingHeld = false;
+				
+				PhysicsHandle->ReleaseComponent();
 
 			}
 		}
@@ -173,7 +168,7 @@ void AWarhousePawn::Tick(float DeltaSeconds)
 						UPrimitiveComponent* component = reinterpret_cast<UPrimitiveComponent*>(hit.GetActor()->GetRootComponent());
 						PhysicsHandle->GrabComponentAtLocation(component, "None", component->GetComponentLocation());
 						auto package = reinterpret_cast<APackageBase*>(hit.GetActor());
-						package->isBeingHeld = true;
+						package->StartHolding(this);
 					}
 				}
 			}
@@ -218,13 +213,15 @@ void AWarhousePawn::Tick(float DeltaSeconds)
 			if (distance > 350)
 			{
 				//Package is to far away, drop it!
-				reinterpret_cast<APackageBase*>(PhysicsHandle->GetGrabbedComponent()->GetOwner())->isBeingHeld = false;
+				reinterpret_cast<APackageBase*>(PhysicsHandle->GetGrabbedComponent()->GetOwner())->EndHolding(this);
 
 				PhysicsHandle->ReleaseComponent();
 			}
 		}
 
 		reinterpret_cast<UPackageProgressBar*>(progressBar->GetUserWidgetObject())->progressBarFillAmount = _batteryCharge / 100;
+
+		const ACameraActor* cam = WarhouseHelpers::GetCameraManager(GetWorld())->GetCamera();
 
 		auto rot = UKismetMathLibrary::FindLookAtRotation(progressBar->GetComponentLocation(), cam->GetActorLocation());
 		rot.Yaw = 180;
@@ -263,11 +260,7 @@ void AWarhousePawn::Tick(float DeltaSeconds)
 		respawnCounter += DeltaSeconds;
 		if (respawnCounter > respawnSeconds) {
 
-			//Respawn Logic (position)
-
-			auto gameManager = reinterpret_cast<AGameManager*>(UGameplayStatics::GetActorOfClass(GetWorld(), AGameManager::StaticClass()));
-
-			auto spawnPoint = gameManager->_playerManager->GetRandomSpawnpoint();
+			const FVector spawnPoint = WarhouseHelpers::GetPlayerManager(GetWorld())->GetRandomSpawnpoint();
 
 			SetActorLocation(spawnPoint);
 

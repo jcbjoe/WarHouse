@@ -13,8 +13,8 @@ UCLASS()
 class MYPROJECT_API AGameManager : public AActor
 {
 	GENERATED_BODY()
-	
-public:	
+
+public:
 	// Sets default values for this actor's properties
 	AGameManager();
 
@@ -22,72 +22,28 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-	USceneComponent* base;
-
-public:	
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
-
-	UPROPERTY(Category = Gameplay, EditAnywhere, BlueprintReadWrite)
-		APlayerManager* _playerManager;
-
 	UPROPERTY(Category = Gameplay, EditAnywhere, BlueprintReadWrite)
 		TArray<AFloatingScore*> floatingScores;
 
 	UPROPERTY(Category = Gameplay, EditAnywhere, BlueprintReadWrite)
 		TArray<APackageCollectionPoint*> packageCollectionPoints;
 
-	UPROPERTY(Category = Gameplay, EditAnywhere, BlueprintReadWrite)
-	ACameraActor* MainCamera;
+	USceneComponent* base;
 
-	void IncrementPlayerScore(int playerIndex)
-	{
-		switch (playerIndex)
-		{
-		case 0:
-			player0Score++;
-			break;
-		case 1:
-			player1Score++;
-			break;
-		case 2:
-			player2Score++;
-			break;
-		case 3:
-			player3Score++;
-			break;
-		}
-
-		UpdateScores();
-	}
-
-	void UpdateScores()
-	{
-		int index = 0;
-		for (auto floating : floatingScores)
-		{
-			switch (index)
-			{
-				case 0:
-					floating->SetText(FText::FromString(FString::FromInt(player0Score)));
-					break;
-				case 1:
-					floating->SetText(FText::FromString(FString::FromInt(player1Score)));
-					break;
-				case 2:
-					floating->SetText(FText::FromString(FString::FromInt(player2Score)));
-					break;
-				case 3:
-					floating->SetText(FText::FromString(FString::FromInt(player3Score)));
-					break;
-			}
-			index++;
-		}
-	}
-
-private:
 	int player0Score;
 	int player1Score;
 	int player2Score;
 	int player3Score;
+
+public:
+	// Called every frame
+	virtual void Tick(float DeltaTime) override;
+
+	void IncrementPlayerScore(int playerIndex, int amount = 1);
+
+	void UpdateScores();
+
+	TArray<APackageCollectionPoint*> GetCollectionPoints() const;
+
+	APlayerManager* GetPlayerManager() const;
 };
