@@ -232,7 +232,14 @@ void AWarhousePawn::Tick(float DeltaSeconds)
 		newLoc.Z += 75;
 		progressBar->SetWorldLocation(newLoc);
 
-		if (_batteryCharge < 0)
+		if(isOnChargingPad)
+		{
+			_batteryCharge += (chargingPadRate * DeltaSeconds);
+		}
+
+		_batteryCharge = FMath::Clamp(_batteryCharge, 0.0f, 100.0f);
+		
+		if (_batteryCharge <= 0)
 		{
 			isDead = true;
 			respawnCounter = 0;
@@ -271,4 +278,9 @@ void AWarhousePawn::Tick(float DeltaSeconds)
 		}
 	}
 
+}
+
+void AWarhousePawn::SetIsOnCharger(bool isOnCharger)
+{
+	isOnChargingPad = isOnCharger;
 }

@@ -38,6 +38,8 @@ public:
 	/** Returns ShipMeshComponent subobject **/
 	FORCEINLINE class UStaticMeshComponent* GetShipMeshComponent() const { return ShipMeshComponent; }
 
+	void SetIsOnCharger(bool isOnCharger);
+
 protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Components")
 		UPhysicsHandleComponent* PhysicsHandle;
@@ -65,8 +67,11 @@ private:
 	const float NonMovingBatteryDrain = 2;
 	const float SingleHoldingBatteryDrain = -5.0;
 	const float MultiHoldingBatteryDrain = -10.0;
+	const float chargingPadRate = 20.0f;
 
 	const float respawnSeconds = 5;
 	float respawnCounter = 0;
+
+	bool isOnChargingPad = false;
 
 };
