@@ -61,11 +61,12 @@ private:
 
 	bool isDead = false;
 
-	float MovingBatteryDrain = 5.0;
-	float NonMovingBatteryDrain = 2;
-	float HoldingBatteryDrain = -5.0;
+	const float MovingBatteryDrain = 5.0;
+	const float NonMovingBatteryDrain = 2;
+	const float SingleHoldingBatteryDrain = -5.0;
+	const float MultiHoldingBatteryDrain = -10.0;
 
-	float respawnSeconds = 5;
+	const float respawnSeconds = 5;
 	float respawnCounter = 0;
 
 };

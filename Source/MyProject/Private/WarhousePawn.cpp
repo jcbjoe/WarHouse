@@ -137,7 +137,6 @@ void AWarhousePawn::Tick(float DeltaSeconds)
 			if (PhysicsHandle->GetGrabbedComponent() != nullptr) {
 				// Player has let go of package
 				reinterpret_cast<APackageBase*>(PhysicsHandle->GetGrabbedComponent()->GetOwner())->EndHolding(this);
-				auto item = PhysicsHandle->GetGrabbedComponent();
 				
 				PhysicsHandle->ReleaseComponent();
 
@@ -204,13 +203,18 @@ void AWarhousePawn::Tick(float DeltaSeconds)
 
 		if (PhysicsHandle->GetGrabbedComponent() != nullptr)
 		{
-			_batteryCharge -= (HoldingBatteryDrain * DeltaSeconds);
-
-			float distance = FVector::Dist(GetActorLocation(), PhysicsHandle->GetGrabbedComponent()->GetComponentLocation());
+			auto package = reinterpret_cast<APackageBase*>(PhysicsHandle->GetGrabbedComponent()->GetOwner());
+			if (package->GetHeldBy().Num() > 1) {
+				_batteryCharge -= (MultiHoldingBatteryDrain * DeltaSeconds);
+			} else
+			{
+				_batteryCharge -= (SingleHoldingBatteryDrain * DeltaSeconds);
+			}
+			float distance = FVector::Dist(GetActorLocation(), package->GetActorLocation());
 			if (distance > 350)
 			{
 				//Package is to far away, drop it!
-				reinterpret_cast<APackageBase*>(PhysicsHandle->GetGrabbedComponent()->GetOwner())->EndHolding(this);
+				package->EndHolding(this);
 
 				PhysicsHandle->ReleaseComponent();
 			}
