@@ -284,3 +284,8 @@ void AWarhousePawn::SetIsOnCharger(bool isOnCharger)
 {
 	isOnChargingPad = isOnCharger;
 }
+
+bool AWarhousePawn::IsDead()
+{
+	return isDead;
+}

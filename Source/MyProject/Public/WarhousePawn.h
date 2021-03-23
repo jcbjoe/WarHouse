@@ -40,6 +40,8 @@ public:
 
 	void SetIsOnCharger(bool isOnCharger);
 
+	bool IsDead();
+
 protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Components")
 		UPhysicsHandleComponent* PhysicsHandle;

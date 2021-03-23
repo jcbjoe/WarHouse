@@ -36,22 +36,29 @@ void ACameraManager::Tick(float DeltaTime)
 	FVector middlePos;
 	for (int i = 0; i < players.Num(); ++i)
 	{
+		if (players[i]->IsDead()) continue;
 		if (i == 0) middlePos = players[0]->GetActorLocation();
 		else middlePos = (middlePos + players[i]->GetActorLocation()) / 2;
 	}
 
 	const FRotator loc = UKismetMathLibrary::FindLookAtRotation(MainCamera->GetActorLocation(), middlePos);
-
-	MainCamera->SetActorRotation(loc);
+	
+	auto lerped = FMath::Lerp(MainCamera->GetActorRotation(), loc, DeltaTime);
+	
+	MainCamera->SetActorRotation(lerped);
 
 	float maxDistance = 0;
 
 	for (int i = 0; i < players.Num(); ++i)
 	{
-		const float dist = FVector::Distance(players[0]->GetActorLocation(), middlePos);
-		if (i == 0) maxDistance = dist;
+		if (players[i]->IsDead()) continue;
+		const float dist = FVector::Distance(players[i]->GetActorLocation(), middlePos);
+		if (maxDistance == 0) maxDistance = dist;
+		else
+		{
+			if (dist > maxDistance) maxDistance = dist;
+		}
 
-		if (dist > maxDistance) maxDistance = dist;
 	}
 
 	const int minDist = 57;
