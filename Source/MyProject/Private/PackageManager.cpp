@@ -28,7 +28,7 @@ FString APackageManager::GetPackageDetails()
 	return Result;
 }
 
-void APackageManager::SpawnPackage(FConfig config, TArray<AActor*> SpawnPackageLocationsCopy)
+void APackageManager::SpawnPackage(FConfig config, TArray<AActor*>& SpawnPackageLocationsCopy)
 {
 	// Get random Spawnpoint
 	auto randomNumber = FMath::RandRange(0, SpawnPackageLocationsCopy.Num() - 1);

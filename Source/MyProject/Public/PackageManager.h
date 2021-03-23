@@ -22,7 +22,7 @@ public:
 		int TotalPackagesAmount = 10;
 
 	FString GetPackageDetails();
-	void SpawnPackage(FConfig config, TArray<AActor*> SpawnPackageLocations);
+	void SpawnPackage(FConfig config, TArray<AActor*>& SpawnPackageLocations);
 	void GetSpawnLocations();
 
 protected:
