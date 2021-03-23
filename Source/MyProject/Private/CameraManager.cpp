@@ -66,7 +66,10 @@ void ACameraManager::Tick(float DeltaTime)
 
 	const float zoom = 90 - UKismetMathLibrary::MapRangeClamped(maxDistance, minDist, maxDist, 45, 90);
 
-	MainCamera->GetCameraComponent()->FieldOfView = 90 - zoom;
+
+	auto lerpedZooom = FMath::Lerp(MainCamera->GetCameraComponent()->FieldOfView, 90 - zoom, DeltaTime);
+	
+	MainCamera->GetCameraComponent()->FieldOfView = lerpedZooom;
 
 }
 
