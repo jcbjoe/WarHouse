@@ -43,7 +43,7 @@ void ACameraManager::Tick(float DeltaTime)
 
 	const FRotator loc = UKismetMathLibrary::FindLookAtRotation(MainCamera->GetActorLocation(), middlePos);
 	
-	auto lerped = FMath::Lerp(MainCamera->GetActorRotation(), loc, DeltaTime);
+	const FRotator lerped = FMath::Lerp(MainCamera->GetActorRotation(), loc, DeltaTime);
 	
 	MainCamera->SetActorRotation(lerped);
 
@@ -66,8 +66,7 @@ void ACameraManager::Tick(float DeltaTime)
 
 	const float zoom = 90 - UKismetMathLibrary::MapRangeClamped(maxDistance, minDist, maxDist, 45, 90);
 
-
-	auto lerpedZooom = FMath::Lerp(MainCamera->GetCameraComponent()->FieldOfView, 90 - zoom, DeltaTime);
+	const float lerpedZooom = FMath::Lerp(MainCamera->GetCameraComponent()->FieldOfView, 90 - zoom, DeltaTime);
 	
 	MainCamera->GetCameraComponent()->FieldOfView = lerpedZooom;
 
