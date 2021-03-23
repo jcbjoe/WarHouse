@@ -26,11 +26,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "SpawnPoints")
 		int PlayerCount = 1;
 
-	FVector GetRandomSpawnpoint()
-	{
-		int RandIndex = FMath::RandRange(0, spawnPoints.Num() - 1);
-		return spawnPoints[RandIndex]->GetActorLocation();
-	}
+	FVector GetRandomSpawnpoint(bool checkForPlayers = false);
 
 	TArray<AWarhousePawn*> GetPlayers();
 

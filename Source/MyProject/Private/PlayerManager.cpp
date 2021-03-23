@@ -69,3 +69,39 @@ TArray<AWarhousePawn*> APlayerManager::GetPlayers()
 	return playerList;
 }
 
+FVector APlayerManager::GetRandomSpawnpoint(bool checkForPlayers)
+{
+	//--- If we don't want to check for players do a simple check
+	if (!checkForPlayers)
+	{
+		int RandIndex = FMath::RandRange(0, spawnPoints.Num() - 1);
+		return spawnPoints[RandIndex]->GetActorLocation();
+	}
+
+	//--- If we do want to check for players close by do the following
+	bool spawnFound = false;
+	FVector spawn;
+	do
+	{
+		int RandIndex = FMath::RandRange(0, spawnPoints.Num() - 1);
+		auto spawnPointLoc = spawnPoints[RandIndex]->GetActorLocation();
+
+		bool playerToClose = false;
+		for(AWarhousePawn* player : playerList)
+		{
+			if(FVector::Distance(player->GetActorLocation(), spawnPointLoc) < 20)
+			{
+				playerToClose = true;
+				break;
+			}
+		}
+
+		if(!playerToClose)
+		{
+			spawnFound = true;
+			spawn = spawnPointLoc;
+		}
+	} while (!spawnFound);
+
+	return spawn;
+}

@@ -268,7 +268,7 @@ void AWarhousePawn::Tick(float DeltaSeconds)
 		respawnCounter += DeltaSeconds;
 		if (respawnCounter > respawnSeconds) {
 
-			const FVector spawnPoint = WarhouseHelpers::GetPlayerManager(GetWorld())->GetRandomSpawnpoint();
+			const FVector spawnPoint = WarhouseHelpers::GetPlayerManager(GetWorld())->GetRandomSpawnpoint(true);
 
 			SetActorLocation(spawnPoint);
 

@@ -5,5 +5,5 @@
 AMyProjectGameMode::AMyProjectGameMode()
 {
 	// set default pawn class to our flying pawn
-	//DefaultPawnClass = AWarhousePawn::StaticClass();
+	DefaultPawnClass = nullptr;
 }
