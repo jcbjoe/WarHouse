@@ -2,12 +2,12 @@
   "GameTimer": 100,
   "packages": [
     {
-      "PackageName": "Guitar",
-      "ModelReference": "/Game/Geometry/Meshes/1M_Cube.1M_Cube",
+      "PackageName": "BigBox",
+      "ModelReference": "/Game/Assets/ConorAssets/BigBox/bigBox.bigBox",
       "MaterialReferences": [
-        "/Game/Assets/JoeAssets/Package/Glow.Glow"
+        "/Game/Assets/ConorAssets/BigBox/BigBoxMat.BigBoxMat"
       ],
-      "Scale": 0.5,
+      "Scale": 1.0,
       "ValueRange": [
         100,
         200
@@ -16,12 +16,12 @@
       "PackageWeight": 10
     },
     {
-      "PackageName": "TV",
-      "ModelReference": "/Game/Geometry/Meshes/1M_Cube.1M_Cube",
+      "PackageName": "MediumBox",
+      "ModelReference": "/Game/Assets/ConorAssets/MediumBox/mediumBox.mediumBox",
       "MaterialReferences": [
-        "/Game/Assets/JoeAssets/Package/Glow.Glow"
+        "/Game/Assets/ConorAssets/MediumBox/MediumBoxMat.MediumBoxMat"
       ],
-      "Scale": 0.5,
+      "Scale": 1.0,
       "ValueRange": [
         500,
         600
@@ -30,12 +30,26 @@
       "PackageWeight": 10
     },
     {
-      "PackageName": "iPad",
-      "ModelReference": "/Game/Assets/JoeAssets/IPad/Ipad_Finished.Ipad_Finished",
+      "PackageName": "SmallBox",
+      "ModelReference": "/Game/Assets/ConorAssets/SmallBox/smallBox.smallBox",
       "MaterialReferences": [
-        "/Game/Assets/JoeAssets/IPad/IPadMaterial.IPadMaterial"
+        "/Game/Assets/ConorAssets/SmallBox/SmalBoxMat.SmalBoxMat"
       ],
-      "Scale": 2.5,
+      "Scale": 1.0,
+      "ValueRange": [
+        250,
+        400
+      ],
+      "Rarity": 6,
+      "PackageWeight": 10
+    },
+    {
+      "PackageName": "RectangleBox",
+      "ModelReference": "/Game/Assets/ConorAssets/RectangleBox/rectanglebox.rectanglebox",
+      "MaterialReferences": [
+        "/Game/Assets/ConorAssets/RectangleBox/RectBoxMat.RectBoxMat"
+      ],
+      "Scale": 1.0,
       "ValueRange": [
         250,
         400
