@@ -19,8 +19,8 @@ struct FConfigPackage
 		FString ModelReference;
 
 	UPROPERTY()
-		FString MaterialReference;
-	
+		TArray<FString> MaterialReferences;
+
 	UPROPERTY()
 		float Scale;
 
@@ -45,8 +45,8 @@ struct FConfig
 
 		UPROPERTY()
 		float GameTimer;
-	
-		UPROPERTY()
+
+	UPROPERTY()
 		TArray<FConfigPackage> packages;
 
 	FConfig() {};

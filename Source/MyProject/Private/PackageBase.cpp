@@ -15,8 +15,11 @@ APackageBase::APackageBase()
 {
 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = false; //package does not need to tick?
+
 	PackageMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("packageMesh"));
+
 	RootComponent = PackageMesh;
+
 	static ConstructorHelpers::FObjectFinder<UMaterial> FoundMaterial(TEXT("/Game/Assets/JoeAssets/Package/Glow.Glow"));
 	meshMaterial = FoundMaterial.Object;
 
@@ -46,16 +49,20 @@ void APackageBase::InitialisePackage(FConfigPackage pi)
 	UStaticMesh* mesh = Cast<UStaticMesh>(StaticLoadObject(UStaticMesh::StaticClass(), NULL, *Package.ModelReference));
 	PackageMesh->SetStaticMesh(mesh);
 
-	UMaterial* mat = Cast<UMaterial>(StaticLoadObject(UMaterial::StaticClass(), NULL, *Package.MaterialReference));
+	int rand = FMath::RandRange(0, Package.MaterialReferences.Num() - 1);
+
+	UMaterial* mat = Cast<UMaterial>(StaticLoadObject(UMaterial::StaticClass(), NULL, *Package.MaterialReferences[rand]));
 	PackageMesh->SetMaterial(0, mat);
 
 	PackageMesh->SetRelativeScale3D(FVector(Package.Scale));
-	
+
 	//assign random value from data structure value range
 	PackageValue = FMath::RandRange(Package.ValueRange[0], Package.ValueRange[1]);
 	//assign weight
 	PackageMesh->SetMassScale(NAME_None, Package.PackageWeight);
 	PackageMesh->SetSimulatePhysics(true);
+
+	progressBar->SetWorldScale3D(FVector(1));
 }
 
 // Called when the game starts or when spawned
