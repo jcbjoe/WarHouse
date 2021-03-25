@@ -14,10 +14,6 @@ class AWarhousePawn : public APawn
 {
 	GENERATED_BODY()
 
-		/* The mesh component */
-		UPROPERTY(Category = Mesh, VisibleDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
-		class UStaticMeshComponent* ShipMeshComponent;
-
 
 public:
 	AWarhousePawn();
@@ -35,14 +31,18 @@ public:
 	static const FName ArmForwardBinding;
 	static const FName ArmRightBinding;
 
-	/** Returns ShipMeshComponent subobject **/
-	FORCEINLINE class UStaticMeshComponent* GetShipMeshComponent() const { return ShipMeshComponent; }
-
 	void SetIsOnCharger(bool isOnCharger);
 
 	bool IsDead();
 
 protected:
+	/* The mesh component */
+	UPROPERTY(Category = Mesh, VisibleDefaultsOnly, BlueprintReadOnly)
+		UStaticMeshComponent* ShipMeshComponent;
+
+	UPROPERTY(Category = Mesh, VisibleDefaultsOnly, BlueprintReadOnly)
+	UStaticMeshComponent* BeamMeshComponent;
+	
 	UPROPERTY(EditDefaultsOnly, Category = "Components")
 		UPhysicsHandleComponent* PhysicsHandle;
 

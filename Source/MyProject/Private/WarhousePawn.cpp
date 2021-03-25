@@ -33,13 +33,17 @@ const FName AWarhousePawn::ArmRightBinding("ArmRight");
 
 AWarhousePawn::AWarhousePawn()
 {
-	static ConstructorHelpers::FObjectFinder<UStaticMesh> ShipMesh(TEXT("/Game/Flying/Meshes/UFO.UFO"));
+	static ConstructorHelpers::FObjectFinder<UStaticMesh> ShipMesh(TEXT("/Game/Assets/ConorAssets/Player-Body.Player-Body"));
+	static ConstructorHelpers::FObjectFinder<UStaticMesh> BeamMesh(TEXT("/Game/Assets/ConorAssets/Player-GravBeam.Player-GravBeam"));
 	// Create the mesh component
 	ShipMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ShipMesh"));
 	RootComponent = ShipMeshComponent;
 	ShipMeshComponent->SetCollisionProfileName(UCollisionProfile::Pawn_ProfileName);
 	ShipMeshComponent->SetStaticMesh(ShipMesh.Object);
 
+	BeamMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("BeamMesh"));
+	BeamMeshComponent->SetStaticMesh(BeamMesh.Object);
+	BeamMeshComponent->SetupAttachment(RootComponent);
 	// Movement
 	MoveSpeed = 1000.0f;
 
@@ -116,12 +120,14 @@ void AWarhousePawn::Tick(float DeltaSeconds)
 		float x = (150 * FMath::Cos(angle * UKismetMathLibrary::GetPI() / 180.f)) + GetActorLocation().X;
 		float y = (150 * FMath::Sin(angle * UKismetMathLibrary::GetPI() / 180.f)) + GetActorLocation().Y;
 
-		auto trans = FVector(x, y, GetActorLocation().Z);
+		const int heightOffset = 137;
+		
+		auto trans = FVector(x, y, GetActorLocation().Z+ heightOffset);
 
 		PhysicsHandle->SetTargetLocation(trans);
 
 		auto target = GetActorLocation();
-		target.Y += 10;
+		target.Z += heightOffset;
 		beamEmitter->SetBeamSourcePoint(0, target, 0);
 		if (PhysicsHandle->GetGrabbedComponent() == nullptr) {
 			beamEmitter->SetBeamTargetPoint(0, trans, 0);
@@ -130,6 +136,12 @@ void AWarhousePawn::Tick(float DeltaSeconds)
 		{
 			beamEmitter->SetBeamTargetPoint(0, PhysicsHandle->GetGrabbedComponent()->GetComponentLocation(), 0);
 		}
+
+		trans.Z -= heightOffset;
+		FVector vec = (trans - GetActorLocation());
+		vec.Normalize();
+
+		BeamMeshComponent->SetWorldRotation(vec.Rotation());
 
 		if (ArmForwardValue == 0 && ArmRightValue == 0)
 		{
