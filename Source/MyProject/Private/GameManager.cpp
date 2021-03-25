@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 
 #include "GameManager.h"
@@ -21,7 +21,13 @@ AGameManager::AGameManager()
 void AGameManager::BeginPlay()
 {
 	Super::BeginPlay();
+	//add player scores to array
+	playerScores.Add(player0Score);
+	playerScores.Add(player1Score);
+	playerScores.Add(player2Score);
+	playerScores.Add(player3Score);
 
+	GetWorld()->GetTimerManager().SetTimer(GameTimerHandle, this, &AGameManager::OnGameEnd, GameTimer, false);
 }
 
 // Called every frame
@@ -81,4 +87,18 @@ void AGameManager::UpdateScores()
 TArray<APackageCollectionPoint*> AGameManager::GetCollectionPoints() const
 {
 	return packageCollectionPoints;
+}
+
+void AGameManager::OnGameEnd()
+{
+	//pause all input
+
+	//total up all players score
+	playerScores.Sort();
+	FString WinningScore = FString::FromInt(playerScores[0]);
+	//display winner
+	if (GEngine)
+		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, WinningScore);
+	//back to main menu
+	UGameplayStatics::OpenLevel((UObject*)GetGameInstance(), FName(TEXT("MainMenuScene")));
 }
