@@ -49,7 +49,10 @@ void APlayerManager::BeginPlay()
 		playerPawn->SetOwner(playerController);
 		playerList.Add(playerPawn);
 
-		playerPawn->SetActorLocation(tmpSpawn->GetActorLocation());
+		auto spawn = tmpSpawn->GetActorLocation();
+		spawn.Z = 50;
+
+		playerPawn->SetActorLocation(spawn);
 		tmpSpawns.Remove(tmpSpawn);
 
 		playerController->Possess(playerPawn);

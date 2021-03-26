@@ -76,4 +76,15 @@ private:
 
 	bool isOnChargingPad = false;
 
+	bool isDownPressed = false;
+	bool isUpPressed = false;
+
+	void DownPressed();
+
+	void DownReleased();
+
+	void UpPressed();
+
+	void UpReleased();
+
 };

@@ -83,12 +83,6 @@ AWarhousePawn::AWarhousePawn()
 void AWarhousePawn::BeginPlay()
 {
 	Super::BeginPlay();
-
-	auto location = GetActorLocation();
-
-	location.Z = 195;
-
-	SetActorLocation(location);
 }
 
 void AWarhousePawn::SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent)
@@ -101,6 +95,32 @@ void AWarhousePawn::SetupPlayerInputComponent(class UInputComponent* PlayerInput
 
 	PlayerInputComponent->BindAxis(ArmForwardBinding);
 	PlayerInputComponent->BindAxis(ArmRightBinding);
+
+	PlayerInputComponent->BindAction("BeamUp", IE_Pressed, this, &AWarhousePawn::UpPressed);
+	PlayerInputComponent->BindAction("BeamUp", IE_Released, this, &AWarhousePawn::UpReleased);
+
+	PlayerInputComponent->BindAction("BeamDown", IE_Pressed, this, &AWarhousePawn::DownPressed);
+	PlayerInputComponent->BindAction("BeamDown", IE_Released, this, &AWarhousePawn::DownReleased);
+}
+
+void AWarhousePawn::DownPressed()
+{
+	isDownPressed = true;
+}
+
+void AWarhousePawn::DownReleased()
+{
+	isDownPressed = false;
+}
+
+void AWarhousePawn::UpPressed()
+{
+	isUpPressed = true;
+}
+
+void AWarhousePawn::UpReleased()
+{
+	isUpPressed = false;
 }
 
 void AWarhousePawn::Tick(float DeltaSeconds)
@@ -121,8 +141,20 @@ void AWarhousePawn::Tick(float DeltaSeconds)
 		float y = (150 * FMath::Sin(angle * UKismetMathLibrary::GetPI() / 180.f)) + GetActorLocation().Y;
 
 		const int heightOffset = 137;
-		
-		auto trans = FVector(x, y, GetActorLocation().Z+ heightOffset);
+
+		auto trans = FVector(x, y, GetActorLocation().Z);
+		auto transDefault = trans;
+
+		trans.Z += heightOffset;
+		if (isDownPressed)
+		{
+			trans.Z -= 125;
+		}
+
+		if (isUpPressed)
+		{
+			trans.Z += 125;
+		}
 
 		PhysicsHandle->SetTargetLocation(trans);
 
@@ -137,8 +169,7 @@ void AWarhousePawn::Tick(float DeltaSeconds)
 			beamEmitter->SetBeamTargetPoint(0, PhysicsHandle->GetGrabbedComponent()->GetComponentLocation(), 0);
 		}
 
-		trans.Z -= heightOffset;
-		FVector vec = (trans - GetActorLocation());
+		FVector vec = (transDefault - GetActorLocation());
 		vec.Normalize();
 
 		BeamMeshComponent->SetWorldRotation(vec.Rotation());
@@ -149,7 +180,7 @@ void AWarhousePawn::Tick(float DeltaSeconds)
 			if (PhysicsHandle->GetGrabbedComponent() != nullptr) {
 				// Player has let go of package
 				reinterpret_cast<APackageBase*>(PhysicsHandle->GetGrabbedComponent()->GetOwner())->EndHolding(this);
-				
+
 				PhysicsHandle->ReleaseComponent();
 
 			}
@@ -218,7 +249,8 @@ void AWarhousePawn::Tick(float DeltaSeconds)
 			auto package = reinterpret_cast<APackageBase*>(PhysicsHandle->GetGrabbedComponent()->GetOwner());
 			if (package->GetHeldBy().Num() > 1) {
 				_batteryCharge -= (MultiHoldingBatteryDrain * DeltaSeconds);
-			} else
+			}
+			else
 			{
 				_batteryCharge -= (SingleHoldingBatteryDrain * DeltaSeconds);
 			}
@@ -244,13 +276,13 @@ void AWarhousePawn::Tick(float DeltaSeconds)
 		newLoc.Z += 75;
 		progressBar->SetWorldLocation(newLoc);
 
-		if(isOnChargingPad)
+		if (isOnChargingPad)
 		{
 			_batteryCharge += (chargingPadRate * DeltaSeconds);
 		}
 
 		_batteryCharge = FMath::Clamp(_batteryCharge, 0.0f, 100.0f);
-		
+
 		if (_batteryCharge <= 0)
 		{
 			isDead = true;
