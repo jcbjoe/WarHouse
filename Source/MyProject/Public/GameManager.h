@@ -38,7 +38,6 @@ protected:
 
 	UPROPERTY(VisibleAnywhere)
 		TArray<int> playerScores;
-
 	UPROPERTY(EditAnywhere)
 		float GameTimer;
 	UPROPERTY(EditAnywhere)
@@ -47,6 +46,8 @@ protected:
 	FTimerHandle GameTimerHandle;
 	//Handle to manage the package timer
 	FTimerHandle PackageTimerHandle;
+	UPROPERTY(EditAnywhere)
+		AFloatingScore* GameTimerText;
 
 public:
 	// Called every frame
@@ -63,6 +64,6 @@ public:
 
 	UFUNCTION()
 		void OnGameEnd();
-	UFUNCTION()
-		void SpawnNewPackages();
+	/*UFUNCTION()
+		void SpawnNewPackages();*/
 };

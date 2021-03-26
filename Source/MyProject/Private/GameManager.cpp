@@ -34,7 +34,8 @@ void AGameManager::BeginPlay()
 void AGameManager::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
+	GameTimer -= (1 * DeltaTime);
+	GameTimerText->SetText(FText::FromString(FString::FromInt(GameTimer)));
 }
 
 void AGameManager::IncrementPlayerScore(int playerIndex, int amount)
