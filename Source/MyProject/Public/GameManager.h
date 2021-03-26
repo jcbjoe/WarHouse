@@ -40,12 +40,10 @@ protected:
 		TArray<int> playerScores;
 	UPROPERTY(EditAnywhere)
 		float GameTimer;
-	UPROPERTY(EditAnywhere)
-		float PackageTimer;
+
 	//Handle to manage the game timer
 	FTimerHandle GameTimerHandle;
-	//Handle to manage the package timer
-	FTimerHandle PackageTimerHandle;
+
 	UPROPERTY(EditAnywhere)
 		AFloatingScore* GameTimerText;
 

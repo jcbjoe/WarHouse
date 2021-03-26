@@ -2,7 +2,6 @@
 
 
 #include "PackageManager.h"
-#include "PackageBase.h"
 #include "PackageSpawnActor.h"
 #include "WarhouseHelpers.h"
 #include "Kismet/GameplayStatics.h"
@@ -51,6 +50,7 @@ void APackageManager::SpawnPackage(FConfig config, TArray<AActor*>& SpawnPackage
 
 	APackageBase* package = GetWorld()->SpawnActor<APackageBase>(spawnPoint->GetActorLocation(), Rotation, SpawnInfo);
 	package->InitialisePackage(packageType);
+	Packages.Add(package);
 }
 
 void APackageManager::GetSpawnLocations()
@@ -59,22 +59,54 @@ void APackageManager::GetSpawnLocations()
 	UGameplayStatics::GetAllActorsOfClass(GetWorld(), APackageSpawnActor::StaticClass(), SpawnPackageLocations);
 }
 
+void APackageManager::RemovePackage(APackageBase* package)
+{
+	Packages.RemoveSingle(package);
+}
+
+int APackageManager::GetPackagesLength()
+{
+	return Packages.Num();
+}
+
+void APackageManager::ActivatePackageTimer()
+{
+	// Temp list of spawnpoints
+	auto spawnPointsCopy = SpawnPackageLocations;
+	//PackageTimerDelegate.BindUFunction(this, FName("SpawnPackage"), Config, spawnPointsCopy);
+	GetWorld()->GetTimerManager().SetTimer(PackageTimerHandle, this, &APackageManager::NewPackages, PackageTimer, false);
+}
+
+void APackageManager::NewPackages()
+{
+	// Temp list of spawnpoints
+	auto spawnPointsCopy = SpawnPackageLocations;
+	int PackagesNeeded = TotalPackagesAmount - Packages.Num();
+	for (int i = 0; i < PackagesNeeded; ++i)
+	{
+		SpawnPackage(Config, spawnPointsCopy);
+	}
+}
+
 // Called when the game starts or when spawned
 void APackageManager::BeginPlay()
 {
 	Super::BeginPlay();
+	//set package threshhold for spawning new packages
+	PackageThreshold = TotalPackagesAmount * 0.5;
 	//get json data
 	FString Result = GetPackageDetails();
 	//pass package data into the config struct
-	FConfig config = FConfig(Result);
+	Config = FConfig(Result);
 	//find all spawn locations and store into a TArray
 	GetSpawnLocations();
 
 	// Temp list of spawnpoints
 	auto spawnPointsCopy = SpawnPackageLocations;
 
-	for (int i = 0; i < TotalPackagesAmount; ++i) {
-		SpawnPackage(config, SpawnPackageLocations);
+	for (int i = 0; i < TotalPackagesAmount; ++i)
+	{
+		SpawnPackage(Config, spawnPointsCopy);
 	}
 }
 
@@ -82,5 +114,4 @@ void APackageManager::BeginPlay()
 void APackageManager::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
 }

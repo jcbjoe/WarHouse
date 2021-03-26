@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "PackageDataStruct.h"
+#include "PackageBase.h"
 #include "PackageManager.generated.h"
 
 UCLASS()
@@ -20,18 +21,31 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data")
 		int TotalPackagesAmount = 10;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data")
+		int PackageThreshold;
 
 	FString GetPackageDetails();
-	void SpawnPackage(FConfig config, TArray<AActor*>& SpawnPackageLocations);
+	UFUNCTION()
+		void SpawnPackage(FConfig config, TArray<AActor*>& SpawnPackageLocations);
 	void GetSpawnLocations();
-
+	void RemovePackage(APackageBase* package);
+	int GetPackagesLength();
+	void ActivatePackageTimer();
+	void NewPackages();
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
 	FConfigPackage PackageInfo;
+	FConfig Config;
 
 	TArray<AActor*> SpawnPackageLocations;
-
-
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data")
+		TArray<APackageBase*> Packages;
+	UPROPERTY(EditAnywhere)
+		float PackageTimer;
+	//Handle to manage the package timer
+	FTimerHandle PackageTimerHandle;
+	//Delegate for passing parametrs to function called by timer
+	FTimerDelegate PackageTimerDelegate;
 };
