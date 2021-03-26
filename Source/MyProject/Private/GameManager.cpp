@@ -34,7 +34,10 @@ void AGameManager::BeginPlay()
 void AGameManager::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+	//decrease timer over delta time
 	GameTimer -= (1 * DeltaTime);
+	if (GameTimer < 0)
+		GameTimer = 0;
 	GameTimerText->SetText(FText::FromString(FString::FromInt(GameTimer)));
 }
 
@@ -93,13 +96,18 @@ TArray<APackageCollectionPoint*> AGameManager::GetCollectionPoints() const
 void AGameManager::OnGameEnd()
 {
 	//pause all input
-
+	//needs implementing
 	//total up all players score
 	playerScores.Sort();
 	FString WinningScore = FString::FromInt(playerScores[0]);
-	//display winner
+	//display winner - debugging only
 	if (GEngine)
 		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, WinningScore);
-	//back to main menu
+	//back to main menu after a delay
+	GetWorld()->GetTimerManager().SetTimer(DelayTimerHandle, this, &AGameManager::ReturnToMainMenu, DelayTimer, false);
+}
+
+void AGameManager::ReturnToMainMenu()
+{
 	UGameplayStatics::OpenLevel((UObject*)GetGameInstance(), FName(TEXT("MainMenuScene")));
 }

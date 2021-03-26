@@ -40,9 +40,13 @@ protected:
 		TArray<int> playerScores;
 	UPROPERTY(EditAnywhere)
 		float GameTimer;
+	UPROPERTY(EditAnywhere)
+		float DelayTimer;
 
 	//Handle to manage the game timer
 	FTimerHandle GameTimerHandle;
+	//Handle to manage delays
+	FTimerHandle DelayTimerHandle;
 
 	UPROPERTY(EditAnywhere)
 		AFloatingScore* GameTimerText;
@@ -62,6 +66,6 @@ public:
 
 	UFUNCTION()
 		void OnGameEnd();
-	/*UFUNCTION()
-		void SpawnNewPackages();*/
+	UFUNCTION()
+		void ReturnToMainMenu(); //could move this into the helper class?
 };
