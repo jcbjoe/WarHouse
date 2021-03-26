@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 #include "GameManager.h"
 #include "Kismet/GameplayStatics.h"
@@ -34,7 +34,7 @@ APackageCollectionPoint::APackageCollectionPoint()
 void APackageCollectionPoint::BeginPlay()
 {
 	Super::BeginPlay();
-
+	PackageManager = WarhouseHelpers::GetPackageManager(GetWorld());
 }
 
 // Called every frame
@@ -60,6 +60,13 @@ void APackageCollectionPoint::Tick(float DeltaTime)
 			if (package.Value >= 5)
 			{
 				packagesToRemove.Add(package.Key);
+				//remove package from Package Manager array of packages
+				PackageManager->RemovePackage(package.Key);
+				//if package array count is less than threshold, activate timer to spawn new packages
+				if (PackageManager->GetPackagesLength() < PackageManager->PackageThreshold)
+				{
+					PackageManager->ActivatePackageTimer();
+				}
 			}
 		}
 	}

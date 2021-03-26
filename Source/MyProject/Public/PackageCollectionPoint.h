@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 #pragma once
 
@@ -7,6 +7,7 @@
 #include "Components/BoxComponent.h"
 #include "GameFramework/Actor.h"
 #include "PackageBase.h"
+#include "PackageManager.h"
 #include "PackageCollectionPoint.generated.h"
 
 UCLASS()
@@ -21,6 +22,8 @@ public:
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+
+	APackageManager* PackageManager;
 
 public:
 	// Called every frame

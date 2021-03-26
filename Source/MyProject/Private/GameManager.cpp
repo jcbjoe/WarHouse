@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 
 #include "GameManager.h"
@@ -21,14 +21,24 @@ AGameManager::AGameManager()
 void AGameManager::BeginPlay()
 {
 	Super::BeginPlay();
+	//add player scores to array
+	playerScores.Add(player0Score);
+	playerScores.Add(player1Score);
+	playerScores.Add(player2Score);
+	playerScores.Add(player3Score);
 
+	GetWorld()->GetTimerManager().SetTimer(GameTimerHandle, this, &AGameManager::OnGameEnd, GameTimer, false);
 }
 
 // Called every frame
 void AGameManager::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
+	//decrease timer over delta time
+	GameTimer -= (1 * DeltaTime);
+	if (GameTimer < 0)
+		GameTimer = 0;
+	GameTimerText->SetText(FText::FromString(FString::FromInt(GameTimer)));
 }
 
 void AGameManager::IncrementPlayerScore(int playerIndex, int amount)
@@ -81,4 +91,23 @@ void AGameManager::UpdateScores()
 TArray<APackageCollectionPoint*> AGameManager::GetCollectionPoints() const
 {
 	return packageCollectionPoints;
+}
+
+void AGameManager::OnGameEnd()
+{
+	//pause all input
+	//needs implementing
+	//total up all players score
+	playerScores.Sort();
+	FString WinningScore = FString::FromInt(playerScores[0]);
+	//display winner - debugging only
+	if (GEngine)
+		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, WinningScore);
+	//back to main menu after a delay
+	GetWorld()->GetTimerManager().SetTimer(DelayTimerHandle, this, &AGameManager::ReturnToMainMenu, DelayTimer, false);
+}
+
+void AGameManager::ReturnToMainMenu()
+{
+	UGameplayStatics::OpenLevel((UObject*)GetGameInstance(), FName(TEXT("MainMenuScene")));
 }
