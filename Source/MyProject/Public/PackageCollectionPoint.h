@@ -33,7 +33,7 @@ public:
 		UBoxComponent* boxComponent;
 
 	UPROPERTY(Category = Gameplay, EditAnywhere, BlueprintReadWrite)
-		USceneComponent* base;
+		UStaticMeshComponent* base;
 
 
 	UFUNCTION()
@@ -44,4 +44,6 @@ public:
 
 	TMap<APackageBase*, float> packages;
 
+
+	void ButtonPressed();
 };
