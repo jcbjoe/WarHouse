@@ -246,7 +246,7 @@ void AWarhousePawn::Tick(float DeltaSeconds)
 
 		if (PhysicsHandle->GetGrabbedComponent() != nullptr)
 		{
-				
+
 			auto package = reinterpret_cast<APackageBase*>(PhysicsHandle->GetGrabbedComponent()->GetOwner());
 			if (package->GetHeldBy().Num() > 1) {
 				_batteryCharge -= (MultiHoldingBatteryDrain * DeltaSeconds);

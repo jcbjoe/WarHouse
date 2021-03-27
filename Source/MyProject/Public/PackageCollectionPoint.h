@@ -42,8 +42,24 @@ public:
 	UFUNCTION()
 		void OnOverlapEnd(UPrimitiveComponent* OverlapComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 
-	TMap<APackageBase*, float> packages;
+	TArray<APackageBase*> packages = TArray<APackageBase*>();
 
 
 	void ButtonPressed();
+
+private:
+	bool platformMovingUp = false;
+
+	bool platformAtTop = false;
+
+	bool platformMovingDown = false;
+
+	float moveIncrement = 0.1;
+
+	float amountToMove = 200;
+
+	FVector originalPos;
+
+	float currentWaitTime = 0;
+	float maxWaitTime = 5;
 };

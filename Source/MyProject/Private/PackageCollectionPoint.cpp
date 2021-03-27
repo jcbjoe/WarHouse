@@ -19,7 +19,7 @@ APackageCollectionPoint::APackageCollectionPoint()
 	static ConstructorHelpers::FObjectFinder<UStaticMesh> platformMesh(TEXT("/Game/Assets/ConorAssets/PackagePlatform.PackagePlatform"));
 
 	base->SetStaticMesh(platformMesh.Object);
-	
+
 	RootComponent = base;
 
 	boxComponent = CreateDefaultSubobject<UBoxComponent>(FName("Collision Mesh"));
@@ -48,6 +48,77 @@ void APackageCollectionPoint::BeginPlay()
 void APackageCollectionPoint::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+
+	if (platformMovingUp)
+	{
+		auto actorPos = GetActorLocation();
+
+		actorPos.Z += moveIncrement;
+
+		SetActorLocation(actorPos);
+
+		if ((actorPos.Z - originalPos.Z) >= amountToMove)
+		{
+			platformMovingUp = false;
+			platformAtTop = true;
+			GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, TEXT("At Top"));
+		}
+	}
+	else if (platformAtTop)
+	{
+
+		currentWaitTime += DeltaTime;
+
+		if (currentWaitTime > maxWaitTime)
+		{
+			for (auto packageToRemove : packages)
+			{
+				const int packageValue = packageToRemove->GetPackageValue();
+				packageToRemove->Destroy();
+
+				AGameManager* manager = WarhouseHelpers::GetGameManager(GetWorld());
+
+				int index = 0;
+				bool found = true;
+				for (APackageCollectionPoint* collectionPoint : manager->GetCollectionPoints())
+				{
+					if (collectionPoint == this)
+					{
+						found = true;
+						break;
+					}
+					index++;
+				}
+
+				if (!found) throw std::exception("This packageCollectionPoint has not been instanced in the GameManager object!");
+
+				manager->IncrementPlayerScore(index, packageValue);
+			}
+
+			packages.Empty();
+
+			currentWaitTime = 0;
+			platformAtTop = false;
+			platformMovingDown = true;
+			GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, TEXT("Platform Going down"));
+		}
+
+	}
+	else if (platformMovingDown)
+	{
+		auto actorPos = GetActorLocation();
+
+		actorPos.Z -= moveIncrement;
+
+		SetActorLocation(actorPos);
+
+		if ((actorPos.Z - originalPos.Z) <= 0)
+		{
+			platformMovingDown = false;
+			GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, TEXT("Platform at bottom"));
+		}
+	}
 
 	//TArray<APackageBase*> packagesToRemove;
 
@@ -112,19 +183,27 @@ void APackageCollectionPoint::OnOverlapBegin(UPrimitiveComponent* OverlapCompone
 	if (OtherActor->IsA(APackageBase::StaticClass())) {
 		auto package = reinterpret_cast<APackageBase*>(OtherActor);
 		if (packages.Contains(package)) return;
-		packages.Add(package, 0);
+		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, TEXT("Adding package"));
+		packages.Add(package);
 	}
 }
 
 void APackageCollectionPoint::OnOverlapEnd(UPrimitiveComponent* OverlapComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex) {
 	if (OtherActor->IsA(APackageBase::StaticClass())) {
 		auto package = reinterpret_cast<APackageBase*>(OtherActor);
+		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, TEXT("Removing package"));
 		packages.Remove(package);
-		package->SetProgressBarVisability(false);
 	}
 }
 
 void APackageCollectionPoint::ButtonPressed()
 {
-	
+
+	if (platformMovingUp || platformAtTop || platformMovingDown) return;
+
+	originalPos = GetActorLocation();
+
+	platformMovingUp = true;
+
+	GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, TEXT("Moving Up"));
 }

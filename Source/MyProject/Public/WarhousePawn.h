@@ -3,7 +3,6 @@
 #pragma once
 
 #include "CoreMinimal.h"
-
 #include "Components/WidgetComponent.h"
 #include "GameFramework/Character.h"
 #include "PhysicsEngine/PhysicsHandleComponent.h"
@@ -41,8 +40,8 @@ protected:
 		UStaticMeshComponent* ShipMeshComponent;
 
 	UPROPERTY(Category = Mesh, VisibleDefaultsOnly, BlueprintReadOnly)
-	UStaticMeshComponent* BeamMeshComponent;
-	
+		UStaticMeshComponent* BeamMeshComponent;
+
 	UPROPERTY(EditDefaultsOnly, Category = "Components")
 		UPhysicsHandleComponent* PhysicsHandle;
 
@@ -58,6 +57,7 @@ protected:
 	/* The speed our ship moves around the level */
 	UPROPERTY(Category = Gameplay, EditAnywhere, BlueprintReadWrite)
 		float MoveSpeed;
+
 private:
 	virtual void BeginPlay() override;
 
