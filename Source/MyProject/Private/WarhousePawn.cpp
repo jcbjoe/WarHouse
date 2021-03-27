@@ -178,12 +178,15 @@ void AWarhousePawn::Tick(float DeltaSeconds)
 		if (ArmForwardValue == 0 && ArmRightValue == 0)
 		{
 			beamEmitter->SetVisibility(false);
-			if (PhysicsHandle->GetGrabbedComponent() != nullptr) {
-				// Player has let go of package
-				reinterpret_cast<APackageBase*>(PhysicsHandle->GetGrabbedComponent()->GetOwner())->EndHolding(this);
-
+			if (PhysicsHandle->GetGrabbedComponent() != nullptr)
+			{
+				auto actor = PhysicsHandle->GetGrabbedComponent()->GetOwner();
+				if (actor->IsA(APackageBase::StaticClass()))
+				{
+					// Player has let go of package
+					reinterpret_cast<APackageBase*>(PhysicsHandle->GetGrabbedComponent()->GetOwner())->EndHolding(this);
+				}
 				PhysicsHandle->ReleaseComponent();
-
 			}
 		}
 		else
@@ -196,7 +199,7 @@ void AWarhousePawn::Tick(float DeltaSeconds)
 
 				for (TActorIterator<AActor> actor(GetWorld()); actor; ++actor)
 				{
-					if (!actor->IsA(APackageBase::StaticClass())) {
+					if (!actor->IsA(APackageBase::StaticClass()) && !actor->IsA(APhysicsProp::StaticClass())) {
 						TraceParams.AddIgnoredActor(*actor);
 					}
 				}
@@ -204,11 +207,14 @@ void AWarhousePawn::Tick(float DeltaSeconds)
 				bool bIsHit = GetWorld()->LineTraceSingleByChannel(hit, GetActorLocation(), trans, ECC_GameTraceChannel3, TraceParams);
 				if (bIsHit)
 				{
-					if (hit.Actor != nullptr && hit.Actor->IsA(APackageBase::StaticClass())) {
+					if (hit.Actor != nullptr && (hit.Actor->IsA(APackageBase::StaticClass()) || hit.Actor->IsA(APhysicsProp::StaticClass()))) {
 						UPrimitiveComponent* component = reinterpret_cast<UPrimitiveComponent*>(hit.GetActor()->GetRootComponent());
 						PhysicsHandle->GrabComponentAtLocationWithRotation(component, "None", component->GetComponentLocation(), component->GetComponentRotation());
-						auto package = reinterpret_cast<APackageBase*>(hit.GetActor());
-						package->StartHolding(this);
+						if (hit.Actor->IsA(APackageBase::StaticClass()))
+						{
+							auto package = reinterpret_cast<APackageBase*>(hit.GetActor());
+							package->StartHolding(this);
+						}
 					}
 				}
 			}
@@ -247,26 +253,31 @@ void AWarhousePawn::Tick(float DeltaSeconds)
 
 		if (PhysicsHandle->GetGrabbedComponent() != nullptr)
 		{
+			auto actor = PhysicsHandle->GetGrabbedComponent()->GetOwner();
 
-			auto package = reinterpret_cast<APackageBase*>(PhysicsHandle->GetGrabbedComponent()->GetOwner());
-			if (package->GetHeldBy().Num() > 1) {
-				_batteryCharge -= (MultiHoldingBatteryDrain * DeltaSeconds);
-			}
-			else
+			if (actor->IsA(APackageBase::StaticClass()))
 			{
-				_batteryCharge -= (SingleHoldingBatteryDrain * DeltaSeconds);
+				auto package = reinterpret_cast<APackageBase*>(actor);
+				if (package->GetHeldBy().Num() > 1) {
+					_batteryCharge -= (MultiHoldingBatteryDrain * DeltaSeconds);
+				}
+				else
+				{
+					_batteryCharge -= (SingleHoldingBatteryDrain * DeltaSeconds);
+				}
+
+				float weight = package->GetPackageWeight();
+				MoveSpeed = DefaultMoveSpeed - weight;
+				float distance = FVector::Dist(GetActorLocation(), package->GetActorLocation());
+				if (distance > 350)
+				{
+					//Package is to far away, drop it!
+					package->EndHolding(this);
+
+					PhysicsHandle->ReleaseComponent();
+				}
 			}
 
-			float weight = package->GetPackageWeight();
-			MoveSpeed = DefaultMoveSpeed - weight;
-			float distance = FVector::Dist(GetActorLocation(), package->GetActorLocation());
-			if (distance > 350)
-			{
-				//Package is to far away, drop it!
-				package->EndHolding(this);
-
-				PhysicsHandle->ReleaseComponent();
-			}
 		}
 		else
 			MoveSpeed = DefaultMoveSpeed;
