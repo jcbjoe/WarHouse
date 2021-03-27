@@ -23,6 +23,7 @@
 #include "PackageProgressBar.h"
 #include "PackageBase.h"
 #include "WarhouseHelpers.h"
+#include "PhysicsProp.h"
 
 const FName AWarhousePawn::MoveForwardBinding("MoveForward");
 const FName AWarhousePawn::MoveRightBinding("MoveRight");
