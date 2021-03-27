@@ -60,4 +60,6 @@ public:
 
 	int GetPackageValue();
 
+	float GetPackageWeight();
+
 };

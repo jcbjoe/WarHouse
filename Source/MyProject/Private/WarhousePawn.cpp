@@ -1,4 +1,4 @@
-// Copyright Epic Games, Inc. All Rights Reserved.
+﻿// Copyright Epic Games, Inc. All Rights Reserved.
 
 #include "WarhousePawn.h"
 
@@ -46,7 +46,7 @@ AWarhousePawn::AWarhousePawn()
 	BeamMeshComponent->SetupAttachment(RootComponent);
 	// Movement
 	MoveSpeed = 1000.0f;
-
+	DefaultMoveSpeed = 1000.0f;
 	PhysicsHandle = CreateDefaultSubobject<UPhysicsHandleComponent>(TEXT("PhysicsHandle"));
 
 	HeldLocation = CreateDefaultSubobject<USceneComponent>(FName("HoldLocation"));
@@ -246,6 +246,7 @@ void AWarhousePawn::Tick(float DeltaSeconds)
 
 		if (PhysicsHandle->GetGrabbedComponent() != nullptr)
 		{
+
 			auto package = reinterpret_cast<APackageBase*>(PhysicsHandle->GetGrabbedComponent()->GetOwner());
 			if (package->GetHeldBy().Num() > 1) {
 				_batteryCharge -= (MultiHoldingBatteryDrain * DeltaSeconds);
@@ -254,6 +255,9 @@ void AWarhousePawn::Tick(float DeltaSeconds)
 			{
 				_batteryCharge -= (SingleHoldingBatteryDrain * DeltaSeconds);
 			}
+
+			float weight = package->GetPackageWeight();
+			MoveSpeed = DefaultMoveSpeed - weight;
 			float distance = FVector::Dist(GetActorLocation(), package->GetActorLocation());
 			if (distance > 350)
 			{
@@ -263,6 +267,8 @@ void AWarhousePawn::Tick(float DeltaSeconds)
 				PhysicsHandle->ReleaseComponent();
 			}
 		}
+		else
+			MoveSpeed = DefaultMoveSpeed;
 
 		reinterpret_cast<UPackageProgressBar*>(progressBar->GetUserWidgetObject())->progressBarFillAmount = _batteryCharge / 100;
 

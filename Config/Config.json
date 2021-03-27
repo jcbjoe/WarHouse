@@ -13,7 +13,7 @@
         200
       ],
       "Rarity": 10,
-      "PackageWeight": 10
+      "PackageWeight": 500
     },
     {
       "PackageName": "MediumBox",
@@ -27,7 +27,7 @@
         600
       ],
       "Rarity": 4,
-      "PackageWeight": 10
+      "PackageWeight": 250
     },
     {
       "PackageName": "SmallBox",
@@ -41,7 +41,7 @@
         400
       ],
       "Rarity": 6,
-      "PackageWeight": 10
+      "PackageWeight": 100
     },
     {
       "PackageName": "RectangleBox",
@@ -55,7 +55,7 @@
         400
       ],
       "Rarity": 6,
-      "PackageWeight": 10
+      "PackageWeight": 150
     }
   ]
 }
