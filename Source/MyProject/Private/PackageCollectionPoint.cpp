@@ -4,9 +4,8 @@
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "PackageProgressBar.h"
-#include "PackageCollectionPoint.h"
-
 #include "WarhouseHelpers.h"
+#include "PackageCollectionPoint.h"
 
 // Sets default values
 APackageCollectionPoint::APackageCollectionPoint()
