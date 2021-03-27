@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "Components/BoxComponent.h"
+#include "Particles/ParticleSystemComponent.h"
 #include "PhysicsProp.generated.h"
 
 UCLASS()
@@ -23,16 +24,25 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Mesh")
 		UStaticMeshComponent* PropMesh;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Prop Options")
-		bool Destructible;
+		bool IsDestructible;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Prop Options")
-		bool HasParticleEmitter;
+		bool UseParticleEmitter;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Prop Options")
-		bool Fragile;
+		bool IsFragile;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Prop Options")
 		bool CanPickUp;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Prop Data")
+		float PropHealth;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Prop Extras")
+		UParticleSystemComponent* ParticleSystem;
 
 public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
+
+	bool GetCanPickUp();
+	bool GetDestructible();
+	bool GetUseParticleEmitter();
+	bool GetIsFragile();
 
 };

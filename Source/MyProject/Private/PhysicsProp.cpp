@@ -11,6 +11,8 @@ APhysicsProp::APhysicsProp()
 	//set up mesh
 	PropMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("packageMesh"));
 	RootComponent = PropMesh;
+
+	PropHealth = 100.0f;
 }
 
 // Called when the game starts or when spawned
@@ -25,4 +27,24 @@ void APhysicsProp::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+}
+
+bool APhysicsProp::GetCanPickUp()
+{
+	return CanPickUp;
+}
+
+bool APhysicsProp::GetDestructible()
+{
+	return IsDestructible;
+}
+
+bool APhysicsProp::GetUseParticleEmitter()
+{
+	return UseParticleEmitter;
+}
+
+bool APhysicsProp::GetIsFragile()
+{
+	return IsFragile;
 }

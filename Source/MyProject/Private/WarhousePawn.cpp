@@ -207,7 +207,9 @@ void AWarhousePawn::Tick(float DeltaSeconds)
 				bool bIsHit = GetWorld()->LineTraceSingleByChannel(hit, GetActorLocation(), trans, ECC_GameTraceChannel3, TraceParams);
 				if (bIsHit)
 				{
-					if (hit.Actor != nullptr && (hit.Actor->IsA(APackageBase::StaticClass()) || hit.Actor->IsA(APhysicsProp::StaticClass()))) {
+
+					/*if (hit.Actor != nullptr && (hit.Actor->IsA(APackageBase::StaticClass())) || hit.Actor->IsA(APhysicsProp::StaticClass()))
+					{
 						UPrimitiveComponent* component = reinterpret_cast<UPrimitiveComponent*>(hit.GetActor()->GetRootComponent());
 						PhysicsHandle->GrabComponentAtLocationWithRotation(component, "None", component->GetComponentLocation(), component->GetComponentRotation());
 						if (hit.Actor->IsA(APackageBase::StaticClass()))
@@ -215,7 +217,25 @@ void AWarhousePawn::Tick(float DeltaSeconds)
 							auto package = reinterpret_cast<APackageBase*>(hit.GetActor());
 							package->StartHolding(this);
 						}
+					}*/
+					if (hit.Actor != nullptr && hit.Actor->IsA(APackageBase::StaticClass()))
+					{
+						UPrimitiveComponent* component = reinterpret_cast<UPrimitiveComponent*>(hit.GetActor()->GetRootComponent());
+						PhysicsHandle->GrabComponentAtLocationWithRotation(component, "None", component->GetComponentLocation(), component->GetComponentRotation());
+						auto package = reinterpret_cast<APackageBase*>(hit.GetActor());
+						package->StartHolding(this);
 					}
+
+					if (hit.Actor != nullptr && hit.Actor->IsA(APhysicsProp::StaticClass()))
+					{
+						UPrimitiveComponent* component = reinterpret_cast<UPrimitiveComponent*>(hit.GetActor()->GetRootComponent());
+						auto prop = reinterpret_cast<APhysicsProp*>(hit.GetActor());
+						if (prop->GetCanPickUp())
+						{
+							PhysicsHandle->GrabComponentAtLocationWithRotation(component, "None", component->GetComponentLocation(), component->GetComponentRotation());
+						}
+					}
+
 				}
 			}
 		}
