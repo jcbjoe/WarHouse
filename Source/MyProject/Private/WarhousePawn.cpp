@@ -295,7 +295,7 @@ void AWarhousePawn::Tick(float DeltaSeconds)
 			respawnCounter = 0;
 
 			auto pos = GetActorLocation();
-			pos.Z = -100;
+			pos.Z = -200;
 
 			SetActorLocation(pos);
 

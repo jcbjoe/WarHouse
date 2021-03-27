@@ -90,21 +90,23 @@ FVector APlayerManager::GetRandomSpawnpoint(bool checkForPlayers)
 		auto spawnPointLoc = spawnPoints[RandIndex]->GetActorLocation();
 
 		bool playerToClose = false;
-		for(AWarhousePawn* player : playerList)
+		for (AWarhousePawn* player : playerList)
 		{
-			if(FVector::Distance(player->GetActorLocation(), spawnPointLoc) < 20)
+			if (FVector::Distance(player->GetActorLocation(), spawnPointLoc) < 20)
 			{
 				playerToClose = true;
 				break;
 			}
 		}
 
-		if(!playerToClose)
+		if (!playerToClose)
 		{
 			spawnFound = true;
 			spawn = spawnPointLoc;
 		}
 	} while (!spawnFound);
+
+	spawn.Z = 50;
 
 	return spawn;
 }
