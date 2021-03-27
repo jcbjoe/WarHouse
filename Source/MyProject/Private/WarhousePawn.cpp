@@ -1,4 +1,4 @@
-// Copyright Epic Games, Inc. All Rights Reserved.
+﻿// Copyright Epic Games, Inc. All Rights Reserved.
 
 #include "WarhousePawn.h"
 
@@ -46,7 +46,7 @@ AWarhousePawn::AWarhousePawn()
 	BeamMeshComponent->SetupAttachment(RootComponent);
 	// Movement
 	MoveSpeed = 1000.0f;
-
+	DefaultMoveSpeed = 1000.0f;
 	PhysicsHandle = CreateDefaultSubobject<UPhysicsHandleComponent>(TEXT("PhysicsHandle"));
 
 	HeldLocation = CreateDefaultSubobject<USceneComponent>(FName("HoldLocation"));
@@ -121,8 +121,8 @@ void AWarhousePawn::Tick(float DeltaSeconds)
 		float y = (150 * FMath::Sin(angle * UKismetMathLibrary::GetPI() / 180.f)) + GetActorLocation().Y;
 
 		const int heightOffset = 137;
-		
-		auto trans = FVector(x, y, GetActorLocation().Z+ heightOffset);
+
+		auto trans = FVector(x, y, GetActorLocation().Z + heightOffset);
 
 		PhysicsHandle->SetTargetLocation(trans);
 
@@ -149,7 +149,7 @@ void AWarhousePawn::Tick(float DeltaSeconds)
 			if (PhysicsHandle->GetGrabbedComponent() != nullptr) {
 				// Player has let go of package
 				reinterpret_cast<APackageBase*>(PhysicsHandle->GetGrabbedComponent()->GetOwner())->EndHolding(this);
-				
+
 				PhysicsHandle->ReleaseComponent();
 
 			}
@@ -215,13 +215,18 @@ void AWarhousePawn::Tick(float DeltaSeconds)
 
 		if (PhysicsHandle->GetGrabbedComponent() != nullptr)
 		{
+
 			auto package = reinterpret_cast<APackageBase*>(PhysicsHandle->GetGrabbedComponent()->GetOwner());
 			if (package->GetHeldBy().Num() > 1) {
 				_batteryCharge -= (MultiHoldingBatteryDrain * DeltaSeconds);
-			} else
+			}
+			else
 			{
 				_batteryCharge -= (SingleHoldingBatteryDrain * DeltaSeconds);
 			}
+
+			float weight = package->GetPackageWeight();
+			MoveSpeed = DefaultMoveSpeed - weight;
 			float distance = FVector::Dist(GetActorLocation(), package->GetActorLocation());
 			if (distance > 350)
 			{
@@ -231,6 +236,8 @@ void AWarhousePawn::Tick(float DeltaSeconds)
 				PhysicsHandle->ReleaseComponent();
 			}
 		}
+		else
+			MoveSpeed = DefaultMoveSpeed;
 
 		reinterpret_cast<UPackageProgressBar*>(progressBar->GetUserWidgetObject())->progressBarFillAmount = _batteryCharge / 100;
 
@@ -244,13 +251,13 @@ void AWarhousePawn::Tick(float DeltaSeconds)
 		newLoc.Z += 75;
 		progressBar->SetWorldLocation(newLoc);
 
-		if(isOnChargingPad)
+		if (isOnChargingPad)
 		{
 			_batteryCharge += (chargingPadRate * DeltaSeconds);
 		}
 
 		_batteryCharge = FMath::Clamp(_batteryCharge, 0.0f, 100.0f);
-		
+
 		if (_batteryCharge <= 0)
 		{
 			isDead = true;

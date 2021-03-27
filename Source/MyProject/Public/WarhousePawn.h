@@ -1,4 +1,4 @@
-// Copyright Epic Games, Inc. All Rights Reserved.
+﻿// Copyright Epic Games, Inc. All Rights Reserved.
 
 #pragma once
 
@@ -41,8 +41,8 @@ protected:
 		UStaticMeshComponent* ShipMeshComponent;
 
 	UPROPERTY(Category = Mesh, VisibleDefaultsOnly, BlueprintReadOnly)
-	UStaticMeshComponent* BeamMeshComponent;
-	
+		UStaticMeshComponent* BeamMeshComponent;
+
 	UPROPERTY(EditDefaultsOnly, Category = "Components")
 		UPhysicsHandleComponent* PhysicsHandle;
 
@@ -58,6 +58,8 @@ protected:
 	/* The speed our ship moves around the level */
 	UPROPERTY(Category = Gameplay, EditAnywhere, BlueprintReadWrite)
 		float MoveSpeed;
+	UPROPERTY(Category = Gameplay, EditAnywhere, BlueprintReadWrite)
+		float DefaultMoveSpeed;
 private:
 	virtual void BeginPlay() override;
 

@@ -58,10 +58,10 @@ void APackageBase::InitialisePackage(FConfigPackage pi)
 
 	//assign random value from data structure value range
 	PackageValue = FMath::RandRange(Package.ValueRange[0], Package.ValueRange[1]);
-	//assign weight
-	PackageMesh->SetMassScale(NAME_None, Package.PackageWeight);
+	//simulate physics
 	PackageMesh->SetSimulatePhysics(true);
-
+	//assign weight
+	PackageMesh->SetMassOverrideInKg(NAME_None, Package.PackageWeight, true);
 	progressBar->SetWorldScale3D(FVector(1));
 }
 
@@ -118,4 +118,9 @@ void APackageBase::SetProgressBarVisability(bool visability)
 int APackageBase::GetPackageValue()
 {
 	return PackageValue;
+}
+
+float APackageBase::GetPackageWeight()
+{
+	return Package.PackageWeight;
 }
