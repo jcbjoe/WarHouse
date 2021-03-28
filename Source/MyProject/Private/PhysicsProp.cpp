@@ -10,8 +10,10 @@ APhysicsProp::APhysicsProp()
 	PrimaryActorTick.bCanEverTick = true;
 	//set up mesh
 	PropMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("packageMesh"));
-	RootComponent = PropMesh;
+	PropMesh->SetNotifyRigidBodyCollision(true);
 
+	RootComponent = PropMesh;
+	//set health
 	PropHealth = 100.0f;
 }
 
@@ -19,7 +21,13 @@ APhysicsProp::APhysicsProp()
 void APhysicsProp::BeginPlay()
 {
 	Super::BeginPlay();
+	PropMesh->OnComponentHit.AddDynamic(this, &APhysicsProp::OnHit);
 
+	//check properties to see what behaviour should be allowed
+	if (IsFragile)
+	{
+		PropHealth = 1.0f;
+	}
 }
 
 // Called every frame
@@ -47,4 +55,37 @@ bool APhysicsProp::GetUseParticleEmitter()
 bool APhysicsProp::GetIsFragile()
 {
 	return IsFragile;
+}
+
+void APhysicsProp::ActivateParticles()
+{
+	ParticleSystem->SetVisibility(true);
+}
+
+void APhysicsProp::DeactivateParticles()
+{
+	ParticleSystem->SetVisibility(false);
+}
+
+void APhysicsProp::DestroyProp()
+{
+	this->Destroy();
+}
+
+void APhysicsProp::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
+{
+	if ((OtherActor != NULL) && (OtherActor != this) && (OtherComp != NULL))
+	{
+		float velocity = this->GetVelocity().Size();
+		if (velocity > 1.0f)
+		{
+			PropHealth -= 10.0f;
+		}
+
+	}
+
+	if (GetUseParticleEmitter() && PropHealth <= 0.0f)
+	{
+		ActivateParticles();
+	}
 }

@@ -6,6 +6,7 @@
 #include "GameFramework/Actor.h"
 #include "Components/BoxComponent.h"
 #include "Particles/ParticleSystemComponent.h"
+#include "Kismet/GameplayStatics.h"
 #include "PhysicsProp.generated.h"
 
 UCLASS()
@@ -45,4 +46,12 @@ public:
 	bool GetUseParticleEmitter();
 	bool GetIsFragile();
 
+	UFUNCTION()
+		void ActivateParticles();
+	UFUNCTION()
+		void DeactivateParticles();
+	UFUNCTION()
+		void DestroyProp();
+	UFUNCTION()
+		void OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
 };
