@@ -37,6 +37,12 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Prop Extras")
 		UParticleSystemComponent* ParticleSystem;
 
+	//for deactivating particles after a set time
+	FTimerHandle ParticlesTimerHandle;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Prop Extras")
+		float ParticleLife = 3.0f;
+	bool isParticleSystemActive = false;
+
 public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;

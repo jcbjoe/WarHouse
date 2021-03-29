@@ -15,6 +15,7 @@ APhysicsProp::APhysicsProp()
 	RootComponent = PropMesh;
 	//set health
 	PropHealth = 100.0f;
+
 }
 
 // Called when the game starts or when spawned
@@ -59,12 +60,16 @@ bool APhysicsProp::GetIsFragile()
 
 void APhysicsProp::ActivateParticles()
 {
-	ParticleSystem->SetVisibility(true);
+	isParticleSystemActive = true;
+	ParticleSystem->ActivateSystem(true);
+	//set timer to deactivate particle system
+	GetWorld()->GetTimerManager().SetTimer(ParticlesTimerHandle, this, &APhysicsProp::DeactivateParticles, ParticleLife, false);
 }
 
 void APhysicsProp::DeactivateParticles()
 {
-	ParticleSystem->SetVisibility(false);
+	isParticleSystemActive = false;
+	ParticleSystem->DeactivateSystem();
 }
 
 void APhysicsProp::DestroyProp()
