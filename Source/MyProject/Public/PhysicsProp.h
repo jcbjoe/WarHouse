@@ -42,6 +42,7 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Prop Extras")
 		float ParticleLife = 3.0f;
 	bool isParticleSystemActive = false;
+	bool isPropDead = false;
 
 public:
 	// Called every frame

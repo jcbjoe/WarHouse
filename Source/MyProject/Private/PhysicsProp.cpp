@@ -60,7 +60,6 @@ bool APhysicsProp::GetIsFragile()
 
 void APhysicsProp::ActivateParticles()
 {
-	isParticleSystemActive = true;
 	ParticleSystem->ActivateSystem(true);
 	//set timer to deactivate particle system
 	GetWorld()->GetTimerManager().SetTimer(ParticlesTimerHandle, this, &APhysicsProp::DeactivateParticles, ParticleLife, false);
@@ -68,7 +67,6 @@ void APhysicsProp::ActivateParticles()
 
 void APhysicsProp::DeactivateParticles()
 {
-	isParticleSystemActive = false;
 	ParticleSystem->DeactivateSystem();
 }
 
@@ -82,15 +80,17 @@ void APhysicsProp::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, 
 	if ((OtherActor != NULL) && (OtherActor != this) && (OtherComp != NULL))
 	{
 		float velocity = this->GetVelocity().Size();
-		if (velocity > 1.0f)
+		if ((velocity > 1.0f) && (!isPropDead))
 		{
 			PropHealth -= 10.0f;
 		}
 
 	}
 
-	if (GetUseParticleEmitter() && PropHealth <= 0.0f)
+	if (GetUseParticleEmitter() && PropHealth < 0.0f)
 	{
+		PropHealth = 0.0f;
+		isPropDead = true;
 		ActivateParticles();
 	}
 }
