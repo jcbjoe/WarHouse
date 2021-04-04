@@ -24,6 +24,7 @@
 #include "PackageBase.h"
 #include "WarhouseHelpers.h"
 #include "PhysicsProp.h"
+#include "DestructibleProp.h"
 
 const FName AWarhousePawn::MoveForwardBinding("MoveForward");
 const FName AWarhousePawn::MoveRightBinding("MoveRight");
@@ -225,6 +226,17 @@ void AWarhousePawn::Tick(float DeltaSeconds)
 							PhysicsHandle->GrabComponentAtLocationWithRotation(component, "None", component->GetComponentLocation(), component->GetComponentRotation());
 						}
 					}
+					//or destructible prop we have hit
+					if (hit.Actor != nullptr && hit.Actor->IsA(ADestructibleProp::StaticClass()))
+					{
+						UPrimitiveComponent* component = reinterpret_cast<UPrimitiveComponent*>(hit.GetActor()->GetRootComponent());
+						auto prop = reinterpret_cast<ADestructibleProp*>(hit.GetActor());
+						if (prop->GetCanPickUp())
+						{
+							PhysicsHandle->GrabComponentAtLocationWithRotation(component, "None", component->GetComponentLocation(), component->GetComponentRotation());
+						}
+					}
+
 
 				}
 			}

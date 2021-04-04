@@ -64,7 +64,10 @@ void ADestructibleProp::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherAc
 		float velocity = this->GetVelocity().Size();
 		if ((velocity > 1.0f) && (!isPropDead))
 		{
-			PropHealth -= 10.0f;
+			if (IsFragile)
+				PropHealth -= PropHealth;
+			else
+				PropHealth -= 10.0f;
 		}
 
 	}
@@ -74,5 +77,11 @@ void ADestructibleProp::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherAc
 		PropHealth = 0.0f;
 		isPropDead = true;
 		ActivateParticles();
+	}
+
+	if (isPropDead)
+	{
+		UGameplayStatics::ApplyPointDamage(this, 1.0f, OtherActor->GetActorForwardVector(), Hit, GetInstigatorController(), OtherActor, UDamageType::StaticClass());
+
 	}
 }

@@ -8,6 +8,7 @@
 #include "Particles/ParticleSystemComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "DestructibleComponent.h"
+#include "GameFramework/DamageType.h"
 #include "DestructibleProp.generated.h"
 
 UCLASS()
