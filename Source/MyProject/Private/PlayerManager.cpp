@@ -1,10 +1,10 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-
-#include "PlayerManager.h"
 #include "WarhousePawn.h"
 #include "Kismet/GameplayStatics.h"
+#include "MyGameInstance.h" 
 
+#include "PlayerManager.h"
 // Sets default values
 APlayerManager::APlayerManager()
 {
@@ -20,6 +20,10 @@ APlayerManager::APlayerManager()
 void APlayerManager::BeginPlay()
 {
 	Super::BeginPlay();
+
+	UMyGameInstance* instance = reinterpret_cast<UMyGameInstance*>(UGameplayStatics::GetGameInstance(GetWorld()));
+
+	if (instance->playerInfo.Num() != 0) PlayerCount = instance->playerInfo.Num();
 
 	TArray<AActor*> playerControllers;
 	UGameplayStatics::GetAllActorsOfClass(GetWorld(), APlayerController::StaticClass(), playerControllers);

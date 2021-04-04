@@ -71,6 +71,7 @@ void APackageCollectionPoint::Tick(float DeltaTime)
 
 		if (currentWaitTime > maxWaitTime)
 		{
+			packagesBeingRemoved = true;
 			for (auto packageToRemove : packages)
 			{
 				const int packageValue = packageToRemove->GetPackageValue();
@@ -97,6 +98,8 @@ void APackageCollectionPoint::Tick(float DeltaTime)
 
 			packages.Empty();
 
+			packagesBeingRemoved = false;
+
 			currentWaitTime = 0;
 			platformAtTop = false;
 			platformMovingDown = true;
@@ -119,62 +122,6 @@ void APackageCollectionPoint::Tick(float DeltaTime)
 		}
 	}
 
-	//TArray<APackageBase*> packagesToRemove;
-
-	//for (TPair<APackageBase*, float>& package : packages)
-	//{
-	//	if (package.Key->GetHeldBy().Num() > 0)
-	//	{
-	//		package.Value = 0;
-	//		package.Key->SetProgressBarVisability(false);
-	//	}
-	//	else
-	//	{
-	//		package.Value += DeltaTime;
-	//		auto newVal = UKismetMathLibrary::MapRangeClamped(package.Value, 0, 5, 0, 1);
-	//		package.Key->SetProgressBarFill(newVal);
-	//		package.Key->SetProgressBarVisability(true);
-	//		if (package.Value >= 5)
-	//		{
-	//			packagesToRemove.Add(package.Key);
-	//			//remove package from Package Manager array of packages
-	//			PackageManager->RemovePackage(package.Key);
-	//			//if package array count is less than threshold, activate timer to spawn new packages
-	//			if (PackageManager->GetPackagesLength() < PackageManager->PackageThreshold)
-	//			{
-	//				PackageManager->ActivatePackageTimer();
-	//			}
-	//		}
-	//	}
-	//}
-
-	//for (auto packageToRemove : packagesToRemove)
-	//{
-	//	const int packageValue = packageToRemove->GetPackageValue();
-	//	packages.Remove(packageToRemove);
-	//	packageToRemove->Destroy();
-
-	//	AGameManager* manager = WarhouseHelpers::GetGameManager(GetWorld());
-
-	//	int index = 0;
-	//	bool found = true;
-	//	for (APackageCollectionPoint* collectionPoint : manager->GetCollectionPoints())
-	//	{
-	//		if (collectionPoint == this)
-	//		{
-	//			found = true;
-	//			break;
-	//		}
-	//		index++;
-	//	}
-
-	//	if (!found) throw std::exception("This packageCollectionPoint has not been instanced in the GameManager object!");
-
-	//	manager->IncrementPlayerScore(index, packageValue);
-	//}
-
-	//packagesToRemove.Empty();
-
 }
 
 void APackageCollectionPoint::OnOverlapBegin(UPrimitiveComponent* OverlapComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
@@ -191,7 +138,8 @@ void APackageCollectionPoint::OnOverlapEnd(UPrimitiveComponent* OverlapComponent
 	if (OtherActor->IsA(APackageBase::StaticClass())) {
 		auto package = reinterpret_cast<APackageBase*>(OtherActor);
 		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, TEXT("Removing package"));
-		packages.Remove(package);
+		if (!packagesBeingRemoved)
+			packages.Remove(package);
 	}
 }
 

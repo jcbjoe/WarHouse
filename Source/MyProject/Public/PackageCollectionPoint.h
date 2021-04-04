@@ -62,4 +62,6 @@ private:
 
 	float currentWaitTime = 0;
 	float maxWaitTime = 5;
+
+	bool packagesBeingRemoved = false;
 };
