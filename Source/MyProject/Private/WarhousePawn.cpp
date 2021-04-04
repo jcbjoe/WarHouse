@@ -33,6 +33,16 @@ const FName AWarhousePawn::ArmRightBinding("ArmRight");
 
 AWarhousePawn::AWarhousePawn()
 {
+	static ConstructorHelpers::FObjectFinder<UMaterial> redMat(TEXT("/Game/Assets/ConorAssets/Player/PlayerRed.PlayerRed"));
+	static ConstructorHelpers::FObjectFinder<UMaterial> blueMat(TEXT("/Game/Assets/ConorAssets/Player/PlayerBlue.PlayerBlue"));
+	static ConstructorHelpers::FObjectFinder<UMaterial> yellowMat(TEXT("/Game/Assets/ConorAssets/Player/PlayerYellow.PlayerYellow"));
+	static ConstructorHelpers::FObjectFinder<UMaterial> whiteMat(TEXT("/Game/Assets/ConorAssets/Player/PlayerWhite.PlayerWhite"));
+
+	red = redMat.Object;
+	blue = blueMat.Object;
+	yellow = yellowMat.Object;
+	white = whiteMat.Object;
+
 	static ConstructorHelpers::FObjectFinder<UStaticMesh> ShipMesh(TEXT("/Game/Assets/ConorAssets/Player-Body.Player-Body"));
 	static ConstructorHelpers::FObjectFinder<UStaticMesh> BeamMesh(TEXT("/Game/Assets/ConorAssets/Player-GravBeam.Player-GravBeam"));
 	// Create the mesh component
@@ -64,6 +74,8 @@ AWarhousePawn::AWarhousePawn()
 	beamEmitter = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("Beam"));
 	beamEmitter->Template = templateEmitter;
 
+	beamEmitter->SecondsBeforeInactive = 0;
+
 	beamEmitter->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);
 
 	progressBar = CreateDefaultSubobject<UWidgetComponent>(FName("ProgressBar"));
@@ -83,6 +95,29 @@ AWarhousePawn::AWarhousePawn()
 void AWarhousePawn::BeginPlay()
 {
 	Super::BeginPlay();
+}
+
+void AWarhousePawn::SetColour(EPlayerColours colour)
+{
+	switch (colour)
+	{
+	case EPlayerColours::White:
+		ShipMeshComponent->SetMaterial(0, white);
+		beamEmitter->SetColorParameter("Colour", FLinearColor::White);
+		break;
+	case EPlayerColours::Red:
+		ShipMeshComponent->SetMaterial(0, red);
+		beamEmitter->SetColorParameter("Colour", FLinearColor::Red);
+		break;
+	case EPlayerColours::Blue:
+		ShipMeshComponent->SetMaterial(0, blue);
+		beamEmitter->SetColorParameter("Colour", FLinearColor::Blue);
+		break;
+	case EPlayerColours::Yellow:
+		ShipMeshComponent->SetMaterial(0, yellow);
+		beamEmitter->SetColorParameter("Colour", FLinearColor::Yellow);
+		break;
+	}
 }
 
 void AWarhousePawn::SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent)

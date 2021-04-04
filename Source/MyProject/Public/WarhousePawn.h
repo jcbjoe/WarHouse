@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "PlayerColours.h"
 #include "Components/WidgetComponent.h"
 #include "GameFramework/Character.h"
 #include "PhysicsEngine/PhysicsHandleComponent.h"
@@ -33,6 +34,8 @@ public:
 	void SetIsOnCharger(bool isOnCharger);
 
 	bool IsDead();
+
+	void SetColour(EPlayerColours colour);
 
 protected:
 	/* The mesh component */
@@ -87,5 +90,10 @@ private:
 	void UpPressed();
 
 	void UpReleased();
+
+	UMaterial* red;
+	UMaterial* blue;
+	UMaterial* yellow;
+	UMaterial* white;
 
 };

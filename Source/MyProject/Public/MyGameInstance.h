@@ -4,12 +4,13 @@
 
 #include "CoreMinimal.h"
 #include "Engine/GameInstance.h"
+#include "PlayerColours.h"
 #include "MyGameInstance.generated.h"
 
 struct playerInfo
 {
 	int32 controllerId;
-	int32 textureId;
+	EPlayerColours colour;
 };
 
 /**
@@ -23,5 +24,5 @@ public:
 	TArray<playerInfo> playerInfo;
 
 	UFUNCTION(BlueprintCallable)
-		void addPlayer(int32 controllerId, int32 textureIndex);
+		void addPlayer(int32 controllerId, EPlayerColours colour);
 };

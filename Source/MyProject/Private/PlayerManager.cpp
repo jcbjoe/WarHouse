@@ -23,7 +23,8 @@ void APlayerManager::BeginPlay()
 
 	UMyGameInstance* instance = reinterpret_cast<UMyGameInstance*>(UGameplayStatics::GetGameInstance(GetWorld()));
 
-	if (instance->playerInfo.Num() != 0) PlayerCount = instance->playerInfo.Num();
+	bool instancePlayersFound = false;
+	if (instance->playerInfo.Num() != 0) instancePlayersFound = true;
 
 	TArray<AActor*> playerControllers;
 	UGameplayStatics::GetAllActorsOfClass(GetWorld(), APlayerController::StaticClass(), playerControllers);
@@ -42,24 +43,47 @@ void APlayerManager::BeginPlay()
 	FActorSpawnParameters spawnParams;
 	spawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
 
-	for (int i = 0; i < PlayerCount; ++i)
+	if (instancePlayersFound) {
+		for (auto playerInfo : instance->playerInfo)
+		{
+			APlayerController* playerController = UGameplayStatics::CreatePlayer(GetWorld(), playerInfo.controllerId, true);
+
+			const int rand = FMath::RandRange(0, tmpSpawns.Num() - 1);
+			APlayerSpawnPoint* tmpSpawn = tmpSpawns[rand];
+			AWarhousePawn* playerPawn = GetWorld()->SpawnActor<AWarhousePawn>(AWarhousePawn::StaticClass(), spawnParams);
+			playerPawn->SetOwner(playerController);
+			playerList.Add(playerPawn);
+
+			auto spawn = tmpSpawn->GetActorLocation();
+			spawn.Z = 50;
+
+			playerPawn->SetActorLocation(spawn);
+			tmpSpawns.Remove(tmpSpawn);
+
+			playerPawn->SetColour(playerInfo.colour);
+
+			playerController->Possess(playerPawn);
+		}
+	}  else
 	{
+		for (int i = 0; i < PlayerCount; ++i)
+		{
+			APlayerController* playerController = UGameplayStatics::CreatePlayer(GetWorld(), i, true);
 
-		APlayerController* playerController = UGameplayStatics::CreatePlayer(GetWorld(), i, true);
+			const int rand = FMath::RandRange(0, tmpSpawns.Num() - 1);
+			APlayerSpawnPoint* tmpSpawn = tmpSpawns[rand];
+			AWarhousePawn* playerPawn = GetWorld()->SpawnActor<AWarhousePawn>(AWarhousePawn::StaticClass(), spawnParams);
+			playerPawn->SetOwner(playerController);
+			playerList.Add(playerPawn);
 
-		const int rand = FMath::RandRange(0, tmpSpawns.Num() - 1);
-		APlayerSpawnPoint* tmpSpawn = tmpSpawns[rand];
-		AWarhousePawn* playerPawn = GetWorld()->SpawnActor<AWarhousePawn>(AWarhousePawn::StaticClass(), spawnParams);
-		playerPawn->SetOwner(playerController);
-		playerList.Add(playerPawn);
+			auto spawn = tmpSpawn->GetActorLocation();
+			spawn.Z = 50;
 
-		auto spawn = tmpSpawn->GetActorLocation();
-		spawn.Z = 50;
+			playerPawn->SetActorLocation(spawn);
+			tmpSpawns.Remove(tmpSpawn);
 
-		playerPawn->SetActorLocation(spawn);
-		tmpSpawns.Remove(tmpSpawn);
-
-		playerController->Possess(playerPawn);
+			playerController->Possess(playerPawn);
+		}
 	}
 
 }

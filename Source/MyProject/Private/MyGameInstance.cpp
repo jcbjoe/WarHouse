@@ -3,7 +3,7 @@
 
 #include "MyGameInstance.h"
 
-void UMyGameInstance::addPlayer(int32 controllerId, int32 textureIndex)
+void UMyGameInstance::addPlayer(int32 controllerId, EPlayerColours colour)
 {
-	playerInfo.Add({ controllerId, textureIndex });
+	playerInfo.Add({ controllerId, colour });
 }

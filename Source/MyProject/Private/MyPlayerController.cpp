@@ -1,9 +1,10 @@
 // Fill out your copyright notice in the Description page of Project Settings.
+#include "MyPlayerController.h"
 
 #include "PlayerSelectBase.h"
 #include "Kismet/GameplayStatics.h"
 #include "Blueprint/WidgetBlueprintLibrary.h"
-#include "MyPlayerController.h"
+
 
 void AMyPlayerController::PlayerTick(float DeltaTime)
 {
@@ -15,9 +16,9 @@ void AMyPlayerController::PlayerTick(float DeltaTime)
 		UWidgetBlueprintLibrary::GetAllWidgetsOfClass(GetWorld(), widgets, UPlayerSelectBase::StaticClass());
 
 		UPlayerSelectBase* playerSelect = reinterpret_cast<UPlayerSelectBase*>(widgets[0]);
-		
+
 		if (playerSelect == nullptr) return;
-		
+
 		int32 controllerId = UGameplayStatics::GetPlayerControllerID(this);
 
 		if (WasInputKeyJustPressed(EKeys::Gamepad_DPad_Left))
