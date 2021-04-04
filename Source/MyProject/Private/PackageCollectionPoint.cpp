@@ -1,10 +1,10 @@
 ﻿// Fill out your copyright notice in the Description page of Project Settings.
-
+#include "PackageCollectionPoint.h"
 #include "GameManager.h"
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "PackageProgressBar.h"
-#include "PackageCollectionPoint.h"
+
 
 #include "WarhouseHelpers.h"
 

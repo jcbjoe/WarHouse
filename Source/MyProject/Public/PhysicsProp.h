@@ -39,8 +39,9 @@ protected:
 
 	//for deactivating particles after a set time
 	FTimerHandle ParticlesTimerHandle;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Prop Extras")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Prop Data")
 		float ParticleLife = 3.0f;
+
 	bool isParticleSystemActive = false;
 	bool isPropDead = false;
 
