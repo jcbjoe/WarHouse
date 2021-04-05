@@ -343,7 +343,7 @@ void AWarhousePawn::Tick(float DeltaSeconds)
 		progressBar->SetWorldRotation(rot);
 
 		auto newLoc = GetActorLocation();
-		newLoc.Z += 75;
+		newLoc.Z = 10;
 		progressBar->SetWorldLocation(newLoc);
 
 		if (isOnChargingPad)
