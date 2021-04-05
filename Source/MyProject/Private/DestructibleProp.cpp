@@ -8,7 +8,10 @@ ADestructibleProp::ADestructibleProp()
 {
 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
-
+	//set up mesh
+	PropMesh = CreateDefaultSubobject<UDestructibleComponent>(TEXT("propMesh"));
+	PropMesh->SetNotifyRigidBodyCollision(true);
+	RootComponent = PropMesh;
 }
 
 // Called when the game starts or when spawned
@@ -25,20 +28,11 @@ void ADestructibleProp::Tick(float DeltaTime)
 
 }
 
-bool ADestructibleProp::GetCanPickUp()
-{
-	return CanPickUp;
-}
-
 bool ADestructibleProp::GetUseParticleEmitter()
 {
 	return UseParticleEmitter;
 }
 
-bool ADestructibleProp::GetIsFragile()
-{
-	return IsFragile;
-}
 
 void ADestructibleProp::ActivateParticles()
 {
@@ -57,31 +51,26 @@ void ADestructibleProp::DestroyProp()
 	this->Destroy();
 }
 
-void ADestructibleProp::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
-{
-	if ((OtherActor != NULL) && (OtherActor != this) && (OtherComp != NULL))
-	{
-		float velocity = this->GetVelocity().Size();
-		if ((velocity > 1.0f) && (!isPropDead))
-		{
-			if (IsFragile)
-				PropHealth -= PropHealth;
-			else
-				PropHealth -= 10.0f;
-		}
-
-	}
-
-	if (GetUseParticleEmitter() && PropHealth < 0.0f)
-	{
-		PropHealth = 0.0f;
-		isPropDead = true;
-		ActivateParticles();
-	}
-
-	if (isPropDead)
-	{
-		UGameplayStatics::ApplyPointDamage(this, 1.0f, OtherActor->GetActorForwardVector(), Hit, GetInstigatorController(), OtherActor, UDamageType::StaticClass());
-
-	}
-}
+//void ADestructibleProp::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
+//{
+//	if ((OtherActor != NULL) && (OtherActor != this) && (OtherComp != NULL))
+//	{
+//		float velocity = this->GetVelocity().Size();
+//		if ((velocity > 1.0f) && (!isPropDead))
+//		{
+//			if (IsFragile)
+//				PropHealth -= PropHealth;
+//			else
+//				PropHealth -= 10.0f;
+//		}
+//
+//	}
+//
+//	if (GetUseParticleEmitter() && PropHealth < 0.0f)
+//	{
+//		PropHealth = 0.0f;
+//		isPropDead = true;
+//		ActivateParticles();
+//	}
+//
+//}

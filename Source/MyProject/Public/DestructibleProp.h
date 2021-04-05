@@ -28,12 +28,6 @@ protected:
 		UDestructibleComponent* PropMesh;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Prop Options")
 		bool UseParticleEmitter;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Prop Options")
-		bool IsFragile;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Prop Options")
-		bool CanPickUp;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Prop Data")
-		float PropHealth;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Prop Extras")
 		UParticleSystemComponent* ParticleSystem;
 
@@ -47,9 +41,7 @@ protected:
 public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
-	bool GetCanPickUp();
 	bool GetUseParticleEmitter();
-	bool GetIsFragile();
 
 	UFUNCTION()
 		void ActivateParticles();
@@ -57,6 +49,6 @@ public:
 		void DeactivateParticles();
 	UFUNCTION()
 		void DestroyProp();
-	UFUNCTION()
-		void OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
+	/*UFUNCTION()
+		void OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);*/
 };
