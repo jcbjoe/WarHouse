@@ -4,13 +4,13 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
-#include "PlayerSelectBase.generated.h"
+#include "UserInterfaceBase.generated.h"
 
 /**
  *
  */
 UCLASS()
-class MYPROJECT_API UPlayerSelectBase : public UUserWidget
+class MYPROJECT_API UUserInterfaceBase : public UUserWidget
 {
 	GENERATED_BODY()
 
@@ -29,4 +29,10 @@ public:
 
 	UFUNCTION(BlueprintImplementableEvent)
 		void StartPressed(int32 playerId);
+
+	UFUNCTION(BlueprintImplementableEvent)
+		void UpPressed(int32 playerId);
+	
+	UFUNCTION(BlueprintImplementableEvent)
+		void DownPressed(int32 playerId);
 };

@@ -1,7 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 #include "MyPlayerController.h"
 
-#include "PlayerSelectBase.h"
+#include "UserInterfaceBase.h"
 #include "Kismet/GameplayStatics.h"
 #include "Blueprint/WidgetBlueprintLibrary.h"
 
@@ -10,40 +10,73 @@ void AMyPlayerController::PlayerTick(float DeltaTime)
 {
 	Super::PlayerTick(DeltaTime);
 
-	if (UGameplayStatics::GetCurrentLevelName(GetWorld()) == "PlayerSelect")
+	TArray<UUserWidget*> widgets;
+	UWidgetBlueprintLibrary::GetAllWidgetsOfClass(GetWorld(), widgets, UUserInterfaceBase::StaticClass());
+
+	if (widgets.Num() == 0) return;
+
+	const int32 controllerId = UGameplayStatics::GetPlayerControllerID(this);
+
+	if (WasInputKeyJustPressed(EKeys::Gamepad_DPad_Left))
 	{
-		TArray<UUserWidget*> widgets;
-		UWidgetBlueprintLibrary::GetAllWidgetsOfClass(GetWorld(), widgets, UPlayerSelectBase::StaticClass());
-
-		UPlayerSelectBase* playerSelect = reinterpret_cast<UPlayerSelectBase*>(widgets[0]);
-
-		if (playerSelect == nullptr) return;
-
-		int32 controllerId = UGameplayStatics::GetPlayerControllerID(this);
-
-		if (WasInputKeyJustPressed(EKeys::Gamepad_DPad_Left))
+		for (auto widget : widgets)
 		{
-			playerSelect->LeftPressed(controllerId);
+			UUserInterfaceBase* userInterface = reinterpret_cast<UUserInterfaceBase*>(widget);
+			userInterface->LeftPressed(controllerId);
 		}
+	}
 
-		if (WasInputKeyJustPressed(EKeys::Gamepad_DPad_Right))
+	if (WasInputKeyJustPressed(EKeys::Gamepad_DPad_Right))
+	{
+		for (auto widget : widgets)
 		{
-			playerSelect->RightPressed(controllerId);
+			UUserInterfaceBase* userInterface = reinterpret_cast<UUserInterfaceBase*>(widget);
+			userInterface->RightPressed(controllerId);
 		}
+	}
 
-		if (WasInputKeyJustPressed(EKeys::Gamepad_FaceButton_Bottom))
+	if (WasInputKeyJustPressed(EKeys::Gamepad_FaceButton_Bottom))
+	{
+		for (auto widget : widgets)
 		{
-			playerSelect->SelectPressed(controllerId);
+			UUserInterfaceBase* userInterface = reinterpret_cast<UUserInterfaceBase*>(widget);
+			userInterface->SelectPressed(controllerId);
 		}
+	}
 
-		if (WasInputKeyJustPressed(EKeys::Gamepad_FaceButton_Right))
+	if (WasInputKeyJustPressed(EKeys::Gamepad_FaceButton_Right))
+	{
+		for (auto widget : widgets)
 		{
-			playerSelect->UnSelectPressed(controllerId);
+			UUserInterfaceBase* userInterface = reinterpret_cast<UUserInterfaceBase*>(widget);
+			userInterface->UnSelectPressed(controllerId);
 		}
+	}
 
-		if (WasInputKeyJustPressed(EKeys::Gamepad_Special_Right))
+	if (WasInputKeyJustPressed(EKeys::Gamepad_Special_Right))
+	{
+		for (auto widget : widgets)
 		{
-			playerSelect->StartPressed(controllerId);
+			UUserInterfaceBase* userInterface = reinterpret_cast<UUserInterfaceBase*>(widget);
+			userInterface->StartPressed(controllerId);
+		}
+	}
+
+	if (WasInputKeyJustPressed(EKeys::Gamepad_DPad_Up))
+	{
+		for (auto widget : widgets)
+		{
+			UUserInterfaceBase* userInterface = reinterpret_cast<UUserInterfaceBase*>(widget);
+			userInterface->UpPressed(controllerId);
+		}
+	}
+
+	if (WasInputKeyJustPressed(EKeys::Gamepad_DPad_Down))
+	{
+		for (auto widget : widgets)
+		{
+			UUserInterfaceBase* userInterface = reinterpret_cast<UUserInterfaceBase*>(widget);
+			userInterface->DownPressed(controllerId);
 		}
 	}
 }
