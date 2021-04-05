@@ -62,6 +62,9 @@ protected:
 		float MoveSpeed;
 	UPROPERTY(Category = Gameplay, EditAnywhere, BlueprintReadWrite)
 		float DefaultMoveSpeed;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Components")
+	UDecalComponent* floorDecal;
 private:
 	virtual void BeginPlay() override;
 

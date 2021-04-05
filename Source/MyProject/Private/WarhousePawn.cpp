@@ -23,6 +23,7 @@
 #include "PackageProgressBar.h"
 #include "PackageBase.h"
 #include "WarhouseHelpers.h"
+#include "Components/DecalComponent.h"
 
 const FName AWarhousePawn::MoveForwardBinding("MoveForward");
 const FName AWarhousePawn::MoveRightBinding("MoveRight");
@@ -89,6 +90,20 @@ AWarhousePawn::AWarhousePawn()
 	progressBar->SetWidgetClass(progressbarWidget.Class);
 
 	progressBar->SetDrawSize(FVector2D(200, 30));
+
+	static ConstructorHelpers::FObjectFinder<UMaterial> decalMat(TEXT("/Game/Assets/JoeAssets/FloorMarker/FloorDecal.FloorDecal"));
+	
+	floorDecal = CreateDefaultSubobject<UDecalComponent>(L"Decal");
+
+	floorDecal->SetDecalMaterial(decalMat.Object);
+
+	floorDecal->SetVisibility(false);
+
+	floorDecal->DecalSize = FVector(100, 40, 40);
+	floorDecal->SetRelativeRotation(FRotator::MakeFromEuler({ 0, 90, 0 }));
+	
+	floorDecal->SetupAttachment(RootComponent);
+	
 
 }
 
@@ -216,6 +231,8 @@ void AWarhousePawn::Tick(float DeltaSeconds)
 		if (ArmForwardValue == 0 && ArmRightValue == 0)
 		{
 			beamEmitter->SetVisibility(false);
+			floorDecal->SetVisibility(false);
+
 			if (PhysicsHandle->GetGrabbedComponent() != nullptr) {
 				// Player has let go of package
 				reinterpret_cast<APackageBase*>(PhysicsHandle->GetGrabbedComponent()->GetOwner())->EndHolding(this);
@@ -249,6 +266,14 @@ void AWarhousePawn::Tick(float DeltaSeconds)
 						package->StartHolding(this);
 					}
 				}
+			} else
+			{
+				floorDecal->SetVisibility(true);
+
+				auto floorDecalPos = PhysicsHandle->GetGrabbedComponent()->GetComponentLocation();
+
+				floorDecalPos.Z = 0;
+				floorDecal->SetWorldLocation(floorDecalPos);
 			}
 		}
 
