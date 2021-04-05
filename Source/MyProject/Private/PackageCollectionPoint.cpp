@@ -60,7 +60,6 @@ void APackageCollectionPoint::Tick(float DeltaTime)
 		{
 			platformMovingUp = false;
 			platformAtTop = true;
-			GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, TEXT("At Top"));
 		}
 	}
 	else if (platformAtTop)
@@ -70,10 +69,13 @@ void APackageCollectionPoint::Tick(float DeltaTime)
 
 		if (currentWaitTime > maxWaitTime)
 		{
+
+			auto packageManager = WarhouseHelpers::GetPackageManager(GetWorld());
 			packagesBeingRemoved = true;
 			for (auto packageToRemove : packages)
 			{
 				const int packageValue = packageToRemove->GetPackageValue();
+				packageManager->RemovePackage(packageToRemove);
 				packageToRemove->Destroy();
 
 				AGameManager* manager = WarhouseHelpers::GetGameManager(GetWorld());
@@ -102,7 +104,8 @@ void APackageCollectionPoint::Tick(float DeltaTime)
 			currentWaitTime = 0;
 			platformAtTop = false;
 			platformMovingDown = true;
-			GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, TEXT("Platform Going down"));
+
+			packageManager->ActivatePackageTimer();
 		}
 
 	}
@@ -117,7 +120,6 @@ void APackageCollectionPoint::Tick(float DeltaTime)
 		if ((actorPos.Z - originalPos.Z) <= 0)
 		{
 			platformMovingDown = false;
-			GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, TEXT("Platform at bottom"));
 		}
 	}
 
@@ -128,7 +130,6 @@ void APackageCollectionPoint::OnOverlapBegin(UPrimitiveComponent* OverlapCompone
 	if (OtherActor->IsA(APackageBase::StaticClass())) {
 		auto package = reinterpret_cast<APackageBase*>(OtherActor);
 		if (packages.Contains(package)) return;
-		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, TEXT("Adding package"));
 		packages.Add(package);
 	}
 }
@@ -136,7 +137,6 @@ void APackageCollectionPoint::OnOverlapBegin(UPrimitiveComponent* OverlapCompone
 void APackageCollectionPoint::OnOverlapEnd(UPrimitiveComponent* OverlapComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex) {
 	if (OtherActor->IsA(APackageBase::StaticClass())) {
 		auto package = reinterpret_cast<APackageBase*>(OtherActor);
-		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, TEXT("Removing package"));
 		if (!packagesBeingRemoved)
 			packages.Remove(package);
 	}
@@ -150,6 +150,4 @@ void APackageCollectionPoint::ButtonPressed()
 	originalPos = GetActorLocation();
 
 	platformMovingUp = true;
-
-	GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, TEXT("Moving Up"));
 }
