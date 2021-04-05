@@ -17,7 +17,7 @@ void AMyPlayerController::PlayerTick(float DeltaTime)
 
 	const int32 controllerId = UGameplayStatics::GetPlayerControllerID(this);
 
-	if (WasInputKeyJustPressed(EKeys::Gamepad_DPad_Left))
+	if (WasInputKeyJustPressed(EKeys::Gamepad_DPad_Left) || WasInputKeyJustPressed(EKeys::Gamepad_LeftStick_Left))
 	{
 		for (auto widget : widgets)
 		{
@@ -26,7 +26,7 @@ void AMyPlayerController::PlayerTick(float DeltaTime)
 		}
 	}
 
-	if (WasInputKeyJustPressed(EKeys::Gamepad_DPad_Right))
+	if (WasInputKeyJustPressed(EKeys::Gamepad_DPad_Right) || WasInputKeyJustPressed(EKeys::Gamepad_LeftStick_Right))
 	{
 		for (auto widget : widgets)
 		{
@@ -62,7 +62,7 @@ void AMyPlayerController::PlayerTick(float DeltaTime)
 		}
 	}
 
-	if (WasInputKeyJustPressed(EKeys::Gamepad_DPad_Up))
+	if (WasInputKeyJustPressed(EKeys::Gamepad_DPad_Up) || WasInputKeyJustPressed(EKeys::Gamepad_LeftStick_Up))
 	{
 		for (auto widget : widgets)
 		{
@@ -71,7 +71,7 @@ void AMyPlayerController::PlayerTick(float DeltaTime)
 		}
 	}
 
-	if (WasInputKeyJustPressed(EKeys::Gamepad_DPad_Down))
+	if (WasInputKeyJustPressed(EKeys::Gamepad_DPad_Down) || WasInputKeyJustPressed(EKeys::Gamepad_LeftStick_Down))
 	{
 		for (auto widget : widgets)
 		{
