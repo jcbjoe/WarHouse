@@ -73,7 +73,6 @@ void APackageManager::ActivatePackageTimer()
 {
 	// Temp list of spawnpoints
 	auto spawnPointsCopy = SpawnPackageLocations;
-	//PackageTimerDelegate.BindUFunction(this, FName("SpawnPackage"), Config, spawnPointsCopy);
 	GetWorld()->GetTimerManager().SetTimer(PackageTimerHandle, this, &APackageManager::NewPackages, PackageTimer, false);
 }
 
