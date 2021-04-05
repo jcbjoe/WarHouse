@@ -34,6 +34,9 @@ protected:
 
 	TArray<AWarhousePawn*> CollidingPlayers;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Billboard")
+		UBillboardComponent* BillboardComponent;
+
 public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;

@@ -4,6 +4,7 @@
 #include "CollectionPointButton.h"
 
 #include "PackageCollectionPoint.h"
+#include "Components/BillboardComponent.h"
 
 // Sets default values
 ACollectionPointButton::ACollectionPointButton()
@@ -31,6 +32,18 @@ ACollectionPointButton::ACollectionPointButton()
 
 	boxComponent->SetBoxExtent(FVector(70, 110, 110));
 	boxComponent->SetRelativeLocation(FVector(0, -60, 40));
+
+	BillboardComponent = CreateDefaultSubobject<UBillboardComponent>(TEXT("Billboard Comp"));
+
+	static ConstructorHelpers::FObjectFinder<UTexture2D> aButtonTex(TEXT("/Game/Assets/JoeAssets/XboxButtons/XboxOne_A.XboxOne_A"));
+
+	BillboardComponent->Sprite = aButtonTex.Object;
+
+	BillboardComponent->SetRelativeLocation({ 0,0,100 });
+
+	BillboardComponent->SetHiddenInGame(false);
+	
+	BillboardComponent->SetupAttachment(RootComponent);
 }
 
 // Called when the game starts or when spawned
