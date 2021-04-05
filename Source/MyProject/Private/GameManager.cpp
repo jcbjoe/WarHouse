@@ -172,5 +172,5 @@ void AGameManager::OnGameEnd()
 
 void AGameManager::ReturnToMainMenu()
 {
-	UGameplayStatics::OpenLevel((UObject*)GetGameInstance(), FName(TEXT("MainMenuScene")));
+	UGameplayStatics::OpenLevel(GetWorld(), FName(TEXT("MainMenuScene")));
 }
