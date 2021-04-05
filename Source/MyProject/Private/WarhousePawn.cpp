@@ -94,7 +94,7 @@ AWarhousePawn::AWarhousePawn()
 	progressBar->SetDrawSize(FVector2D(200, 30));
 
 	static ConstructorHelpers::FObjectFinder<UMaterial> decalMat(TEXT("/Game/Assets/JoeAssets/FloorMarker/FloorDecal.FloorDecal"));
-	
+
 	floorDecal = CreateDefaultSubobject<UDecalComponent>(L"Decal");
 
 	floorDecal->SetDecalMaterial(decalMat.Object);
@@ -103,9 +103,9 @@ AWarhousePawn::AWarhousePawn()
 
 	floorDecal->DecalSize = FVector(100, 40, 40);
 	floorDecal->SetRelativeRotation(FRotator::MakeFromEuler({ 0, 90, 0 }));
-	
+
 	floorDecal->SetupAttachment(RootComponent);
-	
+
 
 }
 
@@ -279,7 +279,8 @@ void AWarhousePawn::Tick(float DeltaSeconds)
 						}
 					}
 				}
-			} else
+			}
+			else
 			{
 				floorDecal->SetVisibility(true);
 
@@ -327,7 +328,7 @@ void AWarhousePawn::Tick(float DeltaSeconds)
 
 			if (actor->IsA(APackageBase::StaticClass()))
 			{
-				auto package = reinterpret_cast<APackageBase*>(actor);
+				APackageBase* package = reinterpret_cast<APackageBase*>(actor);
 				if (package->GetHeldBy().Num() > 1) {
 					_batteryCharge -= (MultiHoldingBatteryDrain * DeltaSeconds);
 				}

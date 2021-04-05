@@ -3,10 +3,9 @@
 #include "WarhousePawn.h"
 #include "Kismet/GameplayStatics.h"
 #include "MyGameInstance.h" 
+#include "WarhouseHelpers.h"
 
 #include "PlayerManager.h"
-
-#include "WarhouseHelpers.h"
 // Sets default values
 APlayerManager::APlayerManager()
 {
