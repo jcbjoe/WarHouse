@@ -48,7 +48,6 @@ void APackageCollectionPoint::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-
 	if (platformMovingUp)
 	{
 		auto actorPos = GetActorLocation();

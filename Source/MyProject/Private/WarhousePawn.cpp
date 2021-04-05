@@ -103,18 +103,22 @@ void AWarhousePawn::SetColour(EPlayerColours colour)
 	{
 	case EPlayerColours::White:
 		ShipMeshComponent->SetMaterial(0, white);
+		BeamMeshComponent->SetMaterial(0, white);
 		beamEmitter->SetColorParameter("Colour", FLinearColor::White);
 		break;
 	case EPlayerColours::Red:
 		ShipMeshComponent->SetMaterial(0, red);
+		BeamMeshComponent->SetMaterial(0, red);
 		beamEmitter->SetColorParameter("Colour", FLinearColor::Red);
 		break;
 	case EPlayerColours::Blue:
 		ShipMeshComponent->SetMaterial(0, blue);
+		BeamMeshComponent->SetMaterial(0, blue);
 		beamEmitter->SetColorParameter("Colour", FLinearColor::Blue);
 		break;
 	case EPlayerColours::Yellow:
 		ShipMeshComponent->SetMaterial(0, yellow);
+		BeamMeshComponent->SetMaterial(0, yellow);
 		beamEmitter->SetColorParameter("Colour", FLinearColor::Yellow);
 		break;
 	}

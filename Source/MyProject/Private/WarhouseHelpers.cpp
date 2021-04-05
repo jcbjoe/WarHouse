@@ -2,7 +2,6 @@
 
 
 #include "WarhouseHelpers.h"
-
 #include "Kismet/GameplayStatics.h"
 
 WarhouseHelpers::WarhouseHelpers()
@@ -31,4 +30,9 @@ APackageManager* WarhouseHelpers::GetPackageManager(UObject* world)
 ACameraManager* WarhouseHelpers::GetCameraManager(UObject* world)
 {
 	return reinterpret_cast<ACameraManager*>(UGameplayStatics::GetActorOfClass(world, ACameraManager::StaticClass()));
+}
+
+UMyGameInstance* WarhouseHelpers::GetGameInstance(UObject* world)
+{
+	return reinterpret_cast<UMyGameInstance*>(UGameplayStatics::GetGameInstance(world));
 }

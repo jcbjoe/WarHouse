@@ -8,6 +8,7 @@
 #include "FloatingScore.h"
 #include "PackageCollectionPoint.h"
 #include "PackageManager.h"
+#include "Shutter.h"
 #include "GameManager.generated.h"
 
 UCLASS()
@@ -28,6 +29,9 @@ protected:
 
 	UPROPERTY(Category = Gameplay, EditAnywhere, BlueprintReadWrite)
 		TArray<APackageCollectionPoint*> packageCollectionPoints;
+
+	UPROPERTY(Category = Gameplay, EditAnywhere, BlueprintReadWrite)
+		TArray<AShutter*> shutters;
 
 	USceneComponent* base;
 

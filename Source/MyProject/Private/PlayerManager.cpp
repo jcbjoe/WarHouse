@@ -5,6 +5,8 @@
 #include "MyGameInstance.h" 
 
 #include "PlayerManager.h"
+
+#include "WarhouseHelpers.h"
 // Sets default values
 APlayerManager::APlayerManager()
 {
@@ -21,7 +23,11 @@ void APlayerManager::BeginPlay()
 {
 	Super::BeginPlay();
 
-	UMyGameInstance* instance = reinterpret_cast<UMyGameInstance*>(UGameplayStatics::GetGameInstance(GetWorld()));
+}
+
+void APlayerManager::SpawnPlayers()
+{
+	auto instance = WarhouseHelpers::GetGameInstance(GetWorld());
 
 	bool instancePlayersFound = false;
 	if (instance->playerInfo.Num() != 0) instancePlayersFound = true;
@@ -64,7 +70,8 @@ void APlayerManager::BeginPlay()
 
 			playerController->Possess(playerPawn);
 		}
-	}  else
+	}
+	else
 	{
 		for (int i = 0; i < PlayerCount; ++i)
 		{
@@ -85,7 +92,6 @@ void APlayerManager::BeginPlay()
 			playerController->Possess(playerPawn);
 		}
 	}
-
 }
 
 // Called every frame

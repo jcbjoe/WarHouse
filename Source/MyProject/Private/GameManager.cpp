@@ -2,7 +2,7 @@
 
 
 #include "GameManager.h"
-
+#include "WarhouseHelpers.h"
 #include "PackageSpawnActor.h"
 #include "Kismet/GameplayStatics.h"
 
@@ -21,13 +21,76 @@ AGameManager::AGameManager()
 void AGameManager::BeginPlay()
 {
 	Super::BeginPlay();
-	//add player scores to array
-	playerScores.Add(player0Score);
-	playerScores.Add(player1Score);
-	playerScores.Add(player2Score);
-	playerScores.Add(player3Score);
+
+	auto instance = WarhouseHelpers::GetGameInstance(GetWorld());
+
+	for (auto shutter : shutters)
+	{
+		shutter->Close();
+	}
+
+	for (auto floatingScore : floatingScores)
+	{
+		floatingScore->SetActorHiddenInGame(true);
+	}
+
+	for (auto PackageCollectionPoint : packageCollectionPoints)
+	{
+		PackageCollectionPoint->SetActorHiddenInGame(true);
+	}
+
+	if(instance->playerInfo.Num() == 0)
+	{
+		//add player scores to array
+		playerScores.Add(player0Score);
+		playerScores.Add(player1Score);
+		playerScores.Add(player2Score);
+		playerScores.Add(player3Score);
+
+		for (auto shutter : shutters)
+		{
+			shutter->Open();
+		}
+		
+		for (auto floatingScore : floatingScores)
+		{
+			floatingScore->SetHidden(false);
+		}
+
+		for (auto PackageCollectionPoint : packageCollectionPoints)
+		{
+			PackageCollectionPoint->SetHidden(false);
+		}
+	}
+	else {
+
+		for (int i = 0; i < instance->playerInfo.Num(); ++i)
+		{
+			switch (instance->playerInfo[i].controllerId)
+			{
+				case 0:
+					playerScores.Add(player0Score);
+					break;
+				case 1:
+					playerScores.Add(player1Score);
+					break;
+				case 2:
+					playerScores.Add(player2Score);
+					break;
+				case 3:
+					playerScores.Add(player3Score);
+					break;
+			}
+
+			packageCollectionPoints[i]->SetActorHiddenInGame(false);
+			floatingScores[i]->SetActorHiddenInGame(false);
+			shutters[i]->Open();
+		}
+	}
 
 	GetWorld()->GetTimerManager().SetTimer(GameTimerHandle, this, &AGameManager::OnGameEnd, GameTimer, false);
+
+	WarhouseHelpers::GetPlayerManager(GetWorld())->SpawnPlayers();
 }
 
 // Called every frame
