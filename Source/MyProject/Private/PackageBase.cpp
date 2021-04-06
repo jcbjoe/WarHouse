@@ -131,6 +131,11 @@ float APackageBase::GetPackageWeight()
 	return Package.PackageWeight;
 }
 
+float APackageBase::GetPackageHealth()
+{
+	return PackageHealth;
+}
+
 void APackageBase::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
 {
 	if ((OtherActor != NULL) && (OtherActor != this) && (OtherComp != NULL))
@@ -139,7 +144,7 @@ void APackageBase::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, 
 		if (velocity > 1.0f)
 		{
 			if (PackageHealth > 0.0f)
-				PackageHealth -= 1.0f;
+				PackageHealth -= 0.1f;
 
 			if (PackageHealth < 0.0f)
 				PackageHealth = 0.0f;

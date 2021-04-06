@@ -48,20 +48,14 @@ protected:
 public:
 
 	void InitialisePackage(FConfigPackage pds);
-
 	void StartHolding(AWarhousePawn* player);
-
 	void EndHolding(AWarhousePawn* player);
-
 	TArray<AWarhousePawn*> GetHeldBy() const;
-
 	void SetProgressBarFill(float amount);
-
 	void SetProgressBarVisability(bool visability);
-
 	float GetPackageValue();
-
 	float GetPackageWeight();
+	float GetPackageHealth();
 
 	UFUNCTION()
 		void OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
