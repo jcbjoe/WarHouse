@@ -137,19 +137,19 @@ void AGameManager::UpdateScores()
 		{
 		case 0:
 			//floating->SetText(FText::FromString(FString::FromInt(player0Score)));
-			floating->SetText(FText::AsCurrencyBase(player0Score * 1000, LocalCurrencyCode));
+			floating->SetText(FText::AsCurrencyBase(player0Score * 10, LocalCurrencyCode));
 			break;
 		case 1:
 			//floating->SetText(FText::FromString(FString::FromInt(player1Score)));
-			floating->SetText(FText::AsCurrencyBase(player1Score * 1000, LocalCurrencyCode));
+			floating->SetText(FText::AsCurrencyBase(player1Score * 10, LocalCurrencyCode));
 			break;
 		case 2:
 			//floating->SetText(FText::FromString(FString::FromInt(player2Score)));
-			floating->SetText(FText::AsCurrencyBase(player2Score * 1000, LocalCurrencyCode));
+			floating->SetText(FText::AsCurrencyBase(player2Score * 10, LocalCurrencyCode));
 			break;
 		case 3:
 			//floating->SetText(FText::FromString(FString::FromInt(player3Score)));
-			floating->SetText(FText::AsCurrencyBase(player3Score * 1000, LocalCurrencyCode));
+			floating->SetText(FText::AsCurrencyBase(player3Score * 10, LocalCurrencyCode));
 			break;
 
 		}
