@@ -136,6 +136,16 @@ float APackageBase::GetPackageHealth()
 	return PackageHealth;
 }
 
+bool APackageBase::GetIsBeingCollected()
+{
+	return IsBeingCollected;
+}
+
+void APackageBase::SetIsBeingCollected(bool collected)
+{
+	IsBeingCollected = collected;
+}
+
 void APackageBase::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
 {
 	if ((OtherActor != NULL) && (OtherActor != this) && (OtherComp != NULL))
@@ -143,7 +153,7 @@ void APackageBase::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, 
 		float velocity = this->GetVelocity().Size();
 		if (velocity > 1.0f)
 		{
-			if (PackageHealth > 0.0f)
+			if (PackageHealth > 0.0f && !IsBeingCollected)
 				PackageHealth -= 0.1f;
 
 			if (PackageHealth < 0.0f)

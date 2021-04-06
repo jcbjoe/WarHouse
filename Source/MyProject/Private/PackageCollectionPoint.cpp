@@ -132,6 +132,7 @@ void APackageCollectionPoint::OnOverlapBegin(UPrimitiveComponent* OverlapCompone
 		auto package = reinterpret_cast<APackageBase*>(OtherActor);
 		if (packages.Contains(package)) return;
 		packages.Add(package);
+		package->SetIsBeingCollected(true);
 	}
 }
 
@@ -139,7 +140,10 @@ void APackageCollectionPoint::OnOverlapEnd(UPrimitiveComponent* OverlapComponent
 	if (OtherActor->IsA(APackageBase::StaticClass())) {
 		auto package = reinterpret_cast<APackageBase*>(OtherActor);
 		if (!packagesBeingRemoved)
+		{
 			packages.Remove(package);
+			package->SetIsBeingCollected(false);
+		}
 	}
 }
 

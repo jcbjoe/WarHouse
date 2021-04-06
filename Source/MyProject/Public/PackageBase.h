@@ -39,6 +39,8 @@ protected:
 		float PackageHealth;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Package")
 		float PackageValue;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Package")
+		bool IsBeingCollected = false;
 
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
@@ -56,6 +58,8 @@ public:
 	float GetPackageValue();
 	float GetPackageWeight();
 	float GetPackageHealth();
+	bool GetIsBeingCollected();
+	void SetIsBeingCollected(bool collected);
 
 	UFUNCTION()
 		void OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
