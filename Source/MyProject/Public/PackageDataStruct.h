@@ -25,7 +25,7 @@ struct FConfigPackage
 		float Scale;
 
 	UPROPERTY()
-		TArray<int> ValueRange;
+		TArray<float> ValueRange;
 
 	UPROPERTY()
 		int32 Rarity;

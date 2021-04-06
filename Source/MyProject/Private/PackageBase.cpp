@@ -60,7 +60,7 @@ void APackageBase::InitialisePackage(FConfigPackage pi)
 	PackageValue = FMath::RandRange(Package.ValueRange[0], Package.ValueRange[1]);
 	//simulate physics
 	PackageMesh->SetSimulatePhysics(true);
-	//set rigid body collision notify
+	//set rigid body collision notify (for OnHit function to work)
 	PackageMesh->SetNotifyRigidBodyCollision(true);
 	//assign weight
 	PackageMesh->SetMassOverrideInKg(NAME_None, Package.PackageWeight, true);
@@ -121,7 +121,7 @@ void APackageBase::SetProgressBarVisability(bool visability)
 	progressBar->SetVisibility(visability);
 }
 
-int APackageBase::GetPackageValue()
+float APackageBase::GetPackageValue()
 {
 	return PackageValue;
 }

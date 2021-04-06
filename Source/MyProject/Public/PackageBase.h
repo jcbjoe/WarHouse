@@ -31,14 +31,14 @@ protected:
 		UBoxComponent* collisionMesh = nullptr;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Material")
 		UMaterial* meshMaterial;
-	UPROPERTY(VisibleAnywhere, Category = "Package")
+	UPROPERTY(EditAnywhere, Category = "Package")
 		FConfigPackage Package;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Progress Bar")
 		UWidgetComponent* progressBar;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Package")
 		float PackageHealth;
-
-	int PackageValue;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Package")
+		float PackageValue;
 
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
@@ -59,7 +59,7 @@ public:
 
 	void SetProgressBarVisability(bool visability);
 
-	int GetPackageValue();
+	float GetPackageValue();
 
 	float GetPackageWeight();
 

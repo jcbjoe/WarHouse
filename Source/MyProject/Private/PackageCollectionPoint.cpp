@@ -74,7 +74,7 @@ void APackageCollectionPoint::Tick(float DeltaTime)
 			packagesBeingRemoved = true;
 			for (auto packageToRemove : packages)
 			{
-				const int packageValue = packageToRemove->GetPackageValue();
+				const float packageValue = packageToRemove->GetPackageValue() / 100.0f;
 				packageManager->RemovePackage(packageToRemove);
 				packageToRemove->Destroy();
 
