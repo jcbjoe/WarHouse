@@ -146,6 +146,11 @@ void APackageBase::SetIsBeingCollected(bool collected)
 	IsBeingCollected = collected;
 }
 
+FConfigPackage APackageBase::GetPackageDetails()
+{
+	return Package;
+}
+
 void APackageBase::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
 {
 	if ((OtherActor != NULL) && (OtherActor != this) && (OtherComp != NULL))

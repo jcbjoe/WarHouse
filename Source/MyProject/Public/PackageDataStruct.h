@@ -32,6 +32,8 @@ struct FConfigPackage
 
 	UPROPERTY()
 		float PackageWeight;
+	UPROPERTY()
+		int PackageSizeID;
 
 	FConfigPackage() {};
 

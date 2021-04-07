@@ -34,7 +34,10 @@ public:
 
 	UPROPERTY(Category = Gameplay, EditAnywhere, BlueprintReadWrite)
 		UStaticMeshComponent* base;
-
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Bonus Multiplier")
+		float PackageBonus = 1.0f;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Bonus Multiplier")
+		int PackageCounter;
 
 	UFUNCTION()
 		void OnOverlapBegin(class UPrimitiveComponent* OverlapComponent, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);

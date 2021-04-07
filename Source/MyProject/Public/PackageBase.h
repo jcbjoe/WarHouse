@@ -60,6 +60,7 @@ public:
 	float GetPackageHealth();
 	bool GetIsBeingCollected();
 	void SetIsBeingCollected(bool collected);
+	FConfigPackage GetPackageDetails();
 
 	UFUNCTION()
 		void OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
