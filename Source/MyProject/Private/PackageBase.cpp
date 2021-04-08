@@ -60,15 +60,21 @@ void APackageBase::InitialisePackage(FConfigPackage pi)
 	PackageValue = FMath::RandRange(Package.ValueRange[0], Package.ValueRange[1]);
 	//simulate physics
 	PackageMesh->SetSimulatePhysics(true);
+	//set rigid body collision notify (for OnHit function to work)
+	PackageMesh->SetNotifyRigidBodyCollision(true);
 	//assign weight
 	PackageMesh->SetMassOverrideInKg(NAME_None, Package.PackageWeight, true);
 	progressBar->SetWorldScale3D(FVector(1));
+
+	PackageHealth = 103.0f; //103 because they tale 3 damage on spawn for some reason
 }
 
 // Called when the game starts or when spawned
 void APackageBase::BeginPlay()
 {
 	Super::BeginPlay();
+
+	PackageMesh->OnComponentHit.AddDynamic(this, &APackageBase::OnHit);
 }
 
 // Called every frame
@@ -115,7 +121,7 @@ void APackageBase::SetProgressBarVisability(bool visability)
 	progressBar->SetVisibility(visability);
 }
 
-int APackageBase::GetPackageValue()
+float APackageBase::GetPackageValue()
 {
 	return PackageValue;
 }
@@ -123,4 +129,40 @@ int APackageBase::GetPackageValue()
 float APackageBase::GetPackageWeight()
 {
 	return Package.PackageWeight;
+}
+
+float APackageBase::GetPackageHealth()
+{
+	return PackageHealth;
+}
+
+bool APackageBase::GetIsBeingCollected()
+{
+	return IsBeingCollected;
+}
+
+void APackageBase::SetIsBeingCollected(bool collected)
+{
+	IsBeingCollected = collected;
+}
+
+FConfigPackage APackageBase::GetPackageDetails()
+{
+	return Package;
+}
+
+void APackageBase::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
+{
+	if ((OtherActor != NULL) && (OtherActor != this) && (OtherComp != NULL))
+	{
+		float velocity = this->GetVelocity().Size();
+		if (velocity > 1.0f)
+		{
+			if (PackageHealth > 0.0f && !IsBeingCollected)
+				PackageHealth -= 0.1f;
+
+			if (PackageHealth < 0.0f)
+				PackageHealth = 0.0f;
+		}
+	}
 }

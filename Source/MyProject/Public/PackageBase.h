@@ -31,14 +31,16 @@ protected:
 		UBoxComponent* collisionMesh = nullptr;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Material")
 		UMaterial* meshMaterial;
-	UPROPERTY(VisibleAnywhere, Category = "Package")
+	UPROPERTY(EditAnywhere, Category = "Package")
 		FConfigPackage Package;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Progress Bar")
 		UWidgetComponent* progressBar;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Package")
 		float PackageHealth;
-
-	int PackageValue;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Package")
+		float PackageValue;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Package")
+		bool IsBeingCollected = false;
 
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
@@ -48,19 +50,19 @@ protected:
 public:
 
 	void InitialisePackage(FConfigPackage pds);
-
 	void StartHolding(AWarhousePawn* player);
-
 	void EndHolding(AWarhousePawn* player);
-
 	TArray<AWarhousePawn*> GetHeldBy() const;
-
 	void SetProgressBarFill(float amount);
-
 	void SetProgressBarVisability(bool visability);
-
-	int GetPackageValue();
-
+	float GetPackageValue();
 	float GetPackageWeight();
+	float GetPackageHealth();
+	bool GetIsBeingCollected();
+	void SetIsBeingCollected(bool collected);
+	FConfigPackage GetPackageDetails();
+
+	UFUNCTION()
+		void OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
 
 };

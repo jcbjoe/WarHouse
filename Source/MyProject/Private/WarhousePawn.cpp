@@ -235,10 +235,13 @@ void AWarhousePawn::Tick(float DeltaSeconds)
 			beamEmitter->SetVisibility(false);
 			floorDecal->SetVisibility(false);
 
-			if (PhysicsHandle->GetGrabbedComponent() != nullptr) {
+			if (PhysicsHandle->GetGrabbedComponent() != nullptr)
+			{
 				// Player has let go of package
-				reinterpret_cast<APackageBase*>(PhysicsHandle->GetGrabbedComponent()->GetOwner())->EndHolding(this);
-
+				if (PhysicsHandle->GetGrabbedComponent()->GetOwner()->IsA(APackageBase::StaticClass()))
+				{
+					reinterpret_cast<APackageBase*>(PhysicsHandle->GetGrabbedComponent()->GetOwner())->EndHolding(this);
+				}
 				PhysicsHandle->ReleaseComponent();
 			}
 		}

@@ -74,7 +74,8 @@ void APackageCollectionPoint::Tick(float DeltaTime)
 			packagesBeingRemoved = true;
 			for (auto packageToRemove : packages)
 			{
-				const int packageValue = packageToRemove->GetPackageValue();
+				//divide package health by 100 to get the percentage of what it is worth i.e. more damge, less value
+				const float packageValue = (packageToRemove->GetPackageValue() * (packageToRemove->GetPackageHealth() / 100.0f)) * PackageBonus;
 				packageManager->RemovePackage(packageToRemove);
 				packageToRemove->Destroy();
 
@@ -131,6 +132,28 @@ void APackageCollectionPoint::OnOverlapBegin(UPrimitiveComponent* OverlapCompone
 		auto package = reinterpret_cast<APackageBase*>(OtherActor);
 		if (packages.Contains(package)) return;
 		packages.Add(package);
+		package->SetIsBeingCollected(true);
+		PackageCounter += 1;
+		if (PackageCounter > 1)
+		{
+			switch (package->GetPackageDetails().PackageSizeID)
+			{
+			case 1://big
+				PackageBonus += 0.4f;
+				break;
+			case 2://med
+				PackageBonus += 0.2f;
+				break;
+			case 3://small
+				PackageBonus += 0.1f;
+				break;
+			case 4://that other one - long?
+				PackageBonus += 0.3f;
+				break;
+			}
+		}
+
+
 	}
 }
 
@@ -138,7 +161,30 @@ void APackageCollectionPoint::OnOverlapEnd(UPrimitiveComponent* OverlapComponent
 	if (OtherActor->IsA(APackageBase::StaticClass())) {
 		auto package = reinterpret_cast<APackageBase*>(OtherActor);
 		if (!packagesBeingRemoved)
+		{
 			packages.Remove(package);
+			package->SetIsBeingCollected(false);
+			PackageCounter -= 1;
+			if (PackageCounter > 1)
+			{
+				switch (package->GetPackageDetails().PackageSizeID)
+				{
+				case 1://big
+					PackageBonus -= 0.4f;
+					break;
+				case 2://med
+					PackageBonus -= 0.2f;
+					break;
+				case 3://small
+					PackageBonus -= 0.1f;
+					break;
+				case 4://that other one - long?
+					PackageBonus -= 0.3f;
+					break;
+				}
+			}
+
+		}
 	}
 }
 

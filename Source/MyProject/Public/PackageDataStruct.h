@@ -25,13 +25,15 @@ struct FConfigPackage
 		float Scale;
 
 	UPROPERTY()
-		TArray<int> ValueRange;
+		TArray<float> ValueRange;
 
 	UPROPERTY()
 		int32 Rarity;
 
 	UPROPERTY()
 		float PackageWeight;
+	UPROPERTY()
+		int PackageSizeID;
 
 	FConfigPackage() {};
 

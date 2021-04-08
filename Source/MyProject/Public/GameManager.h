@@ -35,13 +35,13 @@ protected:
 
 	USceneComponent* base;
 
-	int player0Score;
-	int player1Score;
-	int player2Score;
-	int player3Score;
+	float player0Score;
+	float player1Score;
+	float player2Score;
+	float player3Score;
 
 	UPROPERTY(VisibleAnywhere)
-		TArray<int> playerScores;
+		TArray<float> playerScores;
 	UPROPERTY(EditAnywhere)
 		float GameTimer;
 	UPROPERTY(EditAnywhere)
@@ -55,11 +55,13 @@ protected:
 	UPROPERTY(EditAnywhere)
 		AFloatingScore* GameTimerText;
 
+	FString LocalCurrencyCode;
+
 public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-	void IncrementPlayerScore(int playerIndex, int amount = 1);
+	void IncrementPlayerScore(int playerIndex, float amount = 1);
 
 	void UpdateScores();
 

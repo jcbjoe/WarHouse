@@ -5,6 +5,7 @@
 #include "WarhouseHelpers.h"
 #include "PackageSpawnActor.h"
 #include "Kismet/GameplayStatics.h"
+#include "Kismet/KismetSystemLibrary.h"
 
 // Sets default values
 AGameManager::AGameManager()
@@ -22,6 +23,7 @@ void AGameManager::BeginPlay()
 {
 	Super::BeginPlay();
 
+	LocalCurrencyCode = UKismetSystemLibrary::GetLocalCurrencyCode();
 	auto instance = WarhouseHelpers::GetGameInstance(GetWorld());
 
 	for (auto shutter : shutters)
@@ -39,7 +41,7 @@ void AGameManager::BeginPlay()
 		PackageCollectionPoint->SetActorHiddenInGame(true);
 	}
 
-	if(instance->playerInfo.Num() == 0)
+	if (instance->playerInfo.Num() == 0)
 	{
 		//add player scores to array
 		playerScores.Add(player0Score);
@@ -51,7 +53,7 @@ void AGameManager::BeginPlay()
 		{
 			shutter->Open();
 		}
-		
+
 		for (auto floatingScore : floatingScores)
 		{
 			floatingScore->SetHidden(false);
@@ -68,18 +70,18 @@ void AGameManager::BeginPlay()
 		{
 			switch (instance->playerInfo[i].controllerId)
 			{
-				case 0:
-					playerScores.Add(player0Score);
-					break;
-				case 1:
-					playerScores.Add(player1Score);
-					break;
-				case 2:
-					playerScores.Add(player2Score);
-					break;
-				case 3:
-					playerScores.Add(player3Score);
-					break;
+			case 0:
+				playerScores.Add(player0Score);
+				break;
+			case 1:
+				playerScores.Add(player1Score);
+				break;
+			case 2:
+				playerScores.Add(player2Score);
+				break;
+			case 3:
+				playerScores.Add(player3Score);
+				break;
 			}
 
 			packageCollectionPoints[i]->SetActorHiddenInGame(false);
@@ -104,7 +106,7 @@ void AGameManager::Tick(float DeltaTime)
 	GameTimerText->SetText(FText::FromString(FString::FromInt(GameTimer)));
 }
 
-void AGameManager::IncrementPlayerScore(int playerIndex, int amount)
+void AGameManager::IncrementPlayerScore(int playerIndex, float amount)
 {
 	switch (playerIndex)
 	{
@@ -134,16 +136,20 @@ void AGameManager::UpdateScores()
 		switch (index)
 		{
 		case 0:
-			floating->SetText(FText::FromString(FString::FromInt(player0Score)));
+			//floating->SetText(FText::FromString(FString::FromInt(player0Score)));
+			floating->SetText(FText::AsCurrencyBase(player0Score * 10, LocalCurrencyCode));
 			break;
 		case 1:
-			floating->SetText(FText::FromString(FString::FromInt(player1Score)));
+			//floating->SetText(FText::FromString(FString::FromInt(player1Score)));
+			floating->SetText(FText::AsCurrencyBase(player1Score * 10, LocalCurrencyCode));
 			break;
 		case 2:
-			floating->SetText(FText::FromString(FString::FromInt(player2Score)));
+			//floating->SetText(FText::FromString(FString::FromInt(player2Score)));
+			floating->SetText(FText::AsCurrencyBase(player2Score * 10, LocalCurrencyCode));
 			break;
 		case 3:
-			floating->SetText(FText::FromString(FString::FromInt(player3Score)));
+			//floating->SetText(FText::FromString(FString::FromInt(player3Score)));
+			floating->SetText(FText::AsCurrencyBase(player3Score * 10, LocalCurrencyCode));
 			break;
 
 		}

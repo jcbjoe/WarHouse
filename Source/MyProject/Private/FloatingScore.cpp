@@ -1,7 +1,8 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 
 #include "FloatingScore.h"
+#include "Kismet/KismetSystemLibrary.h"
 
 // Sets default values
 AFloatingScore::AFloatingScore()
@@ -18,8 +19,9 @@ AFloatingScore::AFloatingScore()
 	text->SetupAttachment(RootComponent);
 
 
-	text->SetText(FText::FromString(FString::FromInt(0)));
-
+	//text->SetText(FText::FromString(FString::FromInt(0)));
+	FString LocalCurrencyCode = UKismetSystemLibrary::GetLocalCurrencyCode();
+	text->SetText(FText::AsCurrencyBase(0.00, LocalCurrencyCode));
 }
 
 // Called when the game starts or when spawned
@@ -39,4 +41,3 @@ void AFloatingScore::SetText(FText textToSet)
 {
 	text->SetText(textToSet);
 }
-
