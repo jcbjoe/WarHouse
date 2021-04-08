@@ -103,8 +103,7 @@ void AGameManager::Tick(float DeltaTime)
 	GameTimer -= (1 * DeltaTime);
 	if (GameTimer < 0)
 		GameTimer = 0;
-	GameTimerText->SetText(FText::FromString(FString::FromInt(GameTimer)));
-
+	//set clock timer text
 	ClockTimerText->SetTime(GameTimer);
 }
 

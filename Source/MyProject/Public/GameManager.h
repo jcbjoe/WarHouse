@@ -54,8 +54,6 @@ protected:
 	FTimerHandle DelayTimerHandle;
 
 	UPROPERTY(EditAnywhere)
-		AFloatingScore* GameTimerText;
-	UPROPERTY(EditAnywhere)
 		AWarhouseClock* ClockTimerText;
 
 	FString LocalCurrencyCode;

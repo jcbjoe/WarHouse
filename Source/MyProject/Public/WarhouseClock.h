@@ -26,9 +26,8 @@ protected:
 		UStaticMeshComponent* ClockMesh;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Display")
 		UTextRenderComponent* TimeText;
-
-	FString LocalTimeCode;
-
+	UPROPERTY(Category = Gameplay, EditAnywhere, BlueprintReadWrite)
+		USceneComponent* base;
 public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;

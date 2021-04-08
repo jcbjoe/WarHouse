@@ -9,12 +9,16 @@ AWarhouseClock::AWarhouseClock()
 {
 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
+	//set root
+	base = CreateDefaultSubobject<USceneComponent>(TEXT("Base"));
+	RootComponent = base;
 	//set up mesh
 	ClockMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ClockMesh"));
-	RootComponent = ClockMesh;
+	ClockMesh->SetupAttachment(RootComponent);
 	//set up text component
 	TimeText = CreateDefaultSubobject< UTextRenderComponent>(TEXT("TimeText"));
 	TimeText->SetupAttachment(RootComponent);
+
 }
 
 // Called when the game starts or when spawned
