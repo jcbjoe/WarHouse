@@ -104,6 +104,8 @@ void AGameManager::Tick(float DeltaTime)
 	if (GameTimer < 0)
 		GameTimer = 0;
 	GameTimerText->SetText(FText::FromString(FString::FromInt(GameTimer)));
+
+	ClockTimerText->SetTime(GameTimer);
 }
 
 void AGameManager::IncrementPlayerScore(int playerIndex, float amount)

@@ -9,6 +9,7 @@
 #include "PackageCollectionPoint.h"
 #include "PackageManager.h"
 #include "Shutter.h"
+#include "WarhouseClock.h"
 #include "GameManager.generated.h"
 
 UCLASS()
@@ -54,6 +55,8 @@ protected:
 
 	UPROPERTY(EditAnywhere)
 		AFloatingScore* GameTimerText;
+	UPROPERTY(EditAnywhere)
+		AWarhouseClock* ClockTimerText;
 
 	FString LocalCurrencyCode;
 
