@@ -8,6 +8,7 @@
 #include "GameFramework/Actor.h"
 #include "PackageBase.h"
 #include "PackageManager.h"
+#include "DoorLight.h"
 #include "PackageCollectionPoint.generated.h"
 
 UCLASS()
@@ -38,6 +39,9 @@ public:
 		float PackageBonus = 1.0f;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Bonus Multiplier")
 		int PackageCounter;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Bonus Multiplier")
+		ADoorLight* doorLight;
 
 	UFUNCTION()
 		void OnOverlapBegin(class UPrimitiveComponent* OverlapComponent, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);

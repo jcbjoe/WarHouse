@@ -50,6 +50,8 @@ void APackageCollectionPoint::Tick(float DeltaTime)
 
 	if (platformMovingUp)
 	{
+		doorLight->SetSpinning(true);
+		
 		auto actorPos = GetActorLocation();
 
 		actorPos.Z += moveIncrement;
@@ -121,6 +123,7 @@ void APackageCollectionPoint::Tick(float DeltaTime)
 		if ((actorPos.Z - originalPos.Z) <= 0)
 		{
 			platformMovingDown = false;
+			doorLight->SetSpinning(false);
 		}
 	}
 
