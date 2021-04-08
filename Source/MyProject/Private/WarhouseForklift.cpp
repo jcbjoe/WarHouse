@@ -30,9 +30,12 @@ void AWarhouseForklift::BeginPlay()
 
 }
 
-void AWarhouseForklift::MoveForklift()
+void AWarhouseForklift::MoveForklift(float deltaTime)
 {
-
+	FVector Location = GetActorLocation();
+	FVector Direction = GetActorForwardVector();
+	Location += Direction * Speed * deltaTime;
+	SetActorLocation(Location);
 }
 
 void AWarhouseForklift::Stop()
@@ -40,7 +43,7 @@ void AWarhouseForklift::Stop()
 	isMoving = false;
 }
 
-void AWarhouseForklift::RotateWheels(float deltaTime)
+void AWarhouseForklift::RotateWheels()
 {
 	WheelRotation += 1;
 	FrontWheels->SetRelativeRotation(FRotator::MakeFromEuler({ 0, -WheelRotation, 0 }));
@@ -53,6 +56,7 @@ void AWarhouseForklift::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 	if (isMoving)
 	{
-		RotateWheels(DeltaTime);
+		MoveForklift(DeltaTime);
+		RotateWheels();
 	}
 }

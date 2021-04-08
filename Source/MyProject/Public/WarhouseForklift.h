@@ -35,14 +35,16 @@ protected:
 		float ForkliftWaitSeconds;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Forklift Data")
 		bool isMoving;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Forklift Data")
+		float Speed = 500.0f;
 
 	float WheelRotation = 0;
 
 	FTimerHandle ForkliftTimerHandle;
 
-	void MoveForklift();
+	void MoveForklift(float DeltaTime);
 	void Stop();
-	void RotateWheels(float deltaTime);
+	void RotateWheels();
 
 public:
 	// Called every frame
