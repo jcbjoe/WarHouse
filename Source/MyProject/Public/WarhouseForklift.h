@@ -33,11 +33,20 @@ protected:
 		UStaticMeshComponent* Pallet;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Forklift Data")
 		float ForkliftWaitSeconds;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Forklift Data")
+		bool isMoving;
+
+	float WheelRotation = 0;
 
 	FTimerHandle ForkliftTimerHandle;
+
+	void MoveForklift();
+	void Stop();
+	void RotateWheels(float deltaTime);
 
 public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
+
 
 };

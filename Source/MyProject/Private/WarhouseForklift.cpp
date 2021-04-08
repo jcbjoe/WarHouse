@@ -30,9 +30,29 @@ void AWarhouseForklift::BeginPlay()
 
 }
 
+void AWarhouseForklift::MoveForklift()
+{
+
+}
+
+void AWarhouseForklift::Stop()
+{
+	isMoving = false;
+}
+
+void AWarhouseForklift::RotateWheels(float deltaTime)
+{
+	WheelRotation += 1;
+	FrontWheels->SetRelativeRotation(FRotator::MakeFromEuler({ 0, -WheelRotation, 0 }));
+	BackWheels->SetRelativeRotation(FRotator::MakeFromEuler({ 0, -WheelRotation, 0 }));
+}
+
 // Called every frame
 void AWarhouseForklift::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
+	if (isMoving)
+	{
+		RotateWheels(DeltaTime);
+	}
 }
