@@ -87,6 +87,7 @@ void AGameManager::BeginPlay()
 			packageCollectionPoints[i]->SetActorHiddenInGame(false);
 			floatingScores[i]->SetActorHiddenInGame(false);
 			shutters[i]->Open();
+			shutters[i]->SetColour(instance->playerInfo[i].colour);
 		}
 	}
 

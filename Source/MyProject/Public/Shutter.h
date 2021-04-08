@@ -3,6 +3,8 @@
 #pragma once
 
 #include "CoreMinimal.h"
+
+#include "PlayerColours.h"
 #include "GameFramework/Actor.h"
 #include "Shutter.generated.h"
 
@@ -31,4 +33,12 @@ public:
 	void Open();
 
 	void Close();
+
+	void SetColour(EPlayerColours colour);
+
+private:
+	UMaterial* red;
+	UMaterial* blue;
+	UMaterial* yellow;
+	UMaterial* white;
 };
