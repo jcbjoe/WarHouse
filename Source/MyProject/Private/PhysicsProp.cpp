@@ -11,7 +11,6 @@ APhysicsProp::APhysicsProp()
 	//set up mesh
 	PropMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("packageMesh"));
 	PropMesh->SetNotifyRigidBodyCollision(true);
-
 	RootComponent = PropMesh;
 	//set health
 	PropHealth = 100.0f;
