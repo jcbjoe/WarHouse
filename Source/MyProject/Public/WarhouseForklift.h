@@ -3,9 +3,12 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Components/TimelineComponent.h"
 #include "GameFramework/Actor.h"
 #include "Kismet/GameplayStatics.h"
 #include "WarhouseForklift.generated.h"
+
+class UCurveFloat;
 
 UCLASS()
 class MYPROJECT_API AWarhouseForklift : public AActor
@@ -18,6 +21,8 @@ public:
 
 	UFUNCTION()
 		void DeliverPackages();
+	UFUNCTION()
+		void TimelineProgress(float value);
 
 protected:
 	// Called when the game starts or when spawned
@@ -35,11 +40,22 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Mesh")
 		UStaticMeshComponent* Pallet;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Forklift Data")
-		float ForkliftWaitSeconds;
+		float ForkliftWaitSeconds = 5.0f;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Forklift Data")
 		bool isMoving;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Forklift Data")
 		float Speed = 500.0f;
+
+	//movement
+	FTimeline CurveTimeline;
+	UPROPERTY(EditAnywhere, Category = "Timeline")
+		UCurveFloat* CurveFloat;
+	UPROPERTY()
+		FVector StartLocation;
+	UPROPERTY()
+		FVector EndLocation;
+	UPROPERTY(EditAnywhere, Category = "Timeline")
+		float OffsetZ;
 
 	float WheelRotation = 0;
 

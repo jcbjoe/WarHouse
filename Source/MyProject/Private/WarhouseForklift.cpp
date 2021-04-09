@@ -27,11 +27,30 @@ void AWarhouseForklift::DeliverPackages()
 {
 }
 
+void AWarhouseForklift::TimelineProgress(float value)
+{
+	FVector NewLocation = FMath::Lerp(StartLocation, EndLocation, value);
+	//SetActorLocation(NewLocation);
+	BaseMesh->SetWorldLocation(NewLocation);
+}
+
 // Called when the game starts or when spawned
 void AWarhouseForklift::BeginPlay()
 {
 	Super::BeginPlay();
 
+	if (CurveFloat)
+	{
+		FOnTimelineFloat TimelineProgress;
+		TimelineProgress.BindUFunction(this, FName("TimelineProgress"));
+		CurveTimeline.AddInterpFloat(CurveFloat, TimelineProgress);
+		CurveTimeline.SetLooping(true);
+
+		StartLocation = EndLocation = GetActorLocation();
+		EndLocation.Z = OffsetZ;
+
+		CurveTimeline.PlayFromStart();
+	}
 }
 
 void AWarhouseForklift::MoveForklift(float deltaTime)
@@ -56,13 +75,14 @@ void AWarhouseForklift::RotateWheels()
 
 void AWarhouseForklift::WobbleBody()
 {
-
+	FVector Location = GetActorLocation();
 }
 
 // Called every frame
 void AWarhouseForklift::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+	CurveTimeline.TickTimeline(DeltaTime);
 	if (isMoving)
 	{
 		MoveForklift(DeltaTime);
