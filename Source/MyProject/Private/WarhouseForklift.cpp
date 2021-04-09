@@ -33,11 +33,19 @@ void AWarhouseForklift::ResumeMovement()
 	isMoving = true;
 }
 
+void AWarhouseForklift::GetReadyToDeliver()
+{
+	//spawn packages on pallet
+
+	//set off
+	GetWorld()->GetTimerManager().SetTimer(ForkliftTimerHandle, this, &AWarhouseForklift::ResumeMovement, ForkliftWaitSeconds, false);
+}
+
 // Called when the game starts or when spawned
 void AWarhouseForklift::BeginPlay()
 {
 	Super::BeginPlay();
-	GetWorld()->GetTimerManager().SetTimer(ForkliftTimerHandle, this, &AWarhouseForklift::DeliverPackages, ForkliftWaitSeconds, false);
+	//GetWorld()->GetTimerManager().SetTimer(ForkliftTimerHandle, this, &AWarhouseForklift::ResumeMovement, ForkliftWaitSeconds, false);
 }
 
 void AWarhouseForklift::MoveForklift(float deltaTime)

@@ -23,6 +23,8 @@ public:
 		void DeliverPackages();
 	UFUNCTION()
 		void ResumeMovement();
+	UFUNCTION()
+		void GetReadyToDeliver();
 
 protected:
 	// Called when the game starts or when spawned

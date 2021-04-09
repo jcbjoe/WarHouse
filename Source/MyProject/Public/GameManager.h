@@ -10,6 +10,7 @@
 #include "PackageManager.h"
 #include "Shutter.h"
 #include "WarhouseClock.h"
+#include "WarhouseForklift.h"
 #include "GameManager.generated.h"
 
 UCLASS()
@@ -33,6 +34,8 @@ protected:
 
 	UPROPERTY(Category = Gameplay, EditAnywhere, BlueprintReadWrite)
 		TArray<AShutter*> shutters;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Forklift")
+		AWarhouseForklift* Forklift;
 
 	USceneComponent* base;
 
@@ -47,11 +50,15 @@ protected:
 		float GameTimer;
 	UPROPERTY(EditAnywhere)
 		float DelayTimer;
+	UPROPERTY(EditAnywhere)
+		float ForkliftTimer;
 
 	//Handle to manage the game timer
 	FTimerHandle GameTimerHandle;
 	//Handle to manage delays
 	FTimerHandle DelayTimerHandle;
+	//Handle to manage delays
+	FTimerHandle ForkliftTimerHandle;
 
 	UPROPERTY(EditAnywhere)
 		AWarhouseClock* ClockTimerText;
@@ -75,4 +82,6 @@ public:
 		void OnGameEnd();
 	UFUNCTION()
 		void ReturnToMainMenu(); //could move this into the helper class?
+	UFUNCTION()
+		void ActivateForklift();
 };

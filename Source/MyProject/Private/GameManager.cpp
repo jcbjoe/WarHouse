@@ -89,7 +89,7 @@ void AGameManager::BeginPlay()
 			shutters[i]->Open();
 		}
 	}
-
+	GetWorld()->GetTimerManager().SetTimer(ForkliftTimerHandle, this, &AGameManager::ActivateForklift, ForkliftTimer, false);
 	GetWorld()->GetTimerManager().SetTimer(GameTimerHandle, this, &AGameManager::OnGameEnd, GameTimer, false);
 
 	WarhouseHelpers::GetPlayerManager(GetWorld())->SpawnPlayers();
@@ -105,6 +105,7 @@ void AGameManager::Tick(float DeltaTime)
 		GameTimer = 0;
 	//set clock timer text
 	ClockTimerText->SetTime(GameTimer);
+
 }
 
 void AGameManager::IncrementPlayerScore(int playerIndex, float amount)
@@ -180,4 +181,9 @@ void AGameManager::OnGameEnd()
 void AGameManager::ReturnToMainMenu()
 {
 	UGameplayStatics::OpenLevel(GetWorld(), FName(TEXT("MainMenuScene")));
+}
+
+void AGameManager::ActivateForklift()
+{
+	Forklift->GetReadyToDeliver();
 }
