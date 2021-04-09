@@ -45,7 +45,6 @@ void AWarhouseForklift::GetReadyToDeliver()
 void AWarhouseForklift::BeginPlay()
 {
 	Super::BeginPlay();
-	//GetWorld()->GetTimerManager().SetTimer(ForkliftTimerHandle, this, &AWarhouseForklift::ResumeMovement, ForkliftWaitSeconds, false);
 }
 
 void AWarhouseForklift::MoveForklift(float deltaTime)
