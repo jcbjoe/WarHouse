@@ -22,7 +22,7 @@ public:
 	UFUNCTION()
 		void DeliverPackages();
 	UFUNCTION()
-		void TimelineProgress(float value);
+		void ResumeMovement();
 
 protected:
 	// Called when the game starts or when spawned
@@ -40,32 +40,19 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Mesh")
 		UStaticMeshComponent* Pallet;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Forklift Data")
-		float ForkliftWaitSeconds = 5.0f;
+		float ForkliftWaitSeconds = 2.0f;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Forklift Data")
 		bool isMoving;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Forklift Data")
 		float Speed = 500.0f;
 
-	//movement
-	FTimeline CurveTimeline;
-	UPROPERTY(EditAnywhere, Category = "Timeline")
-		UCurveFloat* CurveFloat;
-	UPROPERTY()
-		FVector StartLocation;
-	UPROPERTY()
-		FVector EndLocation;
-	UPROPERTY(EditAnywhere, Category = "Timeline")
-		float OffsetZ;
-
 	float WheelRotation = 0;
 
 	FTimerHandle ForkliftTimerHandle;
 
-	void MoveForklift(float DeltaTime);
 	void Stop();
 	void RotateWheels();
-	void WobbleBody();
-
+	void MoveForklift(float DeltaTime);
 public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;

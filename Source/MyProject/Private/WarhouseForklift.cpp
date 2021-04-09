@@ -25,36 +25,24 @@ AWarhouseForklift::AWarhouseForklift()
 
 void AWarhouseForklift::DeliverPackages()
 {
+	Stop();
 }
 
-void AWarhouseForklift::TimelineProgress(float value)
+void AWarhouseForklift::ResumeMovement()
 {
-	FVector NewLocation = FMath::Lerp(StartLocation, EndLocation, value);
-	//SetActorLocation(NewLocation);
-	BaseMesh->SetWorldLocation(NewLocation);
+	isMoving = true;
 }
 
 // Called when the game starts or when spawned
 void AWarhouseForklift::BeginPlay()
 {
 	Super::BeginPlay();
-
-	if (CurveFloat)
-	{
-		FOnTimelineFloat TimelineProgress;
-		TimelineProgress.BindUFunction(this, FName("TimelineProgress"));
-		CurveTimeline.AddInterpFloat(CurveFloat, TimelineProgress);
-		CurveTimeline.SetLooping(true);
-
-		StartLocation = EndLocation = GetActorLocation();
-		EndLocation.Z = OffsetZ;
-
-		CurveTimeline.PlayFromStart();
-	}
+	GetWorld()->GetTimerManager().SetTimer(ForkliftTimerHandle, this, &AWarhouseForklift::DeliverPackages, ForkliftWaitSeconds, false);
 }
 
 void AWarhouseForklift::MoveForklift(float deltaTime)
 {
+	isMoving = true;
 	FVector Location = GetActorLocation();
 	FVector Direction = GetActorForwardVector();
 	Location += Direction * Speed * deltaTime;
@@ -64,6 +52,7 @@ void AWarhouseForklift::MoveForklift(float deltaTime)
 void AWarhouseForklift::Stop()
 {
 	isMoving = false;
+	GetWorld()->GetTimerManager().SetTimer(ForkliftTimerHandle, this, &AWarhouseForklift::ResumeMovement, ForkliftWaitSeconds, false);
 }
 
 void AWarhouseForklift::RotateWheels()
@@ -73,16 +62,11 @@ void AWarhouseForklift::RotateWheels()
 	BackWheels->SetRelativeRotation(FRotator::MakeFromEuler({ 0, -WheelRotation, 0 }));
 }
 
-void AWarhouseForklift::WobbleBody()
-{
-	FVector Location = GetActorLocation();
-}
-
 // Called every frame
 void AWarhouseForklift::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	CurveTimeline.TickTimeline(DeltaTime);
+
 	if (isMoving)
 	{
 		MoveForklift(DeltaTime);
