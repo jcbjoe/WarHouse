@@ -16,6 +16,9 @@ public:
 	// Sets default values for this actor's properties
 	AWarhouseForklift();
 
+	UFUNCTION()
+		void DeliverPackages();
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -26,9 +29,9 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Mesh")
 		UStaticMeshComponent* BackWheels;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Mesh")
-		UStaticMeshComponent* LiftBit;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Mesh")
 		UStaticMeshComponent* Blades;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Mesh")
+		UStaticMeshComponent* LiftBit;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Mesh")
 		UStaticMeshComponent* Pallet;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Forklift Data")
@@ -45,6 +48,7 @@ protected:
 	void MoveForklift(float DeltaTime);
 	void Stop();
 	void RotateWheels();
+	void WobbleBody();
 
 public:
 	// Called every frame

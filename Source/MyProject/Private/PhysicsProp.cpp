@@ -14,6 +14,8 @@ APhysicsProp::APhysicsProp()
 	RootComponent = PropMesh;
 	//set health
 	PropHealth = 100.0f;
+	//simulate physics
+	PropMesh->SetSimulatePhysics(true);
 
 }
 

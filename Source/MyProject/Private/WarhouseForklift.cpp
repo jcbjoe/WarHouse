@@ -23,6 +23,10 @@ AWarhouseForklift::AWarhouseForklift()
 	Pallet->SetupAttachment(RootComponent);
 }
 
+void AWarhouseForklift::DeliverPackages()
+{
+}
+
 // Called when the game starts or when spawned
 void AWarhouseForklift::BeginPlay()
 {
@@ -48,6 +52,11 @@ void AWarhouseForklift::RotateWheels()
 	WheelRotation += 1;
 	FrontWheels->SetRelativeRotation(FRotator::MakeFromEuler({ 0, -WheelRotation, 0 }));
 	BackWheels->SetRelativeRotation(FRotator::MakeFromEuler({ 0, -WheelRotation, 0 }));
+}
+
+void AWarhouseForklift::WobbleBody()
+{
+
 }
 
 // Called every frame
