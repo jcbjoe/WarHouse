@@ -90,7 +90,7 @@ void AGameManager::BeginPlay()
 			shutters[i]->SetColour(instance->playerInfo[i].colour);
 		}
 	}
-
+	GetWorld()->GetTimerManager().SetTimer(ForkliftTimerHandle, this, &AGameManager::ActivateForklift, ForkliftTimer, false);
 	GetWorld()->GetTimerManager().SetTimer(GameTimerHandle, this, &AGameManager::OnGameEnd, GameTimer, false);
 
 	WarhouseHelpers::GetPlayerManager(GetWorld())->SpawnPlayers();
@@ -106,6 +106,7 @@ void AGameManager::Tick(float DeltaTime)
 		GameTimer = 0;
 	//set clock timer text
 	ClockTimerText->SetTime(GameTimer);
+
 }
 
 void AGameManager::IncrementPlayerScore(int playerIndex, float amount)
@@ -138,19 +139,15 @@ void AGameManager::UpdateScores()
 		switch (index)
 		{
 		case 0:
-			//floating->SetText(FText::FromString(FString::FromInt(player0Score)));
 			floating->SetText(FText::AsCurrencyBase(player0Score * 10, LocalCurrencyCode));
 			break;
 		case 1:
-			//floating->SetText(FText::FromString(FString::FromInt(player1Score)));
 			floating->SetText(FText::AsCurrencyBase(player1Score * 10, LocalCurrencyCode));
 			break;
 		case 2:
-			//floating->SetText(FText::FromString(FString::FromInt(player2Score)));
 			floating->SetText(FText::AsCurrencyBase(player2Score * 10, LocalCurrencyCode));
 			break;
 		case 3:
-			//floating->SetText(FText::FromString(FString::FromInt(player3Score)));
 			floating->SetText(FText::AsCurrencyBase(player3Score * 10, LocalCurrencyCode));
 			break;
 
@@ -181,4 +178,9 @@ void AGameManager::OnGameEnd()
 void AGameManager::ReturnToMainMenu()
 {
 	UGameplayStatics::OpenLevel(GetWorld(), FName(TEXT("MainMenuScene")));
+}
+
+void AGameManager::ActivateForklift()
+{
+	Forklift->GetReadyToDeliver();
 }
