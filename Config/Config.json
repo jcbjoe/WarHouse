@@ -13,7 +13,7 @@
         200
       ],
       "Rarity": 10,
-      "PackageWeight": 500,
+      "PackageWeight": 10,
       "PackageSizeID": 1
     },
     {
@@ -28,7 +28,7 @@
         600
       ],
       "Rarity": 4,
-      "PackageWeight": 500,
+      "PackageWeight": 5,
       "PackageSizeID": 2
     },
     {
@@ -43,7 +43,7 @@
         400
       ],
       "Rarity": 6,
-      "PackageWeight": 500,
+      "PackageWeight": 1,
       "PackageSizeID": 3
     },
     {
@@ -58,7 +58,7 @@
         400
       ],
       "Rarity": 6,
-      "PackageWeight": 500,
+      "PackageWeight": 5,
       "PackageSizeID": 4
     }
   ]

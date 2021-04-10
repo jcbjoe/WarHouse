@@ -10,6 +10,8 @@ AMyPlayerController::AMyPlayerController() {
 
 void AMyPlayerController::Tick(float DeltaSeconds)
 {
+	Super::Tick(DeltaSeconds);
+
 	TArray<UUserWidget*> widgets;
 	UWidgetBlueprintLibrary::GetAllWidgetsOfClass(GetWorld(), widgets, UUserInterfaceBase::StaticClass());
 

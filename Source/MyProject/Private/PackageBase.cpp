@@ -16,6 +16,10 @@ APackageBase::APackageBase()
 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = false; //package does not need to tick?
 
+	static ConstructorHelpers::FObjectFinder<USoundBase> sound(TEXT("/Game/Sounds/Cardboard/DropBox.DropBox"));
+
+	soundBase = sound.Object;
+
 	PackageMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("packageMesh"));
 
 	RootComponent = PackageMesh;
@@ -153,11 +157,19 @@ FConfigPackage APackageBase::GetPackageDetails()
 
 void APackageBase::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
 {
+	if (!canRegisterHit) return;
+	canRegisterHit = false;
 	if ((OtherActor != NULL) && (OtherActor != this) && (OtherComp != NULL))
 	{
-		float velocity = this->GetVelocity().Size();
-		if (velocity > 1.0f)
+		auto velocity = this->GetVelocity().Size();
+
+		
+
+		if (velocity > 105)
 		{
+			UE_LOG(LogTemp, Warning, TEXT("Hit %f"), velocity);
+			UGameplayStatics::PlaySoundAtLocation(GetWorld(), soundBase, GetActorLocation());
+
 			if (PackageHealth > 0.0f && !IsBeingCollected)
 				PackageHealth -= 0.1f;
 
@@ -165,4 +177,12 @@ void APackageBase::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, 
 				PackageHealth = 0.0f;
 		}
 	}
+
+	GetWorld()->GetTimerManager().SetTimer(timer, this, &APackageBase::AllowHit, 0.5f, false);
+}
+
+void APackageBase::AllowHit()
+{
+	UE_LOG(LogTemp, Warning, TEXT("Allowing hit %f"));
+	canRegisterHit = true;
 }

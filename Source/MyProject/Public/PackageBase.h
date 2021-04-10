@@ -47,6 +47,12 @@ protected:
 
 	TArray<AWarhousePawn*> heldBy = TArray<AWarhousePawn*>();
 
+	USoundBase* soundBase;
+
+	bool canRegisterHit = true;
+
+	FTimerHandle timer;
+
 public:
 
 	void InitialisePackage(FConfigPackage pds);
@@ -61,6 +67,9 @@ public:
 	bool GetIsBeingCollected();
 	void SetIsBeingCollected(bool collected);
 	FConfigPackage GetPackageDetails();
+
+	void AllowHit();
+
 
 	UFUNCTION()
 		void OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
