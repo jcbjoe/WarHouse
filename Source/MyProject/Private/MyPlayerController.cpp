@@ -5,11 +5,11 @@
 #include "Kismet/GameplayStatics.h"
 #include "Blueprint/WidgetBlueprintLibrary.h"
 
+AMyPlayerController::AMyPlayerController() {
+}
 
-void AMyPlayerController::PlayerTick(float DeltaTime)
+void AMyPlayerController::Tick(float DeltaSeconds)
 {
-	Super::PlayerTick(DeltaTime);
-
 	TArray<UUserWidget*> widgets;
 	UWidgetBlueprintLibrary::GetAllWidgetsOfClass(GetWorld(), widgets, UUserInterfaceBase::StaticClass());
 
