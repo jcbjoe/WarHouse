@@ -20,7 +20,7 @@ ADoorLight::ADoorLight()
 	light1 = CreateDefaultSubobject<USpotLightComponent>(FName("Light1"));
 
 	light1->IntensityUnits = ELightUnits::Candelas;
-	light1->Intensity = 160.0;
+	light1->Intensity = intensity;
 	light1->AttenuationRadius = 90;
 	light1->SetInnerConeAngle(0);
 	light1->SetOuterConeAngle(44);
@@ -37,7 +37,7 @@ ADoorLight::ADoorLight()
 	light2 = CreateDefaultSubobject<USpotLightComponent>(FName("Light2"));
 
 	light2->IntensityUnits = ELightUnits::Candelas;
-	light2->Intensity = 160.0;
+	light2->Intensity = intensity;
 	light2->AttenuationRadius = 90;
 	light2->SetInnerConeAngle(0);
 	light2->SetOuterConeAngle(44);
@@ -68,11 +68,18 @@ void ADoorLight::Tick(float DeltaTime)
 
 	if(isSpinning)
 	{
+		light1->SetIntensity(intensity);
+		light2->SetIntensity(intensity);
+		
 		light1Rotation += 1;
 		light2Rotation += 1;
 		
 		light1->SetRelativeRotation(FRotator::MakeFromEuler({ 0,light1Rotation,90 }));
 		light2->SetRelativeRotation(FRotator::MakeFromEuler({ 0,light2Rotation,90 }));
+	} else
+	{
+		light1->SetIntensity(0);
+		light2->SetIntensity(0);
 	}
 	
 }
