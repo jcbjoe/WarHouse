@@ -12,6 +12,7 @@ ADestructibleProp::ADestructibleProp()
 	PropMesh = CreateDefaultSubobject<UDestructibleComponent>(TEXT("propMesh"));
 	PropMesh->SetNotifyRigidBodyCollision(true);
 	RootComponent = PropMesh;
+	PropMesh->SetSimulatePhysics(true);
 }
 
 // Called when the game starts or when spawned

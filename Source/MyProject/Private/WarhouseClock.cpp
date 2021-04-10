@@ -33,7 +33,12 @@ void AWarhouseClock::SetTime(int time)
 	//format textToSet into time format
 	int mins = (time / 60) % 60;
 	int secs = time % 60;
-	FString TimeRemaining = FString::FromInt(mins) + ":" + FString::FromInt(secs);
+	FString TimeRemaining;
+	if (secs < 10)
+		TimeRemaining = FString::FromInt(mins) + ":0" + FString::FromInt(secs);
+	else
+		TimeRemaining = FString::FromInt(mins) + ":" + FString::FromInt(secs);
+
 	TimeText->SetText(TimeRemaining);
 }
 
