@@ -31,6 +31,9 @@ public:
 	static const FName ArmForwardBinding;
 	static const FName ArmRightBinding;
 
+	static const FName LeftTrigger;
+	static const FName RightTrigger;
+	
 	void SetIsOnCharger(bool isOnCharger);
 
 	bool IsDead();
@@ -77,22 +80,12 @@ private:
 	const float SingleHoldingBatteryDrain = -5.0;
 	const float MultiHoldingBatteryDrain = -10.0;
 	const float chargingPadRate = 20.0f;
+	const float maxUpDownVal = 125;
 
 	const float respawnSeconds = 5;
 	float respawnCounter = 0;
 
 	bool isOnChargingPad = false;
-
-	bool isDownPressed = false;
-	bool isUpPressed = false;
-
-	void DownPressed();
-
-	void DownReleased();
-
-	void UpPressed();
-
-	void UpReleased();
 
 	UMaterial* red;
 	UMaterial* blue;

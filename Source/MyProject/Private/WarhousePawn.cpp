@@ -34,6 +34,9 @@ const FName AWarhousePawn::PickupBinding("PickupDrop");
 const FName AWarhousePawn::ArmForwardBinding("ArmForward");
 const FName AWarhousePawn::ArmRightBinding("ArmRight");
 
+const FName AWarhousePawn::LeftTrigger("LeftTrigger");
+const FName AWarhousePawn::RightTrigger("RightTrigger");
+
 AWarhousePawn::AWarhousePawn()
 {
 	static ConstructorHelpers::FObjectFinder<UMaterial> redMat(TEXT("/Game/Assets/ConorAssets/Player/PlayerRed.PlayerRed"));
@@ -152,31 +155,8 @@ void AWarhousePawn::SetupPlayerInputComponent(class UInputComponent* PlayerInput
 	PlayerInputComponent->BindAxis(ArmForwardBinding);
 	PlayerInputComponent->BindAxis(ArmRightBinding);
 
-	PlayerInputComponent->BindAction("BeamUp", IE_Pressed, this, &AWarhousePawn::UpPressed);
-	PlayerInputComponent->BindAction("BeamUp", IE_Released, this, &AWarhousePawn::UpReleased);
-
-	PlayerInputComponent->BindAction("BeamDown", IE_Pressed, this, &AWarhousePawn::DownPressed);
-	PlayerInputComponent->BindAction("BeamDown", IE_Released, this, &AWarhousePawn::DownReleased);
-}
-
-void AWarhousePawn::DownPressed()
-{
-	isDownPressed = true;
-}
-
-void AWarhousePawn::DownReleased()
-{
-	isDownPressed = false;
-}
-
-void AWarhousePawn::UpPressed()
-{
-	isUpPressed = true;
-}
-
-void AWarhousePawn::UpReleased()
-{
-	isUpPressed = false;
+	PlayerInputComponent->BindAxis(LeftTrigger);
+	PlayerInputComponent->BindAxis(RightTrigger);
 }
 
 void AWarhousePawn::Tick(float DeltaSeconds)
@@ -202,15 +182,12 @@ void AWarhousePawn::Tick(float DeltaSeconds)
 		auto transDefault = trans;
 
 		trans.Z += heightOffset;
-		if (isDownPressed)
-		{
-			trans.Z -= 125;
-		}
 
-		if (isUpPressed)
-		{
-			trans.Z += 125;
-		}
+		const float LeftTriggerVal = GetInputAxisValue(LeftTrigger);
+		const float RightTriggerVal = GetInputAxisValue(RightTrigger);
+
+		trans.Z -= UKismetMathLibrary::MapRangeClamped(LeftTriggerVal, 0, 1, 0, maxUpDownVal);
+		trans.Z += UKismetMathLibrary::MapRangeClamped(RightTriggerVal, 0, 1, 0, maxUpDownVal);
 
 		PhysicsHandle->SetTargetLocation(trans);
 
