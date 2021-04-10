@@ -23,6 +23,77 @@ void AGameManager::BeginPlay()
 {
 	Super::BeginPlay();
 
+	//Initialise game
+	GetWorld()->GetTimerManager().SetTimer(InitGameTimerHandle, this, &AGameManager::InitGame, InitGameTimer, false);
+}
+
+// Called every frame
+void AGameManager::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+	//decrease timer over delta time
+	GameTimer -= (1 * DeltaTime);
+	if (GameTimer < 0)
+		GameTimer = 0;
+	//set clock timer text
+	ClockTimerText->SetTime(GameTimer);
+
+}
+
+void AGameManager::IncrementPlayerScore(int playerIndex, float amount)
+{
+	switch (playerIndex)
+	{
+	case 0:
+		player0Score += amount;
+		break;
+	case 1:
+		player1Score += amount;
+		break;
+	case 2:
+		player2Score += amount;
+		break;
+	case 3:
+		player3Score += amount;
+		break;
+	}
+
+	UpdateScores();
+
+}
+
+void AGameManager::UpdateScores()
+{
+	int index = 0;
+	for (auto floating : floatingScores)
+	{
+		switch (index)
+		{
+		case 0:
+			floating->SetText(FText::AsCurrencyBase(player0Score * 10, LocalCurrencyCode));
+			break;
+		case 1:
+			floating->SetText(FText::AsCurrencyBase(player1Score * 10, LocalCurrencyCode));
+			break;
+		case 2:
+			floating->SetText(FText::AsCurrencyBase(player2Score * 10, LocalCurrencyCode));
+			break;
+		case 3:
+			floating->SetText(FText::AsCurrencyBase(player3Score * 10, LocalCurrencyCode));
+			break;
+
+		}
+		index++;
+	}
+}
+
+TArray<APackageCollectionPoint*> AGameManager::GetCollectionPoints() const
+{
+	return packageCollectionPoints;
+}
+
+void AGameManager::InitGame()
+{
 	LocalCurrencyCode = UKismetSystemLibrary::GetLocalCurrencyCode();
 	auto instance = WarhouseHelpers::GetGameInstance(GetWorld());
 
@@ -94,71 +165,6 @@ void AGameManager::BeginPlay()
 	GetWorld()->GetTimerManager().SetTimer(GameTimerHandle, this, &AGameManager::OnGameEnd, GameTimer, false);
 
 	WarhouseHelpers::GetPlayerManager(GetWorld())->SpawnPlayers();
-}
-
-// Called every frame
-void AGameManager::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
-	//decrease timer over delta time
-	GameTimer -= (1 * DeltaTime);
-	if (GameTimer < 0)
-		GameTimer = 0;
-	//set clock timer text
-	ClockTimerText->SetTime(GameTimer);
-
-}
-
-void AGameManager::IncrementPlayerScore(int playerIndex, float amount)
-{
-	switch (playerIndex)
-	{
-	case 0:
-		player0Score += amount;
-		break;
-	case 1:
-		player1Score += amount;
-		break;
-	case 2:
-		player2Score += amount;
-		break;
-	case 3:
-		player3Score += amount;
-		break;
-	}
-
-	UpdateScores();
-
-}
-
-void AGameManager::UpdateScores()
-{
-	int index = 0;
-	for (auto floating : floatingScores)
-	{
-		switch (index)
-		{
-		case 0:
-			floating->SetText(FText::AsCurrencyBase(player0Score * 10, LocalCurrencyCode));
-			break;
-		case 1:
-			floating->SetText(FText::AsCurrencyBase(player1Score * 10, LocalCurrencyCode));
-			break;
-		case 2:
-			floating->SetText(FText::AsCurrencyBase(player2Score * 10, LocalCurrencyCode));
-			break;
-		case 3:
-			floating->SetText(FText::AsCurrencyBase(player3Score * 10, LocalCurrencyCode));
-			break;
-
-		}
-		index++;
-	}
-}
-
-TArray<APackageCollectionPoint*> AGameManager::GetCollectionPoints() const
-{
-	return packageCollectionPoints;
 }
 
 void AGameManager::OnGameEnd()
