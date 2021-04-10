@@ -170,11 +170,9 @@ void AWarhousePawn::Tick(float DeltaSeconds)
 		const float ArmRightValue = GetInputAxisValue(ArmRightBinding);
 
 		auto yaw = 360 - (FMath::RadiansToDegrees(FMath::Atan2(ArmRightValue, ArmForwardValue)) + 180);
-
-		float angle = yaw;
-
-		float x = (150 * FMath::Cos(angle * UKismetMathLibrary::GetPI() / 180.f)) + GetActorLocation().X;
-		float y = (150 * FMath::Sin(angle * UKismetMathLibrary::GetPI() / 180.f)) + GetActorLocation().Y;
+		
+		float x = (packageHoldDistance * FMath::Cos(yaw * UKismetMathLibrary::GetPI() / 180.f)) + GetActorLocation().X;
+		float y = (packageHoldDistance * FMath::Sin(yaw * UKismetMathLibrary::GetPI() / 180.f)) + GetActorLocation().Y;
 
 		const int heightOffset = 137;
 
@@ -316,6 +314,15 @@ void AWarhousePawn::Tick(float DeltaSeconds)
 				{
 					_batteryCharge -= (SingleHoldingBatteryDrain * DeltaSeconds);
 				}
+
+				// *** BROKEN ROTATION CODE ***
+				//auto actorPos = GetActorLocation();
+				//actorPos.Z = PhysicsHandle->TargetTransform.GetLocation().Z;
+
+				//auto rot = UKismetMathLibrary::FindLookAtRotation(actorPos, PhysicsHandle->TargetTransform.GetLocation());
+				//rot.Yaw += 180;
+			
+				//actor->SetActorRotation(rot);
 
 				float weight = package->GetPackageWeight();
 				MoveSpeed = DefaultMoveSpeed - weight;

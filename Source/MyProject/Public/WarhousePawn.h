@@ -82,6 +82,8 @@ private:
 	const float chargingPadRate = 20.0f;
 	const float maxUpDownVal = 125;
 
+	const int packageHoldDistance = 160;
+
 	const float respawnSeconds = 5;
 	float respawnCounter = 0;
 
