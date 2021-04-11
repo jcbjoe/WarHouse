@@ -109,12 +109,34 @@ AWarhousePawn::AWarhousePawn()
 
 	floorDecal->SetupAttachment(RootComponent);
 
+	audioComp = CreateDefaultSubobject<UAudioComponent>(FName("Audio"));
 
+	static ConstructorHelpers::FObjectFinder<USoundWave> engineSound(TEXT("/Game/Sounds/Robotic_scifi_SFX/Mechanical_Sounds/wav/Engine2Loop.Engine2Loop"));
+	static ConstructorHelpers::FObjectFinder<USoundWave> dieSound(TEXT("/Game/Sounds/Robotic_scifi_SFX/Electric_Sounds/wav/electric_spark_burst__2_.electric_spark_burst__2_"));
+
+	engineSoundBase = engineSound.Object;
+	dieSoundBase = dieSound.Object;
+	
+	audioComp->SetSound(engineSoundBase);
+
+	audioComp->SetVolumeMultiplier(audioStationaryVolume);
+
+	static ConstructorHelpers::FObjectFinder<USoundWave> beamSound(TEXT("/Game/Sounds/Beam.Beam"));
+	
+	beamAudioComp = CreateDefaultSubobject<UAudioComponent>(FName("BeamAudio"));
+
+	beamAudioComp->SetSound(beamSound.Object);
+
+	beamAudioComp->SetVolumeMultiplier(0.0f);
 }
 
 void AWarhousePawn::BeginPlay()
 {
 	Super::BeginPlay();
+
+	audioComp->Play();
+
+	beamAudioComp->Play();
 }
 
 void AWarhousePawn::SetColour(EPlayerColours colour)
@@ -207,6 +229,7 @@ void AWarhousePawn::Tick(float DeltaSeconds)
 
 		if (ArmForwardValue == 0 && ArmRightValue == 0)
 		{
+			beamAudioComp->SetVolumeMultiplier(0.0f);
 			beamEmitter->SetVisibility(false);
 			floorDecal->SetVisibility(false);
 
@@ -222,6 +245,7 @@ void AWarhousePawn::Tick(float DeltaSeconds)
 		}
 		else
 		{
+			beamAudioComp->SetVolumeMultiplier(audioBeamVolume);
 			beamEmitter->SetVisibility(true);
 
 			if (PhysicsHandle->GetGrabbedComponent() == nullptr) {
@@ -279,6 +303,8 @@ void AWarhousePawn::Tick(float DeltaSeconds)
 		// If non-zero size, move this actor
 		if (Movement.SizeSquared() > 0.0f)
 		{
+			audioComp->SetVolumeMultiplier(audioMovingVolume);
+			
 			const FRotator NewRotation = Movement.Rotation();
 
 			auto rot = FMath::Lerp(GetActorRotation(), NewRotation, 0.05f);
@@ -296,7 +322,7 @@ void AWarhousePawn::Tick(float DeltaSeconds)
 		}
 		else
 		{
-
+			audioComp->SetVolumeMultiplier(audioStationaryVolume);
 			_batteryCharge -= (NonMovingBatteryDrain * DeltaSeconds);
 		}
 
@@ -378,9 +404,11 @@ void AWarhousePawn::Tick(float DeltaSeconds)
 			}
 
 
-			//Explosion?
+			audioComp->SetSound(dieSoundBase);
 
-			//Death Logic (position)
+			audioComp->SetVolumeMultiplier(0.5);
+
+			//Explosion?
 		}
 	}
 	else
@@ -391,6 +419,10 @@ void AWarhousePawn::Tick(float DeltaSeconds)
 			const FVector spawnPoint = WarhouseHelpers::GetPlayerManager(GetWorld())->GetRandomSpawnpoint(true);
 
 			SetActorLocation(spawnPoint);
+
+			audioComp->SetSound(engineSoundBase);
+
+			audioComp->Play();
 
 			isDead = false;
 			respawnCounter = 0;

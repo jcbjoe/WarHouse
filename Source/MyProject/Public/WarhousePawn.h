@@ -7,6 +7,7 @@
 #include "Components/WidgetComponent.h"
 #include "GameFramework/Character.h"
 #include "PhysicsEngine/PhysicsHandleComponent.h"
+#include "Components/AudioComponent.h"
 #include "WarhousePawn.generated.h"
 
 UCLASS(Blueprintable)
@@ -66,6 +67,9 @@ protected:
 	UPROPERTY(Category = Gameplay, EditAnywhere, BlueprintReadWrite)
 		float DefaultMoveSpeed;
 
+	UAudioComponent* audioComp;
+	UAudioComponent* beamAudioComp;
+
 	UPROPERTY(EditDefaultsOnly, Category = "Components")
 	UDecalComponent* floorDecal;
 private:
@@ -82,6 +86,11 @@ private:
 	const float chargingPadRate = 20.0f;
 	const float maxUpDownVal = 125;
 
+	const float audioStationaryVolume = 0.1f;
+	const float audioMovingVolume = 0.2f;
+
+	const float audioBeamVolume = 0.2f;
+
 	const int packageHoldDistance = 160;
 
 	const float respawnSeconds = 5;
@@ -93,5 +102,8 @@ private:
 	UMaterial* blue;
 	UMaterial* yellow;
 	UMaterial* white;
+
+	USoundBase* engineSoundBase;
+	USoundBase* dieSoundBase;
 
 };
