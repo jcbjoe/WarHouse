@@ -177,7 +177,7 @@ void AGameManager::OnGameEnd()
 
 void AGameManager::ReturnToMainMenu()
 {
-	UGameplayStatics::OpenLevel(GetWorld(), FName(TEXT("MainMenuScene")));
+	UGameplayStatics::OpenLevel(GetWorld(), FName(TEXT("UIScene")));
 }
 
 void AGameManager::ActivateForklift()

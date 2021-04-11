@@ -25,4 +25,6 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 		void addPlayer(int32 controllerId, EPlayerColours colour);
+
+	bool hasSplashRan = false;
 };

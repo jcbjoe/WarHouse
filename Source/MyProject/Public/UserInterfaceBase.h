@@ -3,6 +3,8 @@
 #pragma once
 
 #include "CoreMinimal.h"
+
+#include "UISceneManager.h"
 #include "Blueprint/UserWidget.h"
 #include "UserInterfaceBase.generated.h"
 
@@ -35,4 +37,7 @@ public:
 	
 	UFUNCTION(BlueprintImplementableEvent)
 		void DownPressed(int32 playerId);
+
+	UFUNCTION(BlueprintCallable)
+		AUISceneManager* GetUISceneManager();
 };
