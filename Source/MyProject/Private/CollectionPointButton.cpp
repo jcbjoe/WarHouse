@@ -44,13 +44,21 @@ ACollectionPointButton::ACollectionPointButton()
 	BillboardComponent->SetHiddenInGame(false);
 	
 	BillboardComponent->SetupAttachment(RootComponent);
+
+
+	static ConstructorHelpers::FObjectFinder<USoundWave> buttonPressSound(TEXT("/Game/Sounds/Robotic_scifi_SFX/Guns/wav/special_gun__2_.special_gun__2_"));
+
+	audioComp = CreateDefaultSubobject<UAudioComponent>(FName("ButtonAudio"));
+
+	audioComp->SetVolumeMultiplier(0.0f);
+	
+	audioComp->SetSound(buttonPressSound.Object);
 }
 
 // Called when the game starts or when spawned
 void ACollectionPointButton::BeginPlay()
 {
 	Super::BeginPlay();
-
 }
 
 // Called every frame
@@ -90,5 +98,7 @@ void ACollectionPointButton::OnOverlapEnd(UPrimitiveComponent* OverlapComponent,
 
 void ACollectionPointButton::AButtonPressed()
 {
+	audioComp->SetVolumeMultiplier(0.5f);
+	audioComp->Play();
 	packageCollectionPoint->ButtonPressed();
 }
