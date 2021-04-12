@@ -52,6 +52,8 @@ protected:
 		float DelayTimer;
 	UPROPERTY(EditAnywhere)
 		float ForkliftTimer;
+	UPROPERTY(EditAnywhere)
+		float InitGameTimer = 3.0f;
 
 	//Handle to manage the game timer
 	FTimerHandle GameTimerHandle;
@@ -59,6 +61,8 @@ protected:
 	FTimerHandle DelayTimerHandle;
 	//Handle to manage delays
 	FTimerHandle ForkliftTimerHandle;
+	//Handle to manage init timer
+	FTimerHandle InitGameTimerHandle;
 
 	UPROPERTY(EditAnywhere)
 		AWarhouseClock* ClockTimerText;
@@ -78,6 +82,8 @@ public:
 	APlayerManager* GetPlayerManager() const;
 	APackageManager* GetPackageManager() const;
 
+	UFUNCTION()
+		void InitGame();
 	UFUNCTION()
 		void OnGameEnd();
 	UFUNCTION()
