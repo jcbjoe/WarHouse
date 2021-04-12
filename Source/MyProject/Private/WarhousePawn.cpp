@@ -128,6 +128,15 @@ AWarhousePawn::AWarhousePawn()
 	beamAudioComp->SetSound(beamSound.Object);
 
 	beamAudioComp->SetVolumeMultiplier(0.0f);
+
+	static ConstructorHelpers::FObjectFinder<USoundWave> chargingSound(TEXT("/Game/Sounds/Robotic_scifi_SFX/Mechanical_Sounds/wav/engine_loop_6.engine_loop_6"));
+
+	chargingComp = CreateDefaultSubobject<UAudioComponent>(FName("ChargingAudio"));
+
+	chargingComp->SetSound(chargingSound.Object);
+
+	chargingComp->SetVolumeMultiplier(0.0f);
+	
 }
 
 void AWarhousePawn::BeginPlay()
@@ -137,6 +146,8 @@ void AWarhousePawn::BeginPlay()
 	audioComp->Play();
 
 	beamAudioComp->Play();
+
+	chargingComp->Play();
 }
 
 void AWarhousePawn::SetColour(EPlayerColours colour)
@@ -381,6 +392,10 @@ void AWarhousePawn::Tick(float DeltaSeconds)
 		if (isOnChargingPad)
 		{
 			_batteryCharge += (chargingPadRate * DeltaSeconds);
+			chargingComp->SetVolumeMultiplier(audioChargingVolume);
+		} else
+		{
+			chargingComp->SetVolumeMultiplier(0.0f);
 		}
 
 		_batteryCharge = FMath::Clamp(_batteryCharge, 0.0f, 100.0f);

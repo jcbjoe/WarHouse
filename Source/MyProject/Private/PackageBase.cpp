@@ -163,11 +163,8 @@ void APackageBase::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, 
 	{
 		auto velocity = this->GetVelocity().Size();
 
-		
-
 		if (velocity > 105)
 		{
-			UE_LOG(LogTemp, Warning, TEXT("Hit %f"), velocity);
 			UGameplayStatics::PlaySoundAtLocation(GetWorld(), soundBase, GetActorLocation());
 
 			if (PackageHealth > 0.0f && !IsBeingCollected)
@@ -183,6 +180,5 @@ void APackageBase::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, 
 
 void APackageBase::AllowHit()
 {
-	UE_LOG(LogTemp, Warning, TEXT("Allowing hit %f"));
 	canRegisterHit = true;
 }

@@ -69,6 +69,7 @@ protected:
 
 	UAudioComponent* audioComp;
 	UAudioComponent* beamAudioComp;
+	UAudioComponent* chargingComp;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Components")
 	UDecalComponent* floorDecal;
@@ -86,8 +87,9 @@ private:
 	const float chargingPadRate = 20.0f;
 	const float maxUpDownVal = 125;
 
-	const float audioStationaryVolume = 0.1f;
-	const float audioMovingVolume = 0.2f;
+	const float audioStationaryVolume = 0.05f;
+	const float audioMovingVolume = 0.1f;
+	const float audioChargingVolume = 0.6f;
 
 	const float audioBeamVolume = 0.2f;
 

@@ -34,6 +34,21 @@ APackageCollectionPoint::APackageCollectionPoint()
 	boxComponent->SetBoxExtent(FVector(240, 160, 60));
 	boxComponent->SetRelativeLocation(FVector(0, 0, 70));
 
+	static ConstructorHelpers::FObjectFinder<USoundWave> beepSoundObj(TEXT("/Game/Sounds/beep.beep"));
+
+	beepSound = CreateDefaultSubobject<UAudioComponent>(FName("beepAudio"));
+
+	beepSound->SetVolumeMultiplier(0.0f);
+
+	beepSound->SetSound(beepSoundObj.Object);
+
+	static ConstructorHelpers::FObjectFinder<USoundWave> liftSoundObj(TEXT("/Game/Sounds/lift.lift"));
+
+	liftSound = CreateDefaultSubobject<UAudioComponent>(FName("liftAudio"));
+
+	liftSound->SetVolumeMultiplier(0.0f);
+
+	liftSound->SetSound(liftSoundObj.Object);
 }
 
 // Called when the game starts or when spawned
@@ -51,7 +66,7 @@ void APackageCollectionPoint::Tick(float DeltaTime)
 	if (platformMovingUp)
 	{
 		doorLight->SetSpinning(true);
-		
+
 		auto actorPos = GetActorLocation();
 
 		actorPos.Z += moveIncrement;
@@ -62,6 +77,8 @@ void APackageCollectionPoint::Tick(float DeltaTime)
 		{
 			platformMovingUp = false;
 			platformAtTop = true;
+
+			liftSound->Stop();
 		}
 	}
 	else if (platformAtTop)
@@ -108,6 +125,8 @@ void APackageCollectionPoint::Tick(float DeltaTime)
 			platformAtTop = false;
 			platformMovingDown = true;
 
+			liftSound->Play();
+
 			packageManager->ActivatePackageTimer();
 		}
 
@@ -124,6 +143,9 @@ void APackageCollectionPoint::Tick(float DeltaTime)
 		{
 			platformMovingDown = false;
 			doorLight->SetSpinning(false);
+
+			beepSound->Stop();
+			liftSound->Stop();
 		}
 	}
 
@@ -199,4 +221,9 @@ void APackageCollectionPoint::ButtonPressed()
 	originalPos = GetActorLocation();
 
 	platformMovingUp = true;
+
+	beepSound->SetVolumeMultiplier(0.75);
+	beepSound->Play();
+	liftSound->SetVolumeMultiplier(0.6);
+	liftSound->Play();
 }

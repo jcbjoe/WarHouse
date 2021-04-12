@@ -61,7 +61,7 @@ private:
 
 	bool platformMovingDown = false;
 
-	float moveIncrement = 0.1;
+	float moveIncrement = 0.5;
 
 	float amountToMove = 200;
 
@@ -71,4 +71,7 @@ private:
 	float maxWaitTime = 5;
 
 	bool packagesBeingRemoved = false;
+
+	UAudioComponent* beepSound;
+	UAudioComponent* liftSound;
 };
