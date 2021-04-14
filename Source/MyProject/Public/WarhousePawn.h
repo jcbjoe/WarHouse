@@ -98,6 +98,12 @@ private:
 	UMaterial* blue;
 	UMaterial* yellow;
 	UMaterial* white;
+	UMaterial* glasses;
+	UMaterial* glassesGrav;
+	UMaterial* smiley;
+	UMaterial* smileyGrav;
+	UMaterial* tux;
+	UMaterial* tuxGrav;
 	
 	USoundBase* dieSoundBase;
 

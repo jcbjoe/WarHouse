@@ -12,7 +12,10 @@ enum class EPlayerColours : uint8
 	White,
 	Red,
 	Blue,
-	Yellow
+	Yellow,
+	glasses,
+	smiley,
+	tux
 };
 
 /**
