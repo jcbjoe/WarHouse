@@ -116,13 +116,13 @@ AWarhousePawn::AWarhousePawn()
 
 	engineSoundBase = engineSound.Object;
 	dieSoundBase = dieSound.Object;
-	
+
 	audioComp->SetSound(engineSoundBase);
 
 	audioComp->SetVolumeMultiplier(audioStationaryVolume);
 
 	static ConstructorHelpers::FObjectFinder<USoundWave> beamSound(TEXT("/Game/Sounds/Beam.Beam"));
-	
+
 	beamAudioComp = CreateDefaultSubobject<UAudioComponent>(FName("BeamAudio"));
 
 	beamAudioComp->SetSound(beamSound.Object);
@@ -136,7 +136,7 @@ AWarhousePawn::AWarhousePawn()
 	chargingComp->SetSound(chargingSound.Object);
 
 	chargingComp->SetVolumeMultiplier(0.0f);
-	
+
 }
 
 void AWarhousePawn::BeginPlay()
@@ -195,74 +195,88 @@ void AWarhousePawn::SetupPlayerInputComponent(class UInputComponent* PlayerInput
 void AWarhousePawn::Tick(float DeltaSeconds)
 {
 	if (!isDead) {
-		// Find movement direction
+		//--- Grab controller input values
 		const float ForwardValue = GetInputAxisValue(MoveForwardBinding);
 		const float RightValue = GetInputAxisValue(MoveRightBinding);
 
 		const float ArmForwardValue = GetInputAxisValue(ArmForwardBinding);
 		const float ArmRightValue = GetInputAxisValue(ArmRightBinding);
 
-		auto yaw = 360 - (FMath::RadiansToDegrees(FMath::Atan2(ArmRightValue, ArmForwardValue)) + 180);
-		
-		float x = (packageHoldDistance * FMath::Cos(yaw * UKismetMathLibrary::GetPI() / 180.f)) + GetActorLocation().X;
-		float y = (packageHoldDistance * FMath::Sin(yaw * UKismetMathLibrary::GetPI() / 180.f)) + GetActorLocation().Y;
-
-		const int heightOffset = 137;
-
-		auto trans = FVector(x, y, GetActorLocation().Z);
-		auto transDefault = trans;
-
-		trans.Z += heightOffset;
-
 		const float LeftTriggerVal = GetInputAxisValue(LeftTrigger);
 		const float RightTriggerVal = GetInputAxisValue(RightTrigger);
 
-		trans.Z -= UKismetMathLibrary::MapRangeClamped(LeftTriggerVal, 0, 1, 0, maxUpDownVal);
-		trans.Z += UKismetMathLibrary::MapRangeClamped(RightTriggerVal, 0, 1, 0, maxUpDownVal);
+		//--- Calculate the yaw value from the right and forward of the left controller stick
+		auto stickYaw = 360 - (FMath::RadiansToDegrees(FMath::Atan2(ArmRightValue, ArmForwardValue)) + 180);
 
-		PhysicsHandle->SetTargetLocation(trans);
+		//--- Calculate the target X,Y coords for where the attached/held object will be located
+		float targetX = (packageHoldDistance * FMath::Cos(stickYaw * UKismetMathLibrary::GetPI() / 180.f)) + GetActorLocation().X;
+		float targetY = (packageHoldDistance * FMath::Sin(stickYaw * UKismetMathLibrary::GetPI() / 180.f)) + GetActorLocation().Y;
 
-		auto target = GetActorLocation();
-		target.Z += heightOffset;
-		beamEmitter->SetBeamSourcePoint(0, target, 0);
+		const int beamHeightOffset = 137;
+
+		//--- Create the vector of the target point and a copy. The copy is for the belt of the player that rotates
+		FVector targetLocation = FVector(targetX, targetY, GetActorLocation().Z);
+		FVector targetLocationCopy = targetLocation;
+
+		targetLocation.Z += beamHeightOffset;
+
+		//--- Adjust the height of the target based ont he triggers of the controller
+		targetLocation.Z -= UKismetMathLibrary::MapRangeClamped(LeftTriggerVal, 0, 1, 0, maxUpDownVal);
+		targetLocation.Z += UKismetMathLibrary::MapRangeClamped(RightTriggerVal, 0, 1, 0, maxUpDownVal);
+
+		PhysicsHandle->SetTargetLocation(targetLocation);
+
+		FVector beamSourceLocation = GetActorLocation();
+		beamSourceLocation.Z += beamHeightOffset;
+		beamEmitter->SetBeamSourcePoint(0, beamSourceLocation, 0);
+
+		//--- If we have a package, set the beam location to it. If not set the beam location to the calculated target
 		if (PhysicsHandle->GetGrabbedComponent() == nullptr) {
-			beamEmitter->SetBeamTargetPoint(0, trans, 0);
+			beamEmitter->SetBeamTargetPoint(0, targetLocation, 0);
 		}
-		else
-		{
+		else {
 			beamEmitter->SetBeamTargetPoint(0, PhysicsHandle->GetGrabbedComponent()->GetComponentLocation(), 0);
 		}
 
-		FVector vec = (transDefault - GetActorLocation());
+		//--- Set the rotation of the "BeamMeshComponent" this is the belt on the player which rotates
+		FVector vec = (targetLocationCopy - GetActorLocation());
 		vec.Normalize();
-
 		BeamMeshComponent->SetWorldRotation(vec.Rotation());
 
+		//--- Check for if the thumbsticks are currently being moved
 		if (ArmForwardValue == 0 && ArmRightValue == 0)
 		{
+			//--- Thumbsticks idle (Not moving)
+			//--- Silence beam sfx, hide beam emitter and floor decal (Crosshair)
 			beamAudioComp->SetVolumeMultiplier(0.0f);
 			beamEmitter->SetVisibility(false);
 			floorDecal->SetVisibility(false);
 
+			//--- Logic to drop the package if one is being held
 			if (PhysicsHandle->GetGrabbedComponent() != nullptr)
 			{
-				// Player has let go of package
-				if (PhysicsHandle->GetGrabbedComponent()->GetOwner()->IsA(APackageBase::StaticClass()))
-				{
-					reinterpret_cast<APackageBase*>(PhysicsHandle->GetGrabbedComponent()->GetOwner())->EndHolding(this);
-				}
-				PhysicsHandle->ReleaseComponent();
+				DropHeldItem();
 			}
 		}
 		else
 		{
+			//--- Thumbsticks moving
+			//--- Show beam and set volume of the beam 
 			beamAudioComp->SetVolumeMultiplier(audioBeamVolume);
 			beamEmitter->SetVisibility(true);
 
+			//--- Check if an item is held
 			if (PhysicsHandle->GetGrabbedComponent() == nullptr) {
+				//--- Item not held
+				//
+				//--- Pickup package logic
+
+				//--- Setup trace params
 				FHitResult hit = FHitResult(ForceInit);
 				FCollisionQueryParams TraceParams(FName(TEXT("InteractTrace")), true, this);
 
+				//--- Loop through every actor in the world, If it is not a package add it to the ignored actor list
+				//--- The ignored actor list is a list of actors which will NOT trigger a hit on the trace
 				for (TActorIterator<AActor> actor(GetWorld()); actor; ++actor)
 				{
 					if (!actor->IsA(APackageBase::StaticClass()) && !actor->IsA(APhysicsProp::StaticClass())) {
@@ -270,22 +284,26 @@ void AWarhousePawn::Tick(float DeltaSeconds)
 					}
 				}
 
-				bool bIsHit = GetWorld()->LineTraceSingleByChannel(hit, GetActorLocation(), trans, ECC_GameTraceChannel3, TraceParams);
+				//--- Create the line trace
+				bool bIsHit = GetWorld()->LineTraceSingleByChannel(hit, GetActorLocation(), targetLocation, ECC_GameTraceChannel3, TraceParams);
 				if (bIsHit)
 				{
-					//check if it is a package 
+					//--- We are colliding with a actor
+
+					UPrimitiveComponent* component = Cast<UPrimitiveComponent>(hit.GetActor()->GetRootComponent());
+
+					//--- If the actor is a Package
 					if (hit.Actor != nullptr && hit.Actor->IsA(APackageBase::StaticClass()))
 					{
-						UPrimitiveComponent* component = reinterpret_cast<UPrimitiveComponent*>(hit.GetActor()->GetRootComponent());
 						PhysicsHandle->GrabComponentAtLocationWithRotation(component, "None", component->GetComponentLocation(), component->GetComponentRotation());
-						auto package = reinterpret_cast<APackageBase*>(hit.GetActor());
+						APackageBase* package = Cast<APackageBase>(hit.GetActor());
 						package->StartHolding(this);
 					}
-					//or physics prop we have hit
+
+					//--- If the actor is a Physics prob (Object that can be picked up)
 					if (hit.Actor != nullptr && hit.Actor->IsA(APhysicsProp::StaticClass()))
 					{
-						UPrimitiveComponent* component = reinterpret_cast<UPrimitiveComponent*>(hit.GetActor()->GetRootComponent());
-						auto prop = reinterpret_cast<APhysicsProp*>(hit.GetActor());
+						APhysicsProp* prop = Cast<APhysicsProp>(hit.GetActor());
 						if (prop->GetCanPickUp())
 						{
 							PhysicsHandle->GrabComponentAtLocationWithRotation(component, "None", component->GetComponentLocation(), component->GetComponentRotation());
@@ -295,55 +313,66 @@ void AWarhousePawn::Tick(float DeltaSeconds)
 			}
 			else
 			{
-				floorDecal->SetVisibility(true);
-
-				auto floorDecalPos = PhysicsHandle->GetGrabbedComponent()->GetComponentLocation();
+				//--- A item is being held - Calculate and show the floor decal
+				FVector floorDecalPos = PhysicsHandle->GetGrabbedComponent()->GetComponentLocation();
 
 				floorDecalPos.Z = 0;
 				floorDecal->SetWorldLocation(floorDecalPos);
+
+				floorDecal->SetVisibility(true);
 			}
 		}
 
 
-		// Clamp max size so that (X=1, Y=1) doesn't cause faster movement in diagonal directions
+		//--- Clamp max size so that (X=1, Y=1) doesn't cause faster movement in diagonal directions
 		const FVector MoveDirection = FVector(ForwardValue, RightValue, 0.f).GetClampedToMaxSize(1.0f);
 
-		// Calculate  movement
+		//--- Calculate player movement
 		const FVector Movement = MoveDirection * MoveSpeed * DeltaSeconds;
 
-		// If non-zero size, move this actor
+		//--- If non-zero size, move this actor
 		if (Movement.SizeSquared() > 0.0f)
 		{
+			//--- Change the audio volume when moving
 			audioComp->SetVolumeMultiplier(audioMovingVolume);
-			
-			const FRotator NewRotation = Movement.Rotation();
 
-			auto rot = FMath::Lerp(GetActorRotation(), NewRotation, 0.05f);
+			//--- Calculate rotation of the drone
+			const FRotator NewRotation = Movement.Rotation();
+			FRotator rot = FMath::Lerp(GetActorRotation(), NewRotation, 0.05f);
+
+			//--- Move the component and check if its colliding with something
 			FHitResult Hit(1.f);
 			RootComponent->MoveComponent(Movement, rot, true, &Hit);
 
-			if (Hit.IsValidBlockingHit() && (Hit.Actor == nullptr || !Hit.Actor->GetClass()->IsChildOf(APackageBase::StaticClass())))
+			//--- Decrement the battery drain using the moving drain
+			_batteryCharge -= (MovingBatteryDrain * DeltaSeconds);
+
+			//--- Check if we are colliding and that the actor colliding with is not a package. Dont want to deflect from the package
+			if (Hit.IsValidBlockingHit() && !Hit.Actor->GetClass()->IsChildOf(APackageBase::StaticClass()))
 			{
+				//--- Calculate the deflection
 				const FVector Normal2D = Hit.Normal.GetSafeNormal2D() * 1.3;
 				const FVector Deflection = FVector::VectorPlaneProject(Movement, Normal2D) * (1.f - Hit.Time);
 				RootComponent->MoveComponent(Deflection, rot, true);
 			}
-
-			_batteryCharge -= (MovingBatteryDrain * DeltaSeconds);
 		}
 		else
 		{
+			//--- Set the volume back to the idle level and decrement the battery using the idle drain
 			audioComp->SetVolumeMultiplier(audioStationaryVolume);
 			_batteryCharge -= (NonMovingBatteryDrain * DeltaSeconds);
 		}
 
+		//--- Check if an object is being held
 		if (PhysicsHandle->GetGrabbedComponent() != nullptr)
 		{
-			auto actor = PhysicsHandle->GetGrabbedComponent()->GetOwner();
+			AActor* heldActor = PhysicsHandle->GetGrabbedComponent()->GetOwner();
 
-			if (actor->IsA(APackageBase::StaticClass()))
+			if (heldActor->IsA(APackageBase::StaticClass()))
 			{
-				APackageBase* package = reinterpret_cast<APackageBase*>(actor);
+				APackageBase* package = Cast<APackageBase>(heldActor);
+
+				//--- Decrement the battery depending on how many people are holding the same package
 				if (package->GetHeldBy().Num() > 1) {
 					_batteryCharge -= (MultiHoldingBatteryDrain * DeltaSeconds);
 				}
@@ -352,59 +381,65 @@ void AWarhousePawn::Tick(float DeltaSeconds)
 					_batteryCharge -= (SingleHoldingBatteryDrain * DeltaSeconds);
 				}
 
-				// *** BROKEN ROTATION CODE ***
-				//auto actorPos = GetActorLocation();
-				//actorPos.Z = PhysicsHandle->TargetTransform.GetLocation().Z;
-
-				//auto rot = UKismetMathLibrary::FindLookAtRotation(actorPos, PhysicsHandle->TargetTransform.GetLocation());
-				//rot.Yaw += 180;
-			
-				//actor->SetActorRotation(rot);
-
+				//--- Set movement speed based on weight
 				float weight = package->GetPackageWeight();
 				MoveSpeed = DefaultMoveSpeed - weight;
-				float distance = FVector::Dist(GetActorLocation(), package->GetActorLocation());
-				if (distance > 350)
-				{
-					//Package is to far away, drop it!
-					package->EndHolding(this);
 
-					PhysicsHandle->ReleaseComponent();
-				}
+				//--- If the distance is 350 away stop holding the package
+				float distance = FVector::Dist(GetActorLocation(), package->GetActorLocation());
+				if (distance > 350) DropHeldItem();
 			}
 
 		}
-		else
+		else {
 			MoveSpeed = DefaultMoveSpeed;
+		}
 
-		reinterpret_cast<UPackageProgressBar*>(progressBar->GetUserWidgetObject())->progressBarFillAmount = _batteryCharge / 100;
+		//--- Set the battery bar
+		UPackageProgressBar* playerBatteryBar = Cast<UPackageProgressBar>(progressBar->GetUserWidgetObject());
+		playerBatteryBar->progressBarFillAmount = _batteryCharge / 100;
 
+		//--- Calculate the rotation so the battery bar is pointing towards the camera
 		const ACameraActor* cam = WarhouseHelpers::GetCameraManager(GetWorld())->GetCamera();
-
-		auto rot = UKismetMathLibrary::FindLookAtRotation(progressBar->GetComponentLocation(), cam->GetActorLocation());
+		FRotator rot = UKismetMathLibrary::FindLookAtRotation(progressBar->GetComponentLocation(), cam->GetActorLocation());
 		rot.Yaw = 180;
 		progressBar->SetWorldRotation(rot);
 
-		auto newLoc = GetActorLocation();
+		//--- Set the battery bar location
+		FVector newLoc = GetActorLocation();
 		newLoc.Z = 10;
 		progressBar->SetWorldLocation(newLoc);
 
+		//--- Set the charging pad volume and the charge rate
 		if (isOnChargingPad)
 		{
 			_batteryCharge += (chargingPadRate * DeltaSeconds);
 			chargingComp->SetVolumeMultiplier(audioChargingVolume);
-		} else
+		}
+		else
 		{
 			chargingComp->SetVolumeMultiplier(0.0f);
 		}
 
+		//--- Clamp the battery amount so it doesnt go above 100 or below 0
 		_batteryCharge = FMath::Clamp(_batteryCharge, 0.0f, 100.0f);
 
+		//--- Kill player check
 		if (_batteryCharge <= 0)
 		{
+			//--- Player has ran out of battery
 			isDead = true;
 			respawnCounter = 0;
 
+			if (PhysicsHandle->GetGrabbedComponent() != nullptr) {
+				DropHeldItem();
+			}
+
+			//--- Mute the engine sounds and play the death sound
+			audioComp->SetVolumeMultiplier(0.0);
+			UGameplayStatics::PlaySoundAtLocation(GetWorld(), dieSoundBase, GetActorLocation(), FRotator(0, 0, 0), deathSoundVolume);
+
+			//--- Set the players position under the map and reset the beam
 			auto pos = GetActorLocation();
 			pos.Z = -600;
 
@@ -414,31 +449,23 @@ void AWarhousePawn::Tick(float DeltaSeconds)
 
 			beamEmitter->SetBeamTargetPoint(0, pos, 0);
 
-			if (PhysicsHandle->GetGrabbedComponent() != nullptr) {
-				PhysicsHandle->ReleaseComponent();
-			}
-
-
-			audioComp->SetSound(dieSoundBase);
-
-			audioComp->SetVolumeMultiplier(0.5);
-
 			//Explosion?
 		}
 	}
 	else
 	{
+		//-- If the player id dead increment the respawn counter by deltasecond (Time since last frame)
+		//-- This allows us to count how long since the death.
 		respawnCounter += DeltaSeconds;
 		if (respawnCounter > respawnSeconds) {
+			//--- We are at max time, lets respawn the player
 
+			//--- Grab a random spawnpoint from the player manager
 			const FVector spawnPoint = WarhouseHelpers::GetPlayerManager(GetWorld())->GetRandomSpawnpoint(true);
 
 			SetActorLocation(spawnPoint);
 
-			audioComp->SetSound(engineSoundBase);
-
-			audioComp->Play();
-
+			//--- Reset variables
 			isDead = false;
 			respawnCounter = 0;
 			_batteryCharge = 100;
@@ -447,12 +474,26 @@ void AWarhousePawn::Tick(float DeltaSeconds)
 
 }
 
+//--- This gets triggered by the charger actor on collider box enter
 void AWarhousePawn::SetIsOnCharger(bool isOnCharger)
 {
 	isOnChargingPad = isOnCharger;
 }
 
+//--- Returns if the player is dead
 bool AWarhousePawn::IsDead()
 {
 	return isDead;
+}
+
+//--- Properly drops the the item the player is holding
+void AWarhousePawn::DropHeldItem()
+{
+	if (PhysicsHandle->GetGrabbedComponent() != nullptr) {
+		if (PhysicsHandle->GetGrabbedComponent()->GetOwner()->IsA(APackageBase::StaticClass()))
+		{
+			Cast<APackageBase>(PhysicsHandle->GetGrabbedComponent()->GetOwner())->EndHolding(this);
+		}
+		PhysicsHandle->ReleaseComponent();
+	}
 }

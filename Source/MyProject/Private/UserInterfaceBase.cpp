@@ -10,5 +10,5 @@ AUISceneManager* UUserInterfaceBase::GetUISceneManager()
 	TArray<AActor*> sceneManagers;
 	UGameplayStatics::GetAllActorsOfClass(GetWorld(), AUISceneManager::StaticClass(), sceneManagers);
 
-	return reinterpret_cast<AUISceneManager*>(sceneManagers[0]);
+	return Cast<AUISceneManager>(sceneManagers[0]);
 }

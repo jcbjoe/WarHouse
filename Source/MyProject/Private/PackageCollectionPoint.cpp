@@ -154,7 +154,7 @@ void APackageCollectionPoint::Tick(float DeltaTime)
 void APackageCollectionPoint::OnOverlapBegin(UPrimitiveComponent* OverlapComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	if (OtherActor->IsA(APackageBase::StaticClass())) {
-		auto package = reinterpret_cast<APackageBase*>(OtherActor);
+		auto package = Cast<APackageBase>(OtherActor);
 		if (packages.Contains(package)) return;
 		packages.Add(package);
 		package->SetIsBeingCollected(true);
@@ -184,7 +184,7 @@ void APackageCollectionPoint::OnOverlapBegin(UPrimitiveComponent* OverlapCompone
 
 void APackageCollectionPoint::OnOverlapEnd(UPrimitiveComponent* OverlapComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex) {
 	if (OtherActor->IsA(APackageBase::StaticClass())) {
-		auto package = reinterpret_cast<APackageBase*>(OtherActor);
+		auto package = Cast<APackageBase>(OtherActor);
 		if (!packagesBeingRemoved)
 		{
 			packages.Remove(package);

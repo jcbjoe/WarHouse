@@ -35,7 +35,7 @@ void APlayerManager::SpawnPlayers()
 	UGameplayStatics::GetAllActorsOfClass(GetWorld(), APlayerController::StaticClass(), playerControllers);
 	for (AActor* controller : playerControllers)
 	{
-		APlayerController* castedPlayer = reinterpret_cast<APlayerController*>(controller);
+		APlayerController* castedPlayer = Cast<APlayerController>(controller);
 		UGameplayStatics::RemovePlayer(castedPlayer, true);
 	}
 

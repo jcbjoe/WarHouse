@@ -64,7 +64,7 @@ void AChargingActor::OnOverlapBegin(UPrimitiveComponent* OverlapComponent, AActo
 {
 	if (OtherActor->IsA(AWarhousePawn::StaticClass()))
 	{
-		auto player = reinterpret_cast<AWarhousePawn*>(OtherActor);
+		auto player = Cast<AWarhousePawn>(OtherActor);
 
 		player->SetIsOnCharger(true);
 	}
@@ -74,7 +74,7 @@ void AChargingActor::OnOverlapEnd(UPrimitiveComponent* OverlapComponent, AActor*
 {
 	if (OtherActor->IsA(AWarhousePawn::StaticClass()))
 	{
-		auto player = reinterpret_cast<AWarhousePawn*>(OtherActor);
+		auto player = Cast<AWarhousePawn>(OtherActor);
 
 		player->SetIsOnCharger(false);
 	}

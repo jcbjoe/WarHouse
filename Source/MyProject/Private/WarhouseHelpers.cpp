@@ -14,25 +14,25 @@ WarhouseHelpers::~WarhouseHelpers()
 
 AGameManager* WarhouseHelpers::GetGameManager(UObject* world)
 {
-	return reinterpret_cast<AGameManager*>(UGameplayStatics::GetActorOfClass(world, AGameManager::StaticClass()));
+	return Cast<AGameManager>(UGameplayStatics::GetActorOfClass(world, AGameManager::StaticClass()));
 }
 
 APlayerManager* WarhouseHelpers::GetPlayerManager(UObject* world)
 {
-	return reinterpret_cast<APlayerManager*>(UGameplayStatics::GetActorOfClass(world, APlayerManager::StaticClass()));
+	return Cast<APlayerManager>(UGameplayStatics::GetActorOfClass(world, APlayerManager::StaticClass()));
 }
 
 APackageManager* WarhouseHelpers::GetPackageManager(UObject* world)
 {
-	return reinterpret_cast<APackageManager*>(UGameplayStatics::GetActorOfClass(world, APackageManager::StaticClass()));
+	return Cast<APackageManager>(UGameplayStatics::GetActorOfClass(world, APackageManager::StaticClass()));
 }
 
 ACameraManager* WarhouseHelpers::GetCameraManager(UObject* world)
 {
-	return reinterpret_cast<ACameraManager*>(UGameplayStatics::GetActorOfClass(world, ACameraManager::StaticClass()));
+	return Cast<ACameraManager>(UGameplayStatics::GetActorOfClass(world, ACameraManager::StaticClass()));
 }
 
 UMyGameInstance* WarhouseHelpers::GetGameInstance(UObject* world)
 {
-	return reinterpret_cast<UMyGameInstance*>(UGameplayStatics::GetGameInstance(world));
+	return Cast<UMyGameInstance>(UGameplayStatics::GetGameInstance(world));
 }

@@ -79,7 +79,7 @@ void ACollectionPointButton::Tick(float DeltaTime)
 void ACollectionPointButton::OnOverlapBegin(UPrimitiveComponent* OverlapComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	if (OtherActor->IsA(AWarhousePawn::StaticClass())) {
-		auto player = reinterpret_cast<AWarhousePawn*>(OtherActor);
+		auto player = Cast<AWarhousePawn>(OtherActor);
 		if (CollidingPlayers.Contains(player)) return;
 		CollidingPlayers.Add(player);
 		player->InputComponent->BindAction("AButtonPressed", IE_Pressed, this, &ACollectionPointButton::AButtonPressed);
@@ -88,7 +88,7 @@ void ACollectionPointButton::OnOverlapBegin(UPrimitiveComponent* OverlapComponen
 
 void ACollectionPointButton::OnOverlapEnd(UPrimitiveComponent* OverlapComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex) {
 	if (OtherActor->IsA(AWarhousePawn::StaticClass())) {
-		auto player = reinterpret_cast<AWarhousePawn*>(OtherActor);
+		auto player = Cast<AWarhousePawn>(OtherActor);
 		if (!CollidingPlayers.Contains(player)) return;
 		CollidingPlayers.Remove(player);
 		

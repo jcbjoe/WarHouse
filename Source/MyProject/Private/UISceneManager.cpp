@@ -1,7 +1,6 @@
 // Fill out your copyright notice in the Description page of Project Settings.
-
-#include "WarhouseHelpers.h"
 #include "UISceneManager.h"
+#include "WarhouseHelpers.h"
 
 // Sets default values
 AUISceneManager::AUISceneManager()
@@ -61,7 +60,7 @@ void AUISceneManager::SetupPlayerControllersForUI()
 
 	for (AActor* controller : controllers)
 	{
-		APlayerController* player = reinterpret_cast<APlayerController*>(controller);
+		APlayerController* player = Cast<APlayerController>(controller);
 		player->K2_DestroyActor();
 	}
 
@@ -77,7 +76,7 @@ void AUISceneManager::ChangeActiveWidget(FString widgetName) {
 	if (currentLoadedWidget != nullptr) {
 		oldName = currentLoadedWidget->GetName();
 		UnloadCurrentWidget();
-		
+
 	}
 
 	if (widgetName == "playerselect")

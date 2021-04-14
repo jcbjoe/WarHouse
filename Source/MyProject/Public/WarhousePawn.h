@@ -34,7 +34,7 @@ public:
 
 	static const FName LeftTrigger;
 	static const FName RightTrigger;
-	
+
 	void SetIsOnCharger(bool isOnCharger);
 
 	bool IsDead();
@@ -72,7 +72,7 @@ protected:
 	UAudioComponent* chargingComp;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Components")
-	UDecalComponent* floorDecal;
+		UDecalComponent* floorDecal;
 private:
 	virtual void BeginPlay() override;
 
@@ -93,6 +93,8 @@ private:
 
 	const float audioBeamVolume = 0.2f;
 
+	const float deathSoundVolume = 0.5f;
+
 	const int packageHoldDistance = 160;
 
 	const float respawnSeconds = 5;
@@ -108,4 +110,5 @@ private:
 	USoundBase* engineSoundBase;
 	USoundBase* dieSoundBase;
 
+	void DropHeldItem();
 };

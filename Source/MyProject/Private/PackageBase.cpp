@@ -117,7 +117,7 @@ TArray<AWarhousePawn*> APackageBase::GetHeldBy() const
 
 void APackageBase::SetProgressBarFill(float amount)
 {
-	reinterpret_cast<UPackageProgressBar*>(progressBar->GetUserWidgetObject())->progressBarFillAmount = amount;
+	Cast<UPackageProgressBar>(progressBar->GetUserWidgetObject())->progressBarFillAmount = amount;
 }
 
 void APackageBase::SetProgressBarVisability(bool visability)

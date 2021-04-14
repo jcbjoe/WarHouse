@@ -23,7 +23,7 @@ void AMyPlayerController::Tick(float DeltaSeconds)
 	{
 		for (auto widget : widgets)
 		{
-			UUserInterfaceBase* userInterface = reinterpret_cast<UUserInterfaceBase*>(widget);
+			UUserInterfaceBase* userInterface = Cast<UUserInterfaceBase>(widget);
 			userInterface->LeftPressed(controllerId);
 		}
 	}
@@ -32,7 +32,7 @@ void AMyPlayerController::Tick(float DeltaSeconds)
 	{
 		for (auto widget : widgets)
 		{
-			UUserInterfaceBase* userInterface = reinterpret_cast<UUserInterfaceBase*>(widget);
+			UUserInterfaceBase* userInterface = Cast<UUserInterfaceBase>(widget);
 			userInterface->RightPressed(controllerId);
 		}
 	}
@@ -41,7 +41,7 @@ void AMyPlayerController::Tick(float DeltaSeconds)
 	{
 		for (auto widget : widgets)
 		{
-			UUserInterfaceBase* userInterface = reinterpret_cast<UUserInterfaceBase*>(widget);
+			UUserInterfaceBase* userInterface = Cast<UUserInterfaceBase>(widget);
 			userInterface->SelectPressed(controllerId);
 		}
 	}
@@ -50,7 +50,7 @@ void AMyPlayerController::Tick(float DeltaSeconds)
 	{
 		for (auto widget : widgets)
 		{
-			UUserInterfaceBase* userInterface = reinterpret_cast<UUserInterfaceBase*>(widget);
+			UUserInterfaceBase* userInterface = Cast<UUserInterfaceBase>(widget);
 			userInterface->UnSelectPressed(controllerId);
 		}
 	}
@@ -59,7 +59,7 @@ void AMyPlayerController::Tick(float DeltaSeconds)
 	{
 		for (auto widget : widgets)
 		{
-			UUserInterfaceBase* userInterface = reinterpret_cast<UUserInterfaceBase*>(widget);
+			UUserInterfaceBase* userInterface = Cast<UUserInterfaceBase>(widget);
 			userInterface->StartPressed(controllerId);
 		}
 	}
@@ -68,7 +68,7 @@ void AMyPlayerController::Tick(float DeltaSeconds)
 	{
 		for (auto widget : widgets)
 		{
-			UUserInterfaceBase* userInterface = reinterpret_cast<UUserInterfaceBase*>(widget);
+			UUserInterfaceBase* userInterface = Cast<UUserInterfaceBase>(widget);
 			userInterface->UpPressed(controllerId);
 		}
 	}
@@ -77,7 +77,7 @@ void AMyPlayerController::Tick(float DeltaSeconds)
 	{
 		for (auto widget : widgets)
 		{
-			UUserInterfaceBase* userInterface = reinterpret_cast<UUserInterfaceBase*>(widget);
+			UUserInterfaceBase* userInterface = Cast<UUserInterfaceBase>(widget);
 			userInterface->DownPressed(controllerId);
 		}
 	}
