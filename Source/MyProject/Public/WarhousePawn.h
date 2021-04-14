@@ -15,25 +15,8 @@ class AWarhousePawn : public APawn
 {
 	GENERATED_BODY()
 
-
 public:
 	AWarhousePawn();
-
-	// Begin Actor Interface
-	virtual void Tick(float DeltaSeconds) override;
-	virtual void SetupPlayerInputComponent(class UInputComponent* InputComponent) override;
-	// End Actor Interface
-
-	// Static names for axis bindings
-	static const FName MoveForwardBinding;
-	static const FName MoveRightBinding;
-	static const FName PickupBinding;
-
-	static const FName ArmForwardBinding;
-	static const FName ArmRightBinding;
-
-	static const FName LeftTrigger;
-	static const FName RightTrigger;
 
 	void SetIsOnCharger(bool isOnCharger);
 
@@ -41,45 +24,46 @@ public:
 
 	void SetColour(EPlayerColours colour);
 
+	void DropHeldItem();
+
 protected:
-	/* The mesh component */
-	UPROPERTY(Category = Mesh, VisibleDefaultsOnly, BlueprintReadOnly)
+	//--- Unreal overrides
+	virtual void BeginPlay() override;
+	virtual void Tick(float DeltaSeconds) override;
+	virtual void SetupPlayerInputComponent(class UInputComponent* InputComponent) override;
+
+	//--- Unreal Visable components
+	UPROPERTY(EditDefaultsOnly)
 		UStaticMeshComponent* ShipMeshComponent;
 
-	UPROPERTY(Category = Mesh, VisibleDefaultsOnly, BlueprintReadOnly)
+	UPROPERTY(EditDefaultsOnly)
 		UStaticMeshComponent* BeamMeshComponent;
 
-	UPROPERTY(EditDefaultsOnly, Category = "Components")
+	UPROPERTY(EditDefaultsOnly)
 		UPhysicsHandleComponent* PhysicsHandle;
 
-	UPROPERTY(EditDefaultsOnly, Category = "Components")
+	UPROPERTY(EditDefaultsOnly)
 		USceneComponent* HeldLocation;
 
-	UPROPERTY(EditDefaultsOnly, Category = "Components")
+	UPROPERTY(EditDefaultsOnly)
 		UParticleSystemComponent* beamEmitter;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Progress Bar")
+	UPROPERTY(EditDefaultsOnly)
 		UWidgetComponent* progressBar;
 
-	/* The speed our ship moves around the level */
-	UPROPERTY(Category = Gameplay, EditAnywhere, BlueprintReadWrite)
-		float MoveSpeed;
-	UPROPERTY(Category = Gameplay, EditAnywhere, BlueprintReadWrite)
-		float DefaultMoveSpeed;
-
-	UAudioComponent* audioComp;
-	UAudioComponent* beamAudioComp;
-	UAudioComponent* chargingComp;
-
-	UPROPERTY(EditDefaultsOnly, Category = "Components")
+	UPROPERTY(EditDefaultsOnly)
 		UDecalComponent* floorDecal;
+	
 private:
-	virtual void BeginPlay() override;
 
+	//--- Game Variables
 	float _batteryCharge = 100;
-
 	bool isDead = false;
-
+	float respawnCounter = 0;
+	bool isOnChargingPad = false;
+	float MoveSpeed = 1000.0f;
+	
+	//--- Adjustable Variables
 	const float MovingBatteryDrain = 5.0;
 	const float NonMovingBatteryDrain = 2;
 	const float SingleHoldingBatteryDrain = -5.0;
@@ -90,25 +74,34 @@ private:
 	const float audioStationaryVolume = 0.05f;
 	const float audioMovingVolume = 0.1f;
 	const float audioChargingVolume = 0.6f;
-
 	const float audioBeamVolume = 0.2f;
-
 	const float deathSoundVolume = 0.5f;
 
 	const int packageHoldDistance = 160;
 
 	const float respawnSeconds = 5;
-	float respawnCounter = 0;
+	const float DefaultMoveSpeed = 1000.0f;
 
-	bool isOnChargingPad = false;
+	//--- Input names
+	const FName MoveForwardBinding = FName("MoveForward");
+	const FName MoveRightBinding = FName("MoveRight");
+	const FName PickupBinding = FName("PickupDrop");
 
+	const FName ArmForwardBinding = FName("ArmForward");
+	const FName ArmRightBinding = FName("ArmRight");
+
+	const FName LeftTrigger = FName("LeftTrigger");
+	const FName RightTrigger = FName("RightTrigger");
+
+	//--- Other Variables
 	UMaterial* red;
 	UMaterial* blue;
 	UMaterial* yellow;
 	UMaterial* white;
-
-	USoundBase* engineSoundBase;
+	
 	USoundBase* dieSoundBase;
 
-	void DropHeldItem();
+	UAudioComponent* audioComp;
+	UAudioComponent* beamAudioComp;
+	UAudioComponent* chargingComp;
 };

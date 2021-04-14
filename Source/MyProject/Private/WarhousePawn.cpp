@@ -15,7 +15,6 @@
 #include "Engine/StaticMesh.h"
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetMathLibrary.h"
-#include "Math/UnrealMathVectorConstants.h"
 #include "Particles/ParticleSystemComponent.h"
 #include "Sound/SoundBase.h"
 #include "EngineUtils.h"
@@ -25,20 +24,10 @@
 #include "WarhouseHelpers.h"
 #include "Components/DecalComponent.h"
 #include "PhysicsProp.h"
-#include "DestructibleProp.h"
-
-const FName AWarhousePawn::MoveForwardBinding("MoveForward");
-const FName AWarhousePawn::MoveRightBinding("MoveRight");
-const FName AWarhousePawn::PickupBinding("PickupDrop");
-
-const FName AWarhousePawn::ArmForwardBinding("ArmForward");
-const FName AWarhousePawn::ArmRightBinding("ArmRight");
-
-const FName AWarhousePawn::LeftTrigger("LeftTrigger");
-const FName AWarhousePawn::RightTrigger("RightTrigger");
 
 AWarhousePawn::AWarhousePawn()
 {
+	//--- Player materials setup
 	static ConstructorHelpers::FObjectFinder<UMaterial> redMat(TEXT("/Game/Assets/ConorAssets/Player/PlayerRed.PlayerRed"));
 	static ConstructorHelpers::FObjectFinder<UMaterial> blueMat(TEXT("/Game/Assets/ConorAssets/Player/PlayerBlue.PlayerBlue"));
 	static ConstructorHelpers::FObjectFinder<UMaterial> yellowMat(TEXT("/Game/Assets/ConorAssets/Player/PlayerYellow.PlayerYellow"));
@@ -49,94 +38,69 @@ AWarhousePawn::AWarhousePawn()
 	yellow = yellowMat.Object;
 	white = whiteMat.Object;
 
+	//--- Player model setup
 	static ConstructorHelpers::FObjectFinder<UStaticMesh> ShipMesh(TEXT("/Game/Assets/ConorAssets/Player-Body.Player-Body"));
-	static ConstructorHelpers::FObjectFinder<UStaticMesh> BeamMesh(TEXT("/Game/Assets/ConorAssets/Player-GravBeam.Player-GravBeam"));
-	// Create the mesh component
 	ShipMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ShipMesh"));
 	RootComponent = ShipMeshComponent;
 	ShipMeshComponent->SetCollisionProfileName(UCollisionProfile::Pawn_ProfileName);
 	ShipMeshComponent->SetStaticMesh(ShipMesh.Object);
 
+	//--- Player belt/beam setup
+	static ConstructorHelpers::FObjectFinder<UStaticMesh> BeamMesh(TEXT("/Game/Assets/ConorAssets/Player-GravBeam.Player-GravBeam"));
 	BeamMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("BeamMesh"));
 	BeamMeshComponent->SetStaticMesh(BeamMesh.Object);
 	BeamMeshComponent->SetupAttachment(RootComponent);
-	// Movement
-	MoveSpeed = 1000.0f;
-	DefaultMoveSpeed = 1000.0f;
+
+	//--- Physics handle setup
 	PhysicsHandle = CreateDefaultSubobject<UPhysicsHandleComponent>(TEXT("PhysicsHandle"));
-
 	HeldLocation = CreateDefaultSubobject<USceneComponent>(FName("HoldLocation"));
-
 	HeldLocation->AttachToComponent(ShipMeshComponent, FAttachmentTransformRules::KeepRelativeTransform);
-
-	//HeldLocation->SetRelativeLocation({ 150,0,0, });
 	HeldLocation->SetRelativeLocation({ 150,0,0, });
 
+	//--- Beam emitter setup
 	ConstructorHelpers::FObjectFinder<UParticleSystem> emitter(TEXT("/Game/Assets/JoeAssets/Beam/Beam.Beam"));
-
 	UParticleSystem* templateEmitter = emitter.Object;
-
-
 	beamEmitter = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("Beam"));
 	beamEmitter->Template = templateEmitter;
-
 	beamEmitter->SecondsBeforeInactive = 0;
-
 	beamEmitter->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);
 
+	//--- Battery bar setup
 	progressBar = CreateDefaultSubobject<UWidgetComponent>(FName("ProgressBar"));
-
 	progressBar->SetupAttachment(RootComponent);
-
 	progressBar->SetWidgetSpace(EWidgetSpace::World);
-
 	static ConstructorHelpers::FClassFinder<UUserWidget> progressbarWidget(TEXT("/Game/UI/PackageCollectionBar"));
-
 	progressBar->SetWidgetClass(progressbarWidget.Class);
-
 	progressBar->SetDrawSize(FVector2D(200, 30));
 
+	//--- Floor crosshair/decal setup
 	static ConstructorHelpers::FObjectFinder<UMaterial> decalMat(TEXT("/Game/Assets/JoeAssets/FloorMarker/FloorDecal.FloorDecal"));
-
 	floorDecal = CreateDefaultSubobject<UDecalComponent>(L"Decal");
-
 	floorDecal->SetDecalMaterial(decalMat.Object);
-
 	floorDecal->SetVisibility(false);
-
 	floorDecal->DecalSize = FVector(100, 40, 40);
 	floorDecal->SetRelativeRotation(FRotator::MakeFromEuler({ 0, 90, 0 }));
-
 	floorDecal->SetupAttachment(RootComponent);
 
-	audioComp = CreateDefaultSubobject<UAudioComponent>(FName("Audio"));
-
+	//--- Audio setup
 	static ConstructorHelpers::FObjectFinder<USoundWave> engineSound(TEXT("/Game/Sounds/Robotic_scifi_SFX/Mechanical_Sounds/wav/Engine2Loop.Engine2Loop"));
 	static ConstructorHelpers::FObjectFinder<USoundWave> dieSound(TEXT("/Game/Sounds/Robotic_scifi_SFX/Electric_Sounds/wav/electric_spark_burst__2_.electric_spark_burst__2_"));
-
-	engineSoundBase = engineSound.Object;
+	static ConstructorHelpers::FObjectFinder<USoundWave> chargingSound(TEXT("/Game/Sounds/Robotic_scifi_SFX/Mechanical_Sounds/wav/engine_loop_6.engine_loop_6"));
+	static ConstructorHelpers::FObjectFinder<USoundWave> beamSound(TEXT("/Game/Sounds/Beam.Beam"));
+	
+	audioComp = CreateDefaultSubobject<UAudioComponent>(FName("Audio"));
+	beamAudioComp = CreateDefaultSubobject<UAudioComponent>(FName("BeamAudio"));
+	chargingComp = CreateDefaultSubobject<UAudioComponent>(FName("ChargingAudio"));
+	
 	dieSoundBase = dieSound.Object;
 
-	audioComp->SetSound(engineSoundBase);
-
-	audioComp->SetVolumeMultiplier(audioStationaryVolume);
-
-	static ConstructorHelpers::FObjectFinder<USoundWave> beamSound(TEXT("/Game/Sounds/Beam.Beam"));
-
-	beamAudioComp = CreateDefaultSubobject<UAudioComponent>(FName("BeamAudio"));
-
+	audioComp->SetSound(engineSound.Object);
 	beamAudioComp->SetSound(beamSound.Object);
-
-	beamAudioComp->SetVolumeMultiplier(0.0f);
-
-	static ConstructorHelpers::FObjectFinder<USoundWave> chargingSound(TEXT("/Game/Sounds/Robotic_scifi_SFX/Mechanical_Sounds/wav/engine_loop_6.engine_loop_6"));
-
-	chargingComp = CreateDefaultSubobject<UAudioComponent>(FName("ChargingAudio"));
-
 	chargingComp->SetSound(chargingSound.Object);
-
+	
+	audioComp->SetVolumeMultiplier(audioStationaryVolume);
+	beamAudioComp->SetVolumeMultiplier(0.0f);
 	chargingComp->SetVolumeMultiplier(0.0f);
-
 }
 
 void AWarhousePawn::BeginPlay()
