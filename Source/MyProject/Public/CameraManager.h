@@ -46,6 +46,25 @@ public:
 		return BillboardCamera;
 	}
 
+	ACameraActor* GetBayCamera(int bay) const
+	{
+		switch (bay)
+		{
+		case 1:
+			return Bay1Camera;
+			break;
+		case 2:
+			return Bay2Camera;
+			break;
+		case 3:
+			return Bay3Camera;
+			break;
+		case 4:
+			return Bay4Camera;
+			break;
+		}
+	}
+
 	UFUNCTION()
 		void SwitchCamera(ACameraActor* camera);
 };

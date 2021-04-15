@@ -23,6 +23,8 @@ void AGameManager::BeginPlay()
 {
 	Super::BeginPlay();
 
+	//play intro
+	// 
 	//Initialise game
 	GetWorld()->GetTimerManager().SetTimer(InitGameTimerHandle, this, &AGameManager::InitGame, InitGameTimer, false);
 }
@@ -161,8 +163,9 @@ void AGameManager::InitGame()
 			shutters[i]->SetColour(instance->playerInfo[i].colour);
 		}
 	}
+
 	GetWorld()->GetTimerManager().SetTimer(ForkliftTimerHandle, this, &AGameManager::ActivateForklift, ForkliftTimer, false);
-	GetWorld()->GetTimerManager().SetTimer(CameraSwitchHandle, this, &AGameManager::SwitchCamerainCameraManager, CameraSwitchTimer, false);
+	GetWorld()->GetTimerManager().SetTimer(CameraSwitchHandle, this, &AGameManager::SwitchCamerainCameraManager, CameraSwitchTimer, false); //switch from bay to main
 	GetWorld()->GetTimerManager().SetTimer(GameTimerHandle, this, &AGameManager::OnGameEnd, GameTimer, false);
 
 	WarhouseHelpers::GetPlayerManager(GetWorld())->SpawnPlayers();
@@ -192,7 +195,64 @@ void AGameManager::ActivateForklift()
 	Forklift->GetReadyToDeliver();
 }
 
-void AGameManager::SwitchCamerainCameraManager()
+void AGameManager::SwitchCamerainCameraManager(int camera)
 {
-	CameraManager->SwitchCamera(CameraManager->GetMainCamera());//test for now
+	switch (camera)
+	{
+	case 0:
+		//main
+		CameraManager->SwitchCamera(CameraManager->GetMainCamera());
+		break;
+	case 1:
+		//bay 1
+		CameraManager->SwitchCamera(CameraManager->GetBayCamera(camera));
+		break;
+	case 2:
+		//bay 2
+		CameraManager->SwitchCamera(CameraManager->GetBayCamera(camera));
+		break;
+	case 3:
+		//bay 3
+		CameraManager->SwitchCamera(CameraManager->GetBayCamera(camera));
+		break;
+	case 4:
+		//bay 4
+		CameraManager->SwitchCamera(CameraManager->GetBayCamera(camera));
+		break;
+	}
+}
+
+void AGameManager::PlayIntro()
+{
+	//check how many players
+	auto instance = WarhouseHelpers::GetGameInstance(GetWorld());
+	int players = instance->playerInfo.Num();
+	//switch from billboard to each bay camera
+	switch (players)
+	{
+	case 2:
+		//switch camera twice
+		SwitchCamerainCameraManager(1);
+		SwitchCamerainCameraManager(2);
+		break;
+	case 3:
+		//switch camera thrice
+		SwitchCamerainCameraManager(1);
+		SwitchCamerainCameraManager(2);
+		SwitchCamerainCameraManager(3);
+		break;
+	case 4:
+		//switch camera fourice :D
+		SwitchCamerainCameraManager(1);
+		SwitchCamerainCameraManager(2);
+		SwitchCamerainCameraManager(3);
+		SwitchCamerainCameraManager(4);
+		break;
+	default:
+		//twice
+		SwitchCamerainCameraManager(1);
+		SwitchCamerainCameraManager(2);
+		break;
+	}
+	//switch back to main camera
 }

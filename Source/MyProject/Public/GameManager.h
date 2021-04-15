@@ -56,7 +56,7 @@ protected:
 	UPROPERTY(EditAnywhere)
 		float InitGameTimer = 3.0f;
 	UPROPERTY(EditAnywhere)
-		float CameraSwitchTimer = 2.0f;
+		float CameraSwitchTimer = 5.0f; //how long on each camera
 
 	//Handle to manage the game timer
 	FTimerHandle GameTimerHandle;
@@ -98,5 +98,7 @@ public:
 	UFUNCTION()
 		void ActivateForklift();
 	UFUNCTION()
-		void SwitchCamerainCameraManager();
+		void SwitchCamerainCameraManager(int camera);
+	UFUNCTION()
+		void PlayIntro();
 };
