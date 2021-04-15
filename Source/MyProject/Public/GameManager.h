@@ -11,6 +11,7 @@
 #include "Shutter.h"
 #include "WarhouseClock.h"
 #include "WarhouseForklift.h"
+#include "CameraManager.h"
 #include "GameManager.generated.h"
 
 UCLASS()
@@ -54,6 +55,8 @@ protected:
 		float ForkliftTimer;
 	UPROPERTY(EditAnywhere)
 		float InitGameTimer = 3.0f;
+	UPROPERTY(EditAnywhere)
+		float CameraSwitchTimer = 2.0f;
 
 	//Handle to manage the game timer
 	FTimerHandle GameTimerHandle;
@@ -63,9 +66,13 @@ protected:
 	FTimerHandle ForkliftTimerHandle;
 	//Handle to manage init timer
 	FTimerHandle InitGameTimerHandle;
+	//Handle to manage switching cameras
+	FTimerHandle CameraSwitchHandle;
 
 	UPROPERTY(EditAnywhere)
 		AWarhouseClock* ClockTimerText;
+	UPROPERTY(EditAnywhere)
+		ACameraManager* CameraManager;
 
 	FString LocalCurrencyCode;
 
@@ -90,4 +97,6 @@ public:
 		void ReturnToMainMenu(); //could move this into the helper class?
 	UFUNCTION()
 		void ActivateForklift();
+	UFUNCTION()
+		void SwitchCamerainCameraManager();
 };

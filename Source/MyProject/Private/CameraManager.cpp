@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 
 #include "CameraManager.h"
@@ -8,6 +8,7 @@
 #include "Camera/CameraComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetMathLibrary.h"
+#include "GameFramework/PlayerController.h"
 
 // Sets default values
 ACameraManager::ACameraManager()
@@ -21,7 +22,7 @@ ACameraManager::ACameraManager()
 void ACameraManager::BeginPlay()
 {
 	Super::BeginPlay();
-
+	SwitchCamera(BillboardCamera);
 }
 
 // Called every frame
@@ -42,9 +43,9 @@ void ACameraManager::Tick(float DeltaTime)
 	}
 
 	const FRotator loc = UKismetMathLibrary::FindLookAtRotation(MainCamera->GetActorLocation(), middlePos);
-	
+
 	const FRotator lerped = FMath::Lerp(MainCamera->GetActorRotation(), loc, DeltaTime);
-	
+
 	MainCamera->SetActorRotation(lerped);
 
 	float maxDistance = 0;
@@ -67,8 +68,13 @@ void ACameraManager::Tick(float DeltaTime)
 	const float zoom = 90 - UKismetMathLibrary::MapRangeClamped(maxDistance, minDist, maxDist, 45, 90);
 
 	const float lerpedZooom = FMath::Lerp(MainCamera->GetCameraComponent()->FieldOfView, 90 - zoom, DeltaTime);
-	
+
 	MainCamera->GetCameraComponent()->FieldOfView = lerpedZooom;
 
 }
 
+void ACameraManager::SwitchCamera(ACameraActor* camera)
+{
+	auto p = UGameplayStatics::GetPlayerController(GetWorld(), 0);
+	p->SetViewTargetWithBlend(camera);
+}

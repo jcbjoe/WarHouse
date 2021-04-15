@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 #pragma once
 
@@ -10,8 +10,8 @@ UCLASS()
 class MYPROJECT_API ACameraManager : public AActor
 {
 	GENERATED_BODY()
-	
-public:	
+
+public:
 	// Sets default values for this actor's properties
 	ACameraManager();
 
@@ -21,12 +21,31 @@ protected:
 
 	UPROPERTY(Category = Gameplay, EditAnywhere, BlueprintReadWrite)
 		ACameraActor* MainCamera;
+	UPROPERTY(Category = Gameplay, EditAnywhere, BlueprintReadWrite)
+		ACameraActor* BillboardCamera;
+	UPROPERTY(Category = Gameplay, EditAnywhere, BlueprintReadWrite)
+		ACameraActor* Bay1Camera;
+	UPROPERTY(Category = Gameplay, EditAnywhere, BlueprintReadWrite)
+		ACameraActor* Bay2Camera;
+	UPROPERTY(Category = Gameplay, EditAnywhere, BlueprintReadWrite)
+		ACameraActor* Bay3Camera;
+	UPROPERTY(Category = Gameplay, EditAnywhere, BlueprintReadWrite)
+		ACameraActor* Bay4Camera;
 
-public:	
+public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-	const ACameraActor* GetCamera() const {
+	const ACameraActor* GetCamera() const
+	{
 		return MainCamera;
 	}
+
+	ACameraActor* GetBillboardCamera() const
+	{
+		return BillboardCamera;
+	}
+
+	UFUNCTION()
+		void SwitchCamera(ACameraActor* camera);
 };

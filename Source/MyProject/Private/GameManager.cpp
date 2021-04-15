@@ -162,6 +162,7 @@ void AGameManager::InitGame()
 		}
 	}
 	GetWorld()->GetTimerManager().SetTimer(ForkliftTimerHandle, this, &AGameManager::ActivateForklift, ForkliftTimer, false);
+	GetWorld()->GetTimerManager().SetTimer(CameraSwitchHandle, this, &AGameManager::SwitchCamerainCameraManager, CameraSwitchTimer, false);
 	GetWorld()->GetTimerManager().SetTimer(GameTimerHandle, this, &AGameManager::OnGameEnd, GameTimer, false);
 
 	WarhouseHelpers::GetPlayerManager(GetWorld())->SpawnPlayers();
@@ -189,4 +190,9 @@ void AGameManager::ReturnToMainMenu()
 void AGameManager::ActivateForklift()
 {
 	Forklift->GetReadyToDeliver();
+}
+
+void AGameManager::SwitchCamerainCameraManager()
+{
+	CameraManager->SwitchCamera(CameraManager->GetBillboardCamera());
 }
