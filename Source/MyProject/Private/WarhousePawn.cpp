@@ -260,7 +260,9 @@ void AWarhousePawn::Tick(float DeltaSeconds)
 			//--- Check if an item is held
 			if (PhysicsHandle->GetGrabbedComponent() == nullptr) {
 				//--- Item not held
-				//
+
+				floorDecal->SetVisibility(false);
+				
 				//--- Pickup package logic
 
 				//--- Setup trace params
