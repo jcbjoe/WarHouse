@@ -90,7 +90,7 @@ void APackageBase::Tick(float DeltaTime)
 	{
 		ACameraManager* cameraManager = WarhouseHelpers::GetCameraManager(GetWorld());
 
-		auto rot = UKismetMathLibrary::FindLookAtRotation(progressBar->GetComponentLocation(), cameraManager->GetCamera()->GetActorLocation());
+		auto rot = UKismetMathLibrary::FindLookAtRotation(progressBar->GetComponentLocation(), cameraManager->GetMainCamera()->GetActorLocation());
 		progressBar->SetWorldRotation(rot);
 
 		auto newLoc = GetActorLocation();
@@ -163,7 +163,7 @@ void APackageBase::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, 
 	{
 		auto velocity = this->GetVelocity().Size();
 
-		
+
 
 		if (velocity > 105)
 		{

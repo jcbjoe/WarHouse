@@ -116,13 +116,13 @@ AWarhousePawn::AWarhousePawn()
 
 	engineSoundBase = engineSound.Object;
 	dieSoundBase = dieSound.Object;
-	
+
 	audioComp->SetSound(engineSoundBase);
 
 	audioComp->SetVolumeMultiplier(audioStationaryVolume);
 
 	static ConstructorHelpers::FObjectFinder<USoundWave> beamSound(TEXT("/Game/Sounds/Beam.Beam"));
-	
+
 	beamAudioComp = CreateDefaultSubobject<UAudioComponent>(FName("BeamAudio"));
 
 	beamAudioComp->SetSound(beamSound.Object);
@@ -192,7 +192,7 @@ void AWarhousePawn::Tick(float DeltaSeconds)
 		const float ArmRightValue = GetInputAxisValue(ArmRightBinding);
 
 		auto yaw = 360 - (FMath::RadiansToDegrees(FMath::Atan2(ArmRightValue, ArmForwardValue)) + 180);
-		
+
 		float x = (packageHoldDistance * FMath::Cos(yaw * UKismetMathLibrary::GetPI() / 180.f)) + GetActorLocation().X;
 		float y = (packageHoldDistance * FMath::Sin(yaw * UKismetMathLibrary::GetPI() / 180.f)) + GetActorLocation().Y;
 
@@ -304,7 +304,7 @@ void AWarhousePawn::Tick(float DeltaSeconds)
 		if (Movement.SizeSquared() > 0.0f)
 		{
 			audioComp->SetVolumeMultiplier(audioMovingVolume);
-			
+
 			const FRotator NewRotation = Movement.Rotation();
 
 			auto rot = FMath::Lerp(GetActorRotation(), NewRotation, 0.05f);
@@ -347,7 +347,7 @@ void AWarhousePawn::Tick(float DeltaSeconds)
 
 				//auto rot = UKismetMathLibrary::FindLookAtRotation(actorPos, PhysicsHandle->TargetTransform.GetLocation());
 				//rot.Yaw += 180;
-			
+
 				//actor->SetActorRotation(rot);
 
 				float weight = package->GetPackageWeight();
@@ -368,7 +368,7 @@ void AWarhousePawn::Tick(float DeltaSeconds)
 
 		reinterpret_cast<UPackageProgressBar*>(progressBar->GetUserWidgetObject())->progressBarFillAmount = _batteryCharge / 100;
 
-		const ACameraActor* cam = WarhouseHelpers::GetCameraManager(GetWorld())->GetCamera();
+		const ACameraActor* cam = WarhouseHelpers::GetCameraManager(GetWorld())->GetMainCamera();
 
 		auto rot = UKismetMathLibrary::FindLookAtRotation(progressBar->GetComponentLocation(), cam->GetActorLocation());
 		rot.Yaw = 180;

@@ -194,5 +194,5 @@ void AGameManager::ActivateForklift()
 
 void AGameManager::SwitchCamerainCameraManager()
 {
-	CameraManager->SwitchCamera(CameraManager->GetBillboardCamera());
+	CameraManager->SwitchCamera(CameraManager->GetMainCamera());//test for now
 }

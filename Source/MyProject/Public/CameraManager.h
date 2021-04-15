@@ -36,7 +36,7 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-	const ACameraActor* GetCamera() const
+	ACameraActor* GetMainCamera() const
 	{
 		return MainCamera;
 	}
