@@ -26,7 +26,8 @@ void AGameManager::BeginPlay()
 	//play intro
 	// 
 	//Initialise game
-	GetWorld()->GetTimerManager().SetTimer(InitGameTimerHandle, this, &AGameManager::InitGame, InitGameTimer, false);
+	//GetWorld()->GetTimerManager().SetTimer(InitGameTimerHandle, this, &AGameManager::InitGame, InitGameTimer, false);
+	InitGame();
 }
 
 // Called every frame
@@ -145,15 +146,19 @@ void AGameManager::InitGame()
 			{
 			case 0:
 				playerScores.Add(player0Score);
+				numOfPlayers++;
 				break;
 			case 1:
 				playerScores.Add(player1Score);
+				numOfPlayers++;
 				break;
 			case 2:
 				playerScores.Add(player2Score);
+				numOfPlayers++;
 				break;
 			case 3:
 				playerScores.Add(player3Score);
+				numOfPlayers++;
 				break;
 			}
 
@@ -164,11 +169,12 @@ void AGameManager::InitGame()
 		}
 	}
 
+	////call intro function
+	PlayIntro();
+	//call forklift timer
 	GetWorld()->GetTimerManager().SetTimer(ForkliftTimerHandle, this, &AGameManager::ActivateForklift, ForkliftTimer, false);
-	GetWorld()->GetTimerManager().SetTimer(CameraSwitchHandle, this, &AGameManager::SwitchCamerainCameraManager, CameraSwitchTimer, false); //switch from bay to main
 	GetWorld()->GetTimerManager().SetTimer(GameTimerHandle, this, &AGameManager::OnGameEnd, GameTimer, false);
-
-	WarhouseHelpers::GetPlayerManager(GetWorld())->SpawnPlayers();
+	//WarhouseHelpers::GetPlayerManager(GetWorld())->SpawnPlayers();
 }
 
 void AGameManager::OnGameEnd()
@@ -195,64 +201,68 @@ void AGameManager::ActivateForklift()
 	Forklift->GetReadyToDeliver();
 }
 
-void AGameManager::SwitchCamerainCameraManager(int camera)
-{
-	switch (camera)
-	{
-	case 0:
-		//main
-		CameraManager->SwitchCamera(CameraManager->GetMainCamera());
-		break;
-	case 1:
-		//bay 1
-		CameraManager->SwitchCamera(CameraManager->GetBayCamera(camera));
-		break;
-	case 2:
-		//bay 2
-		CameraManager->SwitchCamera(CameraManager->GetBayCamera(camera));
-		break;
-	case 3:
-		//bay 3
-		CameraManager->SwitchCamera(CameraManager->GetBayCamera(camera));
-		break;
-	case 4:
-		//bay 4
-		CameraManager->SwitchCamera(CameraManager->GetBayCamera(camera));
-		break;
-	}
-}
-
 void AGameManager::PlayIntro()
 {
-	//check how many players
-	auto instance = WarhouseHelpers::GetGameInstance(GetWorld());
-	int players = instance->playerInfo.Num();
-	//switch from billboard to each bay camera
-	switch (players)
+	//for loop through cam array
+	for (int i = 0; i < numOfPlayers; i++)
 	{
-	case 2:
-		//switch camera twice
-		SwitchCamerainCameraManager(1);
-		SwitchCamerainCameraManager(2);
-		break;
-	case 3:
-		//switch camera thrice
-		SwitchCamerainCameraManager(1);
-		SwitchCamerainCameraManager(2);
-		SwitchCamerainCameraManager(3);
-		break;
-	case 4:
-		//switch camera fourice :D
-		SwitchCamerainCameraManager(1);
-		SwitchCamerainCameraManager(2);
-		SwitchCamerainCameraManager(3);
-		SwitchCamerainCameraManager(4);
-		break;
-	default:
-		//twice
-		SwitchCamerainCameraManager(1);
-		SwitchCamerainCameraManager(2);
-		break;
+		//activate each camera on a timer
+		//CameraSwitchDelegate.BindUFunction(this, FName("SwitchCameraInCameraManager"), i);
+		//GetWorld()->GetTimerManager().SetTimer(CameraSwitchHandle, CameraSwitchDelegate, CameraSwitchTimer, false);
+		//CameraSwitchTimer += 5.0f;
+		//SwitchCameraInCameraManager(i);
+		switch (i)
+		{
+		case 0:
+			GetWorld()->GetTimerManager().SetTimer(Bay1Handle, this, &AGameManager::ActivateBay1Camera, CameraSwitchTimer, false);
+			CameraSwitchTimer += 2.5f;
+			break;
+		case 1:
+			GetWorld()->GetTimerManager().SetTimer(Bay2Handle, this, &AGameManager::ActivateBay2Camera, CameraSwitchTimer, false);
+			CameraSwitchTimer += 2.5f;
+			break;
+		case 2:
+			GetWorld()->GetTimerManager().SetTimer(Bay3Handle, this, &AGameManager::ActivateBay3Camera, CameraSwitchTimer, false);
+			CameraSwitchTimer += 2.5f;
+			break;
+		case 3:
+			GetWorld()->GetTimerManager().SetTimer(Bay4Handle, this, &AGameManager::ActivateBay4Camera, CameraSwitchTimer, false);
+			CameraSwitchTimer += 2.5f;
+			break;
+		default:
+			GetWorld()->GetTimerManager().SetTimer(Bay1Handle, this, &AGameManager::ActivateBay1Camera, CameraSwitchTimer, false);
+			CameraSwitchTimer += 2.5f;
+			break;
+		}
 	}
-	//switch back to main camera
+
+	//switch back to main camera when players spawn
+	GetWorld()->GetTimerManager().SetTimer(InitGameTimerHandle, this, &AGameManager::InitSpawnPlayers, InitGameTimer, false);
+}
+
+void AGameManager::InitSpawnPlayers()
+{
+	WarhouseHelpers::GetPlayerManager(GetWorld())->SpawnPlayers();
+}
+
+void AGameManager::SwitchCameraInCameraManager(int camera)
+{
+	CameraManager->SwitchCamera(CameraManager->GetBayCamera(camera));
+}
+
+void AGameManager::ActivateBay1Camera()
+{
+	CameraManager->SwitchCamera(CameraManager->GetBayCamera(0));
+}
+void AGameManager::ActivateBay2Camera()
+{
+	CameraManager->SwitchCamera(CameraManager->GetBayCamera(1));
+}
+void AGameManager::ActivateBay3Camera()
+{
+	CameraManager->SwitchCamera(CameraManager->GetBayCamera(2));
+}
+void AGameManager::ActivateBay4Camera()
+{
+	CameraManager->SwitchCamera(CameraManager->GetBayCamera(3));
 }

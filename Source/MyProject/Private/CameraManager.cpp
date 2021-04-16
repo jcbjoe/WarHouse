@@ -15,7 +15,10 @@ ACameraManager::ACameraManager()
 {
 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
-
+	BayCameras.Add(Bay1Camera);
+	BayCameras.Add(Bay2Camera);
+	BayCameras.Add(Bay3Camera);
+	BayCameras.Add(Bay4Camera);
 }
 
 // Called when the game starts or when spawned
@@ -71,6 +74,28 @@ void ACameraManager::Tick(float DeltaTime)
 
 	MainCamera->GetCameraComponent()->FieldOfView = lerpedZooom;
 
+}
+
+ACameraActor* ACameraManager::GetBayCamera(int bay) const
+{
+	switch (bay)
+	{
+	case 0:
+		return Bay1Camera;
+		break;
+	case 1:
+		return Bay2Camera;
+		break;
+	case 2:
+		return Bay3Camera;
+		break;
+	case 3:
+		return Bay4Camera;
+		break;
+	default:
+		return Bay1Camera;
+		break;
+	}
 }
 
 void ACameraManager::SwitchCamera(ACameraActor* camera)

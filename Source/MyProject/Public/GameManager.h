@@ -45,6 +45,8 @@ protected:
 	float player2Score;
 	float player3Score;
 
+	int numOfPlayers;
+
 	UPROPERTY(VisibleAnywhere)
 		TArray<float> playerScores;
 	UPROPERTY(EditAnywhere)
@@ -54,7 +56,7 @@ protected:
 	UPROPERTY(EditAnywhere)
 		float ForkliftTimer;
 	UPROPERTY(EditAnywhere)
-		float InitGameTimer = 3.0f;
+		float InitGameTimer;
 	UPROPERTY(EditAnywhere)
 		float CameraSwitchTimer = 5.0f; //how long on each camera
 
@@ -68,6 +70,16 @@ protected:
 	FTimerHandle InitGameTimerHandle;
 	//Handle to manage switching cameras
 	FTimerHandle CameraSwitchHandle;
+	//Handle to manage switching cameras
+	FTimerHandle Bay1Handle;
+	//Handle to manage switching cameras
+	FTimerHandle Bay2Handle;
+	//Handle to manage switching cameras
+	FTimerHandle Bay3Handle;
+	//Handle to manage switching cameras
+	FTimerHandle Bay4Handle;
+	//Delegate for passing parametrs to function called by timer
+	FTimerDelegate CameraSwitchDelegate;
 
 	UPROPERTY(EditAnywhere)
 		AWarhouseClock* ClockTimerText;
@@ -98,7 +110,17 @@ public:
 	UFUNCTION()
 		void ActivateForklift();
 	UFUNCTION()
-		void SwitchCamerainCameraManager(int camera);
-	UFUNCTION()
 		void PlayIntro();
+	UFUNCTION()
+		void SwitchCameraInCameraManager(int camera);
+	UFUNCTION()
+		void ActivateBay1Camera();
+	UFUNCTION()
+		void ActivateBay2Camera();
+	UFUNCTION()
+		void ActivateBay3Camera();
+	UFUNCTION()
+		void ActivateBay4Camera();
+	UFUNCTION()
+		void InitSpawnPlayers();
 };
