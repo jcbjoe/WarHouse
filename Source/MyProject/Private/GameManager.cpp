@@ -230,6 +230,7 @@ void AGameManager::PlayIntro()
 			break;
 		}
 	}
+	InitGameTimer = CameraSwitchTimer;
 	//camera switches back to main camera when players spawn
 	GetWorld()->GetTimerManager().SetTimer(InitGameTimerHandle, this, &AGameManager::InitSpawnPlayers, InitGameTimer, false);
 }
