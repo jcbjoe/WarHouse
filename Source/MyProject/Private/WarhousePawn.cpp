@@ -2,10 +2,8 @@
 
 #include "WarhousePawn.h"
 
-#include <string>
-
+#include "PackageBase.h"
 #include "EditorCategoryUtils.h"
-#include "TimerManager.h"
 #include "UObject/ConstructorHelpers.h"
 #include "Camera/CameraComponent.h"
 #include "Components/StaticMeshComponent.h"
@@ -19,10 +17,11 @@
 #include "Sound/SoundBase.h"
 #include "EngineUtils.h"
 #include "GameManager.h"
+#include "MyPlayerController.h"
 #include "PackageProgressBar.h"
-#include "PackageBase.h"
 #include "WarhouseHelpers.h"
 #include "Components/DecalComponent.h"
+#include "Components/AudioComponent.h"
 #include "PhysicsProp.h"
 
 AWarhousePawn::AWarhousePawn()
@@ -57,6 +56,7 @@ AWarhousePawn::AWarhousePawn()
 	RootComponent = ShipMeshComponent;
 	ShipMeshComponent->SetCollisionProfileName(UCollisionProfile::Pawn_ProfileName);
 	ShipMeshComponent->SetStaticMesh(ShipMesh.Object);
+	ShipMeshComponent->SetNotifyRigidBodyCollision(true);
 
 	//--- Player belt/beam setup
 	static ConstructorHelpers::FObjectFinder<UStaticMesh> BeamMesh(TEXT("/Game/Assets/ConorAssets/Player/player_gravbeam_low.player_gravbeam_low"));
@@ -100,20 +100,27 @@ AWarhousePawn::AWarhousePawn()
 	static ConstructorHelpers::FObjectFinder<USoundWave> dieSound(TEXT("/Game/Sounds/Robotic_scifi_SFX/Electric_Sounds/wav/electric_spark_burst__2_.electric_spark_burst__2_"));
 	static ConstructorHelpers::FObjectFinder<USoundWave> chargingSound(TEXT("/Game/Sounds/Robotic_scifi_SFX/Mechanical_Sounds/wav/engine_loop_6.engine_loop_6"));
 	static ConstructorHelpers::FObjectFinder<USoundWave> beamSound(TEXT("/Game/Sounds/Beam.Beam"));
-	
+
 	audioComp = CreateDefaultSubobject<UAudioComponent>(FName("Audio"));
 	beamAudioComp = CreateDefaultSubobject<UAudioComponent>(FName("BeamAudio"));
 	chargingComp = CreateDefaultSubobject<UAudioComponent>(FName("ChargingAudio"));
-	
+
 	dieSoundBase = dieSound.Object;
 
 	audioComp->SetSound(engineSound.Object);
 	beamAudioComp->SetSound(beamSound.Object);
 	chargingComp->SetSound(chargingSound.Object);
-	
+
 	audioComp->SetVolumeMultiplier(audioStationaryVolume);
 	beamAudioComp->SetVolumeMultiplier(0.0f);
 	chargingComp->SetVolumeMultiplier(0.0f);
+
+	//--- Create beam locations
+	beamSource = CreateDefaultSubobject<USceneComponent>(FName("SourcePos"));
+	beamSource->SetupAttachment(RootComponent);
+
+	beamTarget = CreateDefaultSubobject<USceneComponent>(FName("TargetPos"));
+	beamTarget->SetupAttachment(RootComponent);
 }
 
 void AWarhousePawn::BeginPlay()
@@ -125,6 +132,8 @@ void AWarhousePawn::BeginPlay()
 	beamAudioComp->Play();
 
 	chargingComp->Play();
+
+	ShipMeshComponent->OnComponentHit.AddDynamic(this, &AWarhousePawn::OnHit);
 }
 
 void AWarhousePawn::SetColour(EPlayerColours colour)
@@ -197,43 +206,36 @@ void AWarhousePawn::Tick(float DeltaSeconds)
 		const float LeftTriggerVal = GetInputAxisValue(LeftTrigger);
 		const float RightTriggerVal = GetInputAxisValue(RightTrigger);
 
-		//--- Calculate the yaw value from the right and forward of the left controller stick
-		auto stickYaw = 360 - (FMath::RadiansToDegrees(FMath::Atan2(ArmRightValue, ArmForwardValue)) + 180);
+		//--- Calculate additional height
+		float additionalHeight = 0;
+		additionalHeight -= UKismetMathLibrary::MapRangeClamped(LeftTriggerVal, 0, 1, 0, maxUpDownVal);
+		additionalHeight += UKismetMathLibrary::MapRangeClamped(RightTriggerVal, 0, 1, 0, maxUpDownVal);
 
-		//--- Calculate the target X,Y coords for where the attached/held object will be located
-		float targetX = (packageHoldDistance * FMath::Cos(stickYaw * UKismetMathLibrary::GetPI() / 180.f)) + GetActorLocation().X;
-		float targetY = (packageHoldDistance * FMath::Sin(stickYaw * UKismetMathLibrary::GetPI() / 180.f)) + GetActorLocation().Y;
+		//--- Calculate the beam target and source locations
+		const FVector ArmDirection = FVector(-ArmForwardValue, ArmRightValue, 0.f).GetClampedToMaxSize(1.0f);
+		FVector sourceLoc = (ArmDirection * 40) + GetActorLocation();
+		FVector targetLoc = (ArmDirection * 200) + GetActorLocation();
+		sourceLoc.Z = GetActorLocation().Z + beamHeightOffset;
+		targetLoc.Z = GetActorLocation().Z + beamHeightOffset + additionalHeight;
 
-		const int beamHeightOffset = 137;
+		//--- Set the target, source and belt rotations/location
+		BeamMeshComponent->SetWorldRotation(ArmDirection.Rotation());
+		beamSource->SetWorldLocation(sourceLoc);
+		beamTarget->SetWorldLocation(targetLoc);
 
-		//--- Create the vector of the target point and a copy. The copy is for the belt of the player that rotates
-		FVector targetLocation = FVector(targetX, targetY, GetActorLocation().Z);
-		FVector targetLocationCopy = targetLocation;
+		//--- Set target for the Physics handle
+		PhysicsHandle->SetTargetLocation(beamTarget->GetComponentLocation());
 
-		targetLocation.Z += beamHeightOffset;
-
-		//--- Adjust the height of the target based ont he triggers of the controller
-		targetLocation.Z -= UKismetMathLibrary::MapRangeClamped(LeftTriggerVal, 0, 1, 0, maxUpDownVal);
-		targetLocation.Z += UKismetMathLibrary::MapRangeClamped(RightTriggerVal, 0, 1, 0, maxUpDownVal);
-
-		PhysicsHandle->SetTargetLocation(targetLocation);
-
-		FVector beamSourceLocation = GetActorLocation();
-		beamSourceLocation.Z += beamHeightOffset;
-		beamEmitter->SetBeamSourcePoint(0, beamSourceLocation, 0);
+		//--- Setup Emitter locations
+		beamEmitter->SetBeamSourcePoint(0, beamSource->GetComponentLocation(), 0);
 
 		//--- If we have a package, set the beam location to it. If not set the beam location to the calculated target
 		if (PhysicsHandle->GetGrabbedComponent() == nullptr) {
-			beamEmitter->SetBeamTargetPoint(0, targetLocation, 0);
+			beamEmitter->SetBeamTargetPoint(0, beamTarget->GetComponentLocation(), 0);
 		}
 		else {
 			beamEmitter->SetBeamTargetPoint(0, PhysicsHandle->GetGrabbedComponent()->GetComponentLocation(), 0);
 		}
-
-		//--- Set the rotation of the "BeamMeshComponent" this is the belt on the player which rotates
-		FVector vec = (targetLocationCopy - GetActorLocation());
-		vec.Normalize();
-		BeamMeshComponent->SetWorldRotation(vec.Rotation());
 
 		//--- Check for if the thumbsticks are currently being moved
 		if (ArmForwardValue == 0 && ArmRightValue == 0)
@@ -258,62 +260,54 @@ void AWarhousePawn::Tick(float DeltaSeconds)
 			beamEmitter->SetVisibility(true);
 
 			//--- Check if an item is held
+			float distance = FVector::Dist(sourceLoc, targetLoc);
 			if (PhysicsHandle->GetGrabbedComponent() == nullptr) {
 				//--- Item not held
 
 				floorDecal->SetVisibility(false);
-				
+
 				//--- Pickup package logic
+				if (distance > 150) {
+					//--- Setup trace params
+					FHitResult hit = FHitResult(ForceInit);
+					FCollisionQueryParams TraceParams(FName(TEXT("InteractTrace")), true, this);
 
-				//--- Setup trace params
-				FHitResult hit = FHitResult(ForceInit);
-				FCollisionQueryParams TraceParams(FName(TEXT("InteractTrace")), true, this);
-
-				//--- Loop through every actor in the world, If it is not a package add it to the ignored actor list
-				//--- The ignored actor list is a list of actors which will NOT trigger a hit on the trace
-				for (TActorIterator<AActor> actor(GetWorld()); actor; ++actor)
-				{
-					if (!actor->IsA(APackageBase::StaticClass()) && !actor->IsA(APhysicsProp::StaticClass())) {
-						TraceParams.AddIgnoredActor(*actor);
-					}
-				}
-
-				//--- Create the line trace
-				bool bIsHit = GetWorld()->LineTraceSingleByChannel(hit, GetActorLocation(), targetLocation, ECC_GameTraceChannel3, TraceParams);
-				if (bIsHit)
-				{
-					//--- We are colliding with a actor
-
-					UPrimitiveComponent* component = Cast<UPrimitiveComponent>(hit.GetActor()->GetRootComponent());
-
-					//--- If the actor is a Package
-					if (hit.Actor != nullptr && hit.Actor->IsA(APackageBase::StaticClass()))
+					//--- Loop through every actor in the world, If it is not a package add it to the ignored actor list
+					//--- The ignored actor list is a list of actors which will NOT trigger a hit on the trace
+					for (TActorIterator<AActor> actor(GetWorld()); actor; ++actor)
 					{
-						PhysicsHandle->GrabComponentAtLocationWithRotation(component, "None", component->GetComponentLocation(), component->GetComponentRotation());
-						APackageBase* package = Cast<APackageBase>(hit.GetActor());
-						package->StartHolding(this);
+						if (!actor->IsA(APackageBase::StaticClass()) && !actor->IsA(APhysicsProp::StaticClass())) {
+							TraceParams.AddIgnoredActor(*actor);
+						}
 					}
 
-					//--- If the actor is a Physics prob (Object that can be picked up)
-					if (hit.Actor != nullptr && hit.Actor->IsA(APhysicsProp::StaticClass()))
+					//--- Create the line trace
+					bool bIsHit = GetWorld()->LineTraceSingleByChannel(hit, GetActorLocation(), beamTarget->GetComponentLocation(), ECC_GameTraceChannel3, TraceParams);
+					if (bIsHit)
 					{
-						APhysicsProp* prop = Cast<APhysicsProp>(hit.GetActor());
-						if (prop->GetCanPickUp())
+						//--- We are colliding with a actor
+
+						UPrimitiveComponent* component = Cast<UPrimitiveComponent>(hit.GetActor()->GetRootComponent());
+
+						//--- If the actor is a Package
+						if (hit.Actor != nullptr && hit.Actor->IsA(APackageBase::StaticClass()))
 						{
 							PhysicsHandle->GrabComponentAtLocationWithRotation(component, "None", component->GetComponentLocation(), component->GetComponentRotation());
+							APackageBase* package = Cast<APackageBase>(hit.GetActor());
+							package->StartHolding(this);
+						}
+
+						//--- If the actor is a Physics prob (Object that can be picked up)
+						if (hit.Actor != nullptr && hit.Actor->IsA(APhysicsProp::StaticClass()))
+						{
+							APhysicsProp* prop = Cast<APhysicsProp>(hit.GetActor());
+							if (prop->GetCanPickUp())
+							{
+								PhysicsHandle->GrabComponentAtLocationWithRotation(component, "None", component->GetComponentLocation(), component->GetComponentRotation());
+							}
 						}
 					}
 				}
-			}
-			else
-			{
-				//--- A item is being held - Calculate and show the floor decal
-				FVector floorDecalPos = PhysicsHandle->GetGrabbedComponent()->GetComponentLocation();
-
-				floorDecalPos.Z = 0;
-				floorDecal->SetWorldLocation(floorDecalPos);
-
-				floorDecal->SetVisibility(true);
 			}
 		}
 
@@ -364,6 +358,19 @@ void AWarhousePawn::Tick(float DeltaSeconds)
 
 			if (heldActor->IsA(APackageBase::StaticClass()))
 			{
+				//--- A item is being held - Calculate and show the floor decal
+				FVector floorDecalPos = PhysicsHandle->GetGrabbedComponent()->GetComponentLocation();
+
+				floorDecalPos.Z = 0;
+				floorDecal->SetWorldLocation(floorDecalPos);
+
+				floorDecal->SetVisibility(true);
+
+				if(Cast<AMyPlayerController>(GetController())->IsInputKeyDown(EKeys::Gamepad_LeftShoulder))
+				{
+					DropHeldItem();
+				}
+				
 				APackageBase* package = Cast<APackageBase>(heldActor);
 
 				//--- Decrement the battery depending on how many people are holding the same package
@@ -377,11 +384,13 @@ void AWarhousePawn::Tick(float DeltaSeconds)
 
 				//--- Set movement speed based on weight
 				float weight = package->GetPackageWeight();
-				MoveSpeed = DefaultMoveSpeed - weight;
+				MoveSpeed = DefaultMoveSpeed - (weight * 10);
 
 				//--- If the distance is 350 away stop holding the package
 				float distance = FVector::Dist(GetActorLocation(), package->GetActorLocation());
-				if (distance > 350) DropHeldItem();
+				if (distance > 350) {
+					DropHeldItem();
+				}
 			}
 
 		}
@@ -486,8 +495,25 @@ void AWarhousePawn::DropHeldItem()
 	if (PhysicsHandle->GetGrabbedComponent() != nullptr) {
 		if (PhysicsHandle->GetGrabbedComponent()->GetOwner()->IsA(APackageBase::StaticClass()))
 		{
+			lastHeldPackage = PhysicsHandle->GetGrabbedComponent()->GetOwner();
 			Cast<APackageBase>(PhysicsHandle->GetGrabbedComponent()->GetOwner())->EndHolding(this);
 		}
 		PhysicsHandle->ReleaseComponent();
+	}
+}
+
+void AWarhousePawn::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
+{
+	if (OtherActor->IsA(APackageBase::StaticClass()))
+	{
+		if ((PhysicsHandle->GetGrabbedComponent() != nullptr && PhysicsHandle->GetGrabbedComponent()->GetOwner() == OtherActor) 
+			|| OtherActor == lastHeldPackage)
+		{
+			DropHeldItem();
+			Cast<UStaticMeshComponent>(OtherActor->GetRootComponent())->SetSimulatePhysics(false);
+			Cast<UStaticMeshComponent>(OtherActor->GetRootComponent())->SetSimulatePhysics(true);
+
+			lastHeldPackage = nullptr;
+		}
 	}
 }

@@ -5,6 +5,7 @@
 
 #include "PackageCollectionPoint.h"
 #include "Components/BillboardComponent.h"
+#include "Components/AudioComponent.h"
 
 // Sets default values
 ACollectionPointButton::ACollectionPointButton()

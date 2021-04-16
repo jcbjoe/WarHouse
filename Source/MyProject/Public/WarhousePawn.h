@@ -7,8 +7,8 @@
 #include "Components/WidgetComponent.h"
 #include "GameFramework/Character.h"
 #include "PhysicsEngine/PhysicsHandleComponent.h"
-#include "Components/AudioComponent.h"
 #include "WarhousePawn.generated.h"
+
 
 UCLASS(Blueprintable)
 class AWarhousePawn : public APawn
@@ -53,6 +53,18 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly)
 		UDecalComponent* floorDecal;
+
+
+
+	UPROPERTY(EditDefaultsOnly)
+		USceneComponent* beamSource;
+
+	UPROPERTY(EditDefaultsOnly)
+		USceneComponent* beamTarget;
+
+	UFUNCTION()
+		void OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
+
 	
 private:
 
@@ -78,9 +90,12 @@ private:
 	const float deathSoundVolume = 0.5f;
 
 	const int packageHoldDistance = 160;
+	const int packageBeamSourceDistance = 50;
 
 	const float respawnSeconds = 5;
 	const float DefaultMoveSpeed = 1000.0f;
+
+	const int beamHeightOffset = 112;
 
 	//--- Input names
 	const FName MoveForwardBinding = FName("MoveForward");
@@ -110,4 +125,6 @@ private:
 	UAudioComponent* audioComp;
 	UAudioComponent* beamAudioComp;
 	UAudioComponent* chargingComp;
+
+	AActor* lastHeldPackage = nullptr;
 };

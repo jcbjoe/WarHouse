@@ -5,7 +5,7 @@
 #include "Kismet/KismetMathLibrary.h"
 #include "PackageProgressBar.h"
 #include "WarhouseHelpers.h"
-#include "PackageCollectionPoint.h"
+#include "Components/AudioComponent.h"
 
 // Sets default values
 APackageCollectionPoint::APackageCollectionPoint()
