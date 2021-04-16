@@ -206,11 +206,6 @@ void AGameManager::PlayIntro()
 	//for loop through cam array
 	for (int i = 0; i < numOfPlayers; i++)
 	{
-		//activate each camera on a timer
-		//CameraSwitchDelegate.BindUFunction(this, FName("SwitchCameraInCameraManager"), i);
-		//GetWorld()->GetTimerManager().SetTimer(CameraSwitchHandle, CameraSwitchDelegate, CameraSwitchTimer, false);
-		//CameraSwitchTimer += 5.0f;
-		//SwitchCameraInCameraManager(i);
 		switch (i)
 		{
 		case 0:
@@ -235,8 +230,7 @@ void AGameManager::PlayIntro()
 			break;
 		}
 	}
-
-	//switch back to main camera when players spawn
+	//camera switches back to main camera when players spawn
 	GetWorld()->GetTimerManager().SetTimer(InitGameTimerHandle, this, &AGameManager::InitSpawnPlayers, InitGameTimer, false);
 }
 
