@@ -238,7 +238,7 @@ void AWarhousePawn::Tick(float DeltaSeconds)
 		}
 
 		//--- Check for if the thumbsticks are currently being moved
-		if (ArmForwardValue == 0 && ArmRightValue == 0)
+		if (ArmForwardValue > -0.5 && ArmForwardValue < 0.5 && ArmRightValue > -0.5 && ArmRightValue < 0.5)
 		{
 			//--- Thumbsticks idle (Not moving)
 			//--- Silence beam sfx, hide beam emitter and floor decal (Crosshair)
@@ -366,11 +366,11 @@ void AWarhousePawn::Tick(float DeltaSeconds)
 
 				floorDecal->SetVisibility(true);
 
-				if(Cast<AMyPlayerController>(GetController())->IsInputKeyDown(EKeys::Gamepad_LeftShoulder))
+				if (Cast<AMyPlayerController>(GetController())->IsInputKeyDown(EKeys::Gamepad_LeftShoulder))
 				{
 					DropHeldItem();
 				}
-				
+
 				APackageBase* package = Cast<APackageBase>(heldActor);
 
 				//--- Decrement the battery depending on how many people are holding the same package
@@ -506,7 +506,7 @@ void AWarhousePawn::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor,
 {
 	if (OtherActor->IsA(APackageBase::StaticClass()))
 	{
-		if ((PhysicsHandle->GetGrabbedComponent() != nullptr && PhysicsHandle->GetGrabbedComponent()->GetOwner() == OtherActor) 
+		if ((PhysicsHandle->GetGrabbedComponent() != nullptr && PhysicsHandle->GetGrabbedComponent()->GetOwner() == OtherActor)
 			|| OtherActor == lastHeldPackage)
 		{
 			DropHeldItem();
