@@ -188,11 +188,6 @@ void AWarhousePawn::SetColour(EPlayerColours colour)
 	}
 }
 
-void AWarhousePawn::SetPlayerID(int id)
-{
-	PlayerID = id;
-}
-
 void AWarhousePawn::SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent)
 {
 	check(PlayerInputComponent);
@@ -274,7 +269,8 @@ void AWarhousePawn::Tick(float DeltaSeconds)
 			beamAudioComp->SetVolumeMultiplier(audioBeamVolume);
 			beamEmitter->SetVisibility(true);
 			//play controller rumble
-			auto pc = UGameplayStatics::GetPlayerController(GetWorld(), PlayerID);
+			//auto pc = UGameplayStatics::GetPlayerController(GetWorld(), PlayerID);
+			auto pc = Cast<AMyPlayerController>(GetController());
 			pc->PlayDynamicForceFeedback(RumbleFrequency, RumbleDuration, true, true, true, true, EDynamicForceFeedbackAction::Start); // change first 2 floats for vibration intenisty and duration, 4 bools are diff motors
 
 			//--- Check if an item is held
@@ -421,7 +417,7 @@ void AWarhousePawn::Tick(float DeltaSeconds)
 		playerBatteryBar->progressBarFillAmount = _batteryCharge / 100;
 
 		//--- Calculate the rotation so the battery bar is pointing towards the camera
-		const ACameraActor* cam = WarhouseHelpers::GetCameraManager(GetWorld())->GetCamera();
+		const ACameraActor* cam = WarhouseHelpers::GetCameraManager(GetWorld())->GetMainCamera();
 		FRotator rot = UKismetMathLibrary::FindLookAtRotation(progressBar->GetComponentLocation(), cam->GetActorLocation());
 		rot.Yaw = 180;
 		progressBar->SetWorldRotation(rot);

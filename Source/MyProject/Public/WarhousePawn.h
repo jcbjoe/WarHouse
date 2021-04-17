@@ -65,7 +65,7 @@ protected:
 	UFUNCTION()
 		void OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
 
-	
+
 private:
 
 	//--- Game Variables
@@ -74,7 +74,7 @@ private:
 	float respawnCounter = 0;
 	bool isOnChargingPad = false;
 	float MoveSpeed = 1000.0f;
-	
+
 	//--- Adjustable Variables
 	const float MovingBatteryDrain = 5.0;
 	const float NonMovingBatteryDrain = 2;
@@ -93,8 +93,8 @@ private:
 	const int packageBeamSourceDistance = 50;
 
 	//rumble variables
-	const float RumbleFrequency = 0.5f;
-	const float RumbleDuration = 1.0f;
+	const float RumbleFrequency = 0.25f;
+	const float RumbleDuration = 0.5f;
 
 	const float respawnSeconds = 5;
 	const float DefaultMoveSpeed = 1000.0f;
@@ -127,7 +127,7 @@ private:
 	UMaterial* smileyGrav;
 	UMaterial* tux;
 	UMaterial* tuxGrav;
-	
+
 	USoundBase* dieSoundBase;
 
 	UAudioComponent* audioComp;

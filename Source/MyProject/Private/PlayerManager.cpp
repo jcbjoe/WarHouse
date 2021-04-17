@@ -68,8 +68,6 @@ void APlayerManager::SpawnPlayers()
 			playerPawn->SetColour(playerInfo.colour);
 
 			playerController->Possess(playerPawn);
-
-			playerPawn->SetPlayerID(playerInfo.controllerId);
 		}
 	}
 	else
