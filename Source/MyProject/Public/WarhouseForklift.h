@@ -25,6 +25,8 @@ public:
 		void ResumeMovement();
 	UFUNCTION()
 		void GetReadyToDeliver();
+	UFUNCTION()
+		void TimelineProgress(float value);
 
 protected:
 	// Called when the game starts or when spawned
@@ -48,9 +50,24 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Forklift Data")
 		float Speed = 500.0f;
 
+	float DefaultSpeed = 500.0f;
+
 	float WheelRotation = 0;
 
 	FTimerHandle ForkliftTimerHandle;
+	//anim stuff
+	FTimeline CurveTimeline;
+
+	UPROPERTY(EditAnywhere, Category = "Timeline")
+		UCurveFloat* CurveFloat;
+	UPROPERTY()
+		FVector StartLocation = FVector(-200.0f, -4174.0f, 0);
+	UPROPERTY()
+		FVector EndLocation;
+	UPROPERTY()
+		FVector Location;
+	UPROPERTY(EditAnywhere, Category = "Timeline")
+		float ZOffset;
 
 	void Stop();
 	void RotateWheels();

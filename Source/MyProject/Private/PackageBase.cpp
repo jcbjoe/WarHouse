@@ -90,7 +90,7 @@ void APackageBase::Tick(float DeltaTime)
 	{
 		ACameraManager* cameraManager = WarhouseHelpers::GetCameraManager(GetWorld());
 
-		auto rot = UKismetMathLibrary::FindLookAtRotation(progressBar->GetComponentLocation(), cameraManager->GetCamera()->GetActorLocation());
+		auto rot = UKismetMathLibrary::FindLookAtRotation(progressBar->GetComponentLocation(), cameraManager->GetMainCamera()->GetActorLocation());
 		progressBar->SetWorldRotation(rot);
 
 		auto newLoc = GetActorLocation();

@@ -11,6 +11,7 @@
 #include "Shutter.h"
 #include "WarhouseClock.h"
 #include "WarhouseForklift.h"
+#include "CameraManager.h"
 #include "GameManager.generated.h"
 
 UCLASS()
@@ -43,6 +44,7 @@ protected:
 	float player1Score;
 	float player2Score;
 	float player3Score;
+	int numOfPlayers;
 
 	UPROPERTY(VisibleAnywhere)
 		TArray<float> playerScores;
@@ -53,7 +55,11 @@ protected:
 	UPROPERTY(EditAnywhere)
 		float ForkliftTimer;
 	UPROPERTY(EditAnywhere)
-		float InitGameTimer = 3.0f;
+		float InitGameTimer;
+	UPROPERTY(EditAnywhere)
+		float CameraSwitchTimer = 5.0f; //how long on each camera
+	UPROPERTY(EditAnywhere)
+		float TimeDelayForCameras = 2.5f;
 
 	//Handle to manage the game timer
 	FTimerHandle GameTimerHandle;
@@ -63,9 +69,23 @@ protected:
 	FTimerHandle ForkliftTimerHandle;
 	//Handle to manage init timer
 	FTimerHandle InitGameTimerHandle;
+	//Handle to manage switching cameras
+	FTimerHandle CameraSwitchHandle;
+	//Handle to manage switching cameras
+	FTimerHandle Bay1Handle;
+	//Handle to manage switching cameras
+	FTimerHandle Bay2Handle;
+	//Handle to manage switching cameras
+	FTimerHandle Bay3Handle;
+	//Handle to manage switching cameras
+	FTimerHandle Bay4Handle;
+	//Delegate for passing parametrs to function called by timer
+	FTimerDelegate CameraSwitchDelegate;
 
 	UPROPERTY(EditAnywhere)
 		AWarhouseClock* ClockTimerText;
+	UPROPERTY(EditAnywhere)
+		ACameraManager* CameraManager;
 
 	FString LocalCurrencyCode;
 
@@ -90,4 +110,18 @@ public:
 		void ReturnToMainMenu(); //could move this into the helper class?
 	UFUNCTION()
 		void ActivateForklift();
+	UFUNCTION()
+		void PlayIntro();
+	UFUNCTION()
+		void SwitchCameraInCameraManager(int camera);
+	UFUNCTION()
+		void ActivateBay1Camera();
+	UFUNCTION()
+		void ActivateBay2Camera();
+	UFUNCTION()
+		void ActivateBay3Camera();
+	UFUNCTION()
+		void ActivateBay4Camera();
+	UFUNCTION()
+		void InitSpawnPlayers();
 };

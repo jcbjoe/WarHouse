@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 
 #include "CameraManager.h"
@@ -8,20 +8,24 @@
 #include "Camera/CameraComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetMathLibrary.h"
+#include "GameFramework/PlayerController.h"
 
 // Sets default values
 ACameraManager::ACameraManager()
 {
 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
-
+	BayCameras.Add(Bay1Camera);
+	BayCameras.Add(Bay2Camera);
+	BayCameras.Add(Bay3Camera);
+	BayCameras.Add(Bay4Camera);
 }
 
 // Called when the game starts or when spawned
 void ACameraManager::BeginPlay()
 {
 	Super::BeginPlay();
-
+	SwitchCamera(BillboardCamera);
 }
 
 // Called every frame
@@ -42,9 +46,9 @@ void ACameraManager::Tick(float DeltaTime)
 	}
 
 	const FRotator loc = UKismetMathLibrary::FindLookAtRotation(MainCamera->GetActorLocation(), middlePos);
-	
+
 	const FRotator lerped = FMath::Lerp(MainCamera->GetActorRotation(), loc, DeltaTime);
-	
+
 	MainCamera->SetActorRotation(lerped);
 
 	float maxDistance = 0;
@@ -67,8 +71,35 @@ void ACameraManager::Tick(float DeltaTime)
 	const float zoom = 90 - UKismetMathLibrary::MapRangeClamped(maxDistance, minDist, maxDist, 45, 90);
 
 	const float lerpedZooom = FMath::Lerp(MainCamera->GetCameraComponent()->FieldOfView, 90 - zoom, DeltaTime);
-	
+
 	MainCamera->GetCameraComponent()->FieldOfView = lerpedZooom;
 
 }
 
+ACameraActor* ACameraManager::GetBayCamera(int bay) const
+{
+	switch (bay)
+	{
+	case 0:
+		return Bay1Camera;
+		break;
+	case 1:
+		return Bay2Camera;
+		break;
+	case 2:
+		return Bay3Camera;
+		break;
+	case 3:
+		return Bay4Camera;
+		break;
+	default:
+		return Bay1Camera;
+		break;
+	}
+}
+
+void ACameraManager::SwitchCamera(ACameraActor* camera)
+{
+	auto p = UGameplayStatics::GetPlayerController(GetWorld(), 0);
+	p->SetViewTargetWithBlend(camera);
+}

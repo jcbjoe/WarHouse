@@ -23,6 +23,8 @@
 #include "Components/DecalComponent.h"
 #include "Components/AudioComponent.h"
 #include "PhysicsProp.h"
+#include "DestructibleProp.h"
+#include "Engine/LatentActionManager.h"
 
 AWarhousePawn::AWarhousePawn()
 {
@@ -186,6 +188,11 @@ void AWarhousePawn::SetColour(EPlayerColours colour)
 	}
 }
 
+void AWarhousePawn::SetPlayerID(int id)
+{
+	PlayerID = id;
+}
+
 void AWarhousePawn::SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent)
 {
 	check(PlayerInputComponent);
@@ -266,6 +273,9 @@ void AWarhousePawn::Tick(float DeltaSeconds)
 			//--- Show beam and set volume of the beam 
 			beamAudioComp->SetVolumeMultiplier(audioBeamVolume);
 			beamEmitter->SetVisibility(true);
+			//play controller rumble
+			auto pc = UGameplayStatics::GetPlayerController(GetWorld(), PlayerID);
+			pc->PlayDynamicForceFeedback(RumbleFrequency, RumbleDuration, true, true, true, true, EDynamicForceFeedbackAction::Start); // change first 2 floats for vibration intenisty and duration, 4 bools are diff motors
 
 			//--- Check if an item is held
 			float distance = FVector::Dist(sourceLoc, targetLoc);

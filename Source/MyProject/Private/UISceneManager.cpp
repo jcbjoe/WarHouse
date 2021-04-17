@@ -2,6 +2,7 @@
 #include "UISceneManager.h"
 #include "WarhouseHelpers.h"
 
+
 // Sets default values
 AUISceneManager::AUISceneManager()
 {
