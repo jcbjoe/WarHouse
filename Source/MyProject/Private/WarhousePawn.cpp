@@ -27,10 +27,14 @@
 AWarhousePawn::AWarhousePawn()
 {
 	//--- Player materials setup
-	static ConstructorHelpers::FObjectFinder<UMaterial> redMat(TEXT("/Game/Assets/ConorAssets/Player/PlayerRed.PlayerRed"));
-	static ConstructorHelpers::FObjectFinder<UMaterial> blueMat(TEXT("/Game/Assets/ConorAssets/Player/PlayerBlue.PlayerBlue"));
-	static ConstructorHelpers::FObjectFinder<UMaterial> yellowMat(TEXT("/Game/Assets/ConorAssets/Player/PlayerYellow.PlayerYellow"));
-	static ConstructorHelpers::FObjectFinder<UMaterial> whiteMat(TEXT("/Game/Assets/ConorAssets/Player/PlayerWhite.PlayerWhite"));
+	static ConstructorHelpers::FObjectFinder<UMaterial> redMat(TEXT("/Game/Assets/ConorAssets/Player/Colours/Red.Red"));
+	static ConstructorHelpers::FObjectFinder<UMaterial> redGravMat(TEXT("/Game/Assets/ConorAssets/Player/Colours/RedGrav.RedGrav"));
+	static ConstructorHelpers::FObjectFinder<UMaterial> blueMat(TEXT("/Game/Assets/ConorAssets/Player/Colours/Blue.Blue"));
+	static ConstructorHelpers::FObjectFinder<UMaterial> blueGravMat(TEXT("/Game/Assets/ConorAssets/Player/Colours/BlueGrav.BlueGrav"));
+	static ConstructorHelpers::FObjectFinder<UMaterial> yellowMat(TEXT("/Game/Assets/ConorAssets/Player/Colours/Yellow.Yellow"));
+	static ConstructorHelpers::FObjectFinder<UMaterial> yellowGravMat(TEXT("/Game/Assets/ConorAssets/Player/Colours/YellowGrav.YellowGrav"));
+	static ConstructorHelpers::FObjectFinder<UMaterial> whiteMat(TEXT("/Game/Assets/ConorAssets/Player/Colours/Grey.Grey"));
+	static ConstructorHelpers::FObjectFinder<UMaterial> whiteGravMat(TEXT("/Game/Assets/ConorAssets/Player/Colours/GreyGrav.GreyGrav"));
 	static ConstructorHelpers::FObjectFinder<UMaterial> glassesMat(TEXT("/Game/Assets/ConorAssets/Player/Glasses/GlassesBody.GlassesBody"));
 	static ConstructorHelpers::FObjectFinder<UMaterial> glassesGravMat(TEXT("/Game/Assets/ConorAssets/Player/Glasses/GlassesGrav.GlassesGrav"));
 	static ConstructorHelpers::FObjectFinder<UMaterial> smileyMat(TEXT("/Game/Assets/ConorAssets/Player/Smiley/SmileyBody.SmileyBody"));
@@ -39,9 +43,13 @@ AWarhousePawn::AWarhousePawn()
 	static ConstructorHelpers::FObjectFinder<UMaterial> tuxGravMat(TEXT("/Game/Assets/ConorAssets/Player/Tux/TuxGrav.TuxGrav"));
 
 	red = redMat.Object;
+	redGrav = redGravMat.Object;
 	blue = blueMat.Object;
+	blueGrav = blueGravMat.Object;
 	yellow = yellowMat.Object;
+	yellowGrav = yellowGravMat.Object;
 	white = whiteMat.Object;
+	whiteGrav = whiteGravMat.Object;
 
 	glasses = glassesMat.Object;
 	glassesGrav = glassesGravMat.Object;
@@ -142,23 +150,23 @@ void AWarhousePawn::SetColour(EPlayerColours colour)
 	{
 	case EPlayerColours::White:
 		ShipMeshComponent->SetMaterial(0, white);
-		BeamMeshComponent->SetMaterial(0, white);
-		beamEmitter->SetColorParameter("Colour", FLinearColor::White);
+		BeamMeshComponent->SetMaterial(0, whiteGrav);
+		beamEmitter->SetColorParameter("Colour", FColor::FromHex("dceafe"));
 		break;
 	case EPlayerColours::Red:
 		ShipMeshComponent->SetMaterial(0, red);
-		BeamMeshComponent->SetMaterial(0, red);
-		beamEmitter->SetColorParameter("Colour", FLinearColor::Red);
+		BeamMeshComponent->SetMaterial(0, redGrav);
+		beamEmitter->SetColorParameter("Colour", FColor::FromHex("e41d20"));
 		break;
 	case EPlayerColours::Blue:
 		ShipMeshComponent->SetMaterial(0, blue);
-		BeamMeshComponent->SetMaterial(0, blue);
-		beamEmitter->SetColorParameter("Colour", FLinearColor::Blue);
+		BeamMeshComponent->SetMaterial(0, blueGrav);
+		beamEmitter->SetColorParameter("Colour", FColor::FromHex("3e59a6"));
 		break;
 	case EPlayerColours::Yellow:
 		ShipMeshComponent->SetMaterial(0, yellow);
-		BeamMeshComponent->SetMaterial(0, yellow);
-		beamEmitter->SetColorParameter("Colour", FLinearColor::Yellow);
+		BeamMeshComponent->SetMaterial(0, yellowGrav);
+		beamEmitter->SetColorParameter("Colour", FColor::FromHex("dfae00"));
 		break;
 	case EPlayerColours::glasses:
 		ShipMeshComponent->SetMaterial(0, glasses);

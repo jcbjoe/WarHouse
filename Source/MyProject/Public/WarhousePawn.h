@@ -110,9 +110,13 @@ private:
 
 	//--- Other Variables
 	UMaterial* red;
+	UMaterial* redGrav;
 	UMaterial* blue;
+	UMaterial* blueGrav;
 	UMaterial* yellow;
+	UMaterial* yellowGrav;
 	UMaterial* white;
+	UMaterial* whiteGrav;
 	UMaterial* glasses;
 	UMaterial* glassesGrav;
 	UMaterial* smiley;
