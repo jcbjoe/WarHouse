@@ -36,23 +36,20 @@ void AWarhouseForklift::ResumeMovement()
 
 void AWarhouseForklift::GetReadyToDeliver()
 {
-	//spawn packages on pallet
-
 	//set off
 	GetWorld()->GetTimerManager().SetTimer(ForkliftTimerHandle, this, &AWarhouseForklift::ResumeMovement, ForkliftWaitSeconds, false);
 }
 
 void AWarhouseForklift::TimelineProgress(float value)
 {
-	FVector NewLocation = FMath::Lerp(StartLocation, EndLocation, value);
-	SetActorLocation(NewLocation);
+	Location.Z = FMath::Lerp(GetActorLocation().Z, EndLocation.Z, value);
+	//SetActorLocation(Location);
 }
 
 // Called when the game starts or when spawned
 void AWarhouseForklift::BeginPlay()
 {
 	Super::BeginPlay();
-
 	if (CurveFloat)
 	{
 		FOnTimelineFloat TimelineProgress;
@@ -71,7 +68,7 @@ void AWarhouseForklift::BeginPlay()
 void AWarhouseForklift::MoveForklift(float deltaTime)
 {
 	//isMoving = true;
-	FVector Location = GetActorLocation();
+	Location = GetActorLocation();
 	FVector Direction = GetActorForwardVector();
 	Location += Direction * Speed * deltaTime;
 	SetActorLocation(Location);

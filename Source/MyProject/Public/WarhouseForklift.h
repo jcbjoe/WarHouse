@@ -61,9 +61,11 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "Timeline")
 		UCurveFloat* CurveFloat;
 	UPROPERTY()
-		FVector StartLocation;
+		FVector StartLocation = FVector(-200.0f, -4174.0f, 0);
 	UPROPERTY()
 		FVector EndLocation;
+	UPROPERTY()
+		FVector Location;
 	UPROPERTY(EditAnywhere, Category = "Timeline")
 		float ZOffset;
 
