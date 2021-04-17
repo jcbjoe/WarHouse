@@ -34,12 +34,14 @@ public:
 
 	static const FName LeftTrigger;
 	static const FName RightTrigger;
-	
+
 	void SetIsOnCharger(bool isOnCharger);
 
 	bool IsDead();
 
 	void SetColour(EPlayerColours colour);
+
+	void SetPlayerID(int id);
 
 protected:
 	/* The mesh component */
@@ -71,7 +73,10 @@ protected:
 	UAudioComponent* beamAudioComp;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Components")
-	UDecalComponent* floorDecal;
+		UDecalComponent* floorDecal;
+
+	UPROPERTY(Category = Gameplay, EditAnywhere, BlueprintReadWrite)
+		int PlayerID;
 private:
 	virtual void BeginPlay() override;
 
