@@ -255,7 +255,7 @@ void AWarhousePawn::Tick(float DeltaSeconds)
 			beamEmitter->SetVisibility(true);
 			//play controller rumble
 			auto pc = UGameplayStatics::GetPlayerController(GetWorld(), PlayerID);
-			pc->PlayDynamicForceFeedback(1.0f, 1.0f, true, true, true, true, EDynamicForceFeedbackAction::Start); // change first 2 floats for vibration intenisty and duration
+			pc->PlayDynamicForceFeedback(RumbleFrequency, RumbleDuration, true, true, true, true, EDynamicForceFeedbackAction::Start); // change first 2 floats for vibration intenisty and duration, 4 bools are diff motors
 
 			if (PhysicsHandle->GetGrabbedComponent() == nullptr) {
 				FHitResult hit = FHitResult(ForceInit);

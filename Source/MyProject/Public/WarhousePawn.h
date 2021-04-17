@@ -98,6 +98,10 @@ private:
 
 	const int packageHoldDistance = 160;
 
+	//rumble variables
+	const float RumbleFrequency = 0.5f;
+	const float RumbleDuration = 1.0f;
+
 	const float respawnSeconds = 5;
 	float respawnCounter = 0;
 
