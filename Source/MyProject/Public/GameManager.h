@@ -44,7 +44,6 @@ protected:
 	float player1Score;
 	float player2Score;
 	float player3Score;
-
 	int numOfPlayers;
 
 	UPROPERTY(VisibleAnywhere)
@@ -59,6 +58,8 @@ protected:
 		float InitGameTimer;
 	UPROPERTY(EditAnywhere)
 		float CameraSwitchTimer = 5.0f; //how long on each camera
+	UPROPERTY(EditAnywhere)
+		float TimeDelayForCameras = 2.5f;
 
 	//Handle to manage the game timer
 	FTimerHandle GameTimerHandle;

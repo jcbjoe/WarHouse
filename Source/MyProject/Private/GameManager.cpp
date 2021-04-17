@@ -210,23 +210,23 @@ void AGameManager::PlayIntro()
 		{
 		case 0:
 			GetWorld()->GetTimerManager().SetTimer(Bay1Handle, this, &AGameManager::ActivateBay1Camera, CameraSwitchTimer, false);
-			CameraSwitchTimer += 2.5f;
+			CameraSwitchTimer += TimeDelayForCameras;
 			break;
 		case 1:
 			GetWorld()->GetTimerManager().SetTimer(Bay2Handle, this, &AGameManager::ActivateBay2Camera, CameraSwitchTimer, false);
-			CameraSwitchTimer += 2.5f;
+			CameraSwitchTimer += TimeDelayForCameras;
 			break;
 		case 2:
 			GetWorld()->GetTimerManager().SetTimer(Bay3Handle, this, &AGameManager::ActivateBay3Camera, CameraSwitchTimer, false);
-			CameraSwitchTimer += 2.5f;
+			CameraSwitchTimer += TimeDelayForCameras;
 			break;
 		case 3:
 			GetWorld()->GetTimerManager().SetTimer(Bay4Handle, this, &AGameManager::ActivateBay4Camera, CameraSwitchTimer, false);
-			CameraSwitchTimer += 2.5f;
+			CameraSwitchTimer += TimeDelayForCameras;
 			break;
 		default:
 			GetWorld()->GetTimerManager().SetTimer(Bay1Handle, this, &AGameManager::ActivateBay1Camera, CameraSwitchTimer, false);
-			CameraSwitchTimer += 2.5f;
+			CameraSwitchTimer += TimeDelayForCameras;
 			break;
 		}
 	}
@@ -238,6 +238,7 @@ void AGameManager::PlayIntro()
 void AGameManager::InitSpawnPlayers()
 {
 	WarhouseHelpers::GetPlayerManager(GetWorld())->SpawnPlayers();
+	GameTimer = 300.0f;
 }
 
 void AGameManager::SwitchCameraInCameraManager(int camera)
