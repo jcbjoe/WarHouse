@@ -203,7 +203,6 @@ void AGameManager::ActivateForklift()
 
 void AGameManager::PlayIntro()
 {
-	//for loop through cam array
 	for (int i = 0; i < numOfPlayers; i++)
 	{
 		switch (i)
