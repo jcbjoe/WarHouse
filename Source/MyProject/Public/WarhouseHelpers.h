@@ -8,6 +8,7 @@
 #include "CameraManager.h"
 #include "GameManager.h"
 #include "MyGameInstance.h"
+#include "TruckPackageManager.h"
 #include "PackageManager.h"
 
 /**
@@ -28,4 +29,6 @@ public:
 	static ACameraManager* GetCameraManager(UObject* world);
 
 	static UMyGameInstance* GetGameInstance(UObject* world);
+
+	static ATruckPackageManager* GetTruckPackageManager(UObject* world);
 };

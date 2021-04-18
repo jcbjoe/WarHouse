@@ -36,3 +36,8 @@ UMyGameInstance* WarhouseHelpers::GetGameInstance(UObject* world)
 {
 	return Cast<UMyGameInstance>(UGameplayStatics::GetGameInstance(world));
 }
+
+ATruckPackageManager* WarhouseHelpers::GetTruckPackageManager(UObject* world)
+{
+	return Cast<ATruckPackageManager>(UGameplayStatics::GetActorOfClass(world, ATruckPackageManager::StaticClass()));
+}

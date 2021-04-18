@@ -219,6 +219,8 @@ void AWarhousePawn::SetupPlayerInputComponent(class UInputComponent* PlayerInput
 
 void AWarhousePawn::Tick(float DeltaSeconds)
 {
+	Super::Tick(DeltaSeconds);
+	
 	if (!isDead) {
 		//--- Grab controller input values
 		const float ForwardValue = GetInputAxisValue(MoveForwardBinding);

@@ -26,6 +26,9 @@ protected:
 
 	UStaticMeshComponent* mesh;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool isOpen = false;
+
 public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
@@ -35,6 +38,8 @@ public:
 	void Close();
 
 	void SetColour(EPlayerColours colour);
+
+	bool isShutterOpen() { return isOpen; }
 
 private:
 	UMaterial* red;

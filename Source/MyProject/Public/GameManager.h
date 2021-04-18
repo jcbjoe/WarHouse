@@ -33,8 +33,6 @@ protected:
 	UPROPERTY(Category = Gameplay, EditAnywhere, BlueprintReadWrite)
 		TArray<APackageCollectionPoint*> packageCollectionPoints;
 
-	UPROPERTY(Category = Gameplay, EditAnywhere, BlueprintReadWrite)
-		TArray<AShutter*> shutters;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Forklift")
 		AWarhouseForklift* Forklift;
 
@@ -99,6 +97,9 @@ public:
 
 	APlayerManager* GetPlayerManager() const;
 	APackageManager* GetPackageManager() const;
+
+	UPROPERTY(Category = Gameplay, EditAnywhere, BlueprintReadWrite)
+		TArray<AShutter*> shutters;
 
 	UFUNCTION()
 		void InitGame();

@@ -27,7 +27,15 @@ AShutter::AShutter()
 
 	mesh = CreateDefaultSubobject<UStaticMeshComponent>(FName("Mesh"));
 
-	mesh->SetStaticMesh(shutterClosed);
+	if(isOpen)
+	{
+		mesh->SetStaticMesh(shutterOpen);
+
+	} else
+	{
+		mesh->SetStaticMesh(shutterClosed);
+
+	}
 
 	RootComponent = mesh;
 
@@ -50,11 +58,13 @@ void AShutter::Tick(float DeltaTime)
 void AShutter::Open()
 {
 	mesh->SetStaticMesh(shutterOpen);
+	isOpen = true;
 }
 
 void AShutter::Close()
 {
 	mesh->SetStaticMesh(shutterClosed);
+	isOpen = false;
 }
 
 void AShutter::SetColour(EPlayerColours colour)

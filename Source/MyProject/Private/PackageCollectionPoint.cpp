@@ -88,36 +88,41 @@ void APackageCollectionPoint::Tick(float DeltaTime)
 
 		if (currentWaitTime > maxWaitTime)
 		{
-
 			auto packageManager = WarhouseHelpers::GetPackageManager(GetWorld());
 			packagesBeingRemoved = true;
+			int index = 0;
+			bool found = true;
+
+			AGameManager* manager = WarhouseHelpers::GetGameManager(GetWorld());
+			
+			for (APackageCollectionPoint* collectionPoint : manager->GetCollectionPoints())
+			{
+				if (collectionPoint == this)
+				{
+					found = true;
+					break;
+				}
+				index++;
+			}
+
+			if (!found) throw std::exception("This packageCollectionPoint has not been instanced in the GameManager object!");
+
+			//--- Wait for the door to reopen
+			if (!manager->shutters[index]->isShutterOpen()) return;
+			
 			for (auto packageToRemove : packages)
 			{
 				//divide package health by 100 to get the percentage of what it is worth i.e. more damge, less value
 				const float packageValue = (packageToRemove->GetPackageValue() * (packageToRemove->GetPackageHealth() / 100.0f)) * PackageBonus;
 				packageManager->RemovePackage(packageToRemove);
 				packageToRemove->Destroy();
-
-				AGameManager* manager = WarhouseHelpers::GetGameManager(GetWorld());
-
-				int index = 0;
-				bool found = true;
-				for (APackageCollectionPoint* collectionPoint : manager->GetCollectionPoints())
-				{
-					if (collectionPoint == this)
-					{
-						found = true;
-						break;
-					}
-					index++;
-				}
-
-				if (!found) throw std::exception("This packageCollectionPoint has not been instanced in the GameManager object!");
-
+				
 				manager->IncrementPlayerScore(index, packageValue);
 			}
 
 			packages.Empty();
+
+			WarhouseHelpers::GetTruckPackageManager(GetWorld())->IncrementTruckStage(index+1);
 
 			packagesBeingRemoved = false;
 
@@ -146,6 +151,7 @@ void APackageCollectionPoint::Tick(float DeltaTime)
 
 			beepSound->Stop();
 			liftSound->Stop();
+			WarhouseHelpers::GetTruckPackageManager(GetWorld())->CheckIfFull();
 		}
 	}
 
