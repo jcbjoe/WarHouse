@@ -474,6 +474,8 @@ void AWarhousePawn::Tick(float DeltaSeconds)
 			audioComp->SetVolumeMultiplier(0.0);
 			UGameplayStatics::PlaySoundAtLocation(GetWorld(), dieSoundBase, GetActorLocation(), FRotator(0, 0, 0), deathSoundVolume);
 
+			beamAudioComp->SetVolumeMultiplier(0.0);
+			
 			//--- Trigger sparks
 			UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), sparksEmitter, GetActorLocation());
 			
