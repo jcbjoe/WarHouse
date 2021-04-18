@@ -2,6 +2,7 @@
 
 
 #include "WarhouseForklift.h"
+#include "WarhousePawn.h"
 
 // Sets default values
 AWarhouseForklift::AWarhouseForklift()
@@ -21,6 +22,14 @@ AWarhouseForklift::AWarhouseForklift()
 	Blades->SetupAttachment(RootComponent);
 	Pallet = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Pallet"));
 	Pallet->SetupAttachment(RootComponent);
+
+	boxComponent = CreateDefaultSubobject<UBoxComponent>(FName("Collision Mesh"));
+	boxComponent->SetWorldLocation(GetActorLocation());
+	boxComponent->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);
+	boxComponent->OnComponentBeginOverlap.AddDynamic(this, &AWarhouseForklift::OnOverlapBegin);
+	boxComponent->OnComponentEndOverlap.AddDynamic(this, &AWarhouseForklift::OnOverlapEnd);
+	boxComponent->SetBoxExtent(FVector(158, 128, 60));
+	boxComponent->SetRelativeLocation(FVector(380, 0, 70));
 }
 
 void AWarhouseForklift::DeliverPackages()
@@ -44,6 +53,19 @@ void AWarhouseForklift::TimelineProgress(float value)
 {
 	Location.Z = FMath::Lerp(GetActorLocation().Z, EndLocation.Z, value);
 	//SetActorLocation(Location);
+}
+
+void AWarhouseForklift::OnOverlapBegin(UPrimitiveComponent* OverlapComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	if (OtherActor->IsA(AWarhousePawn::StaticClass()))
+	{
+		auto player = Cast<AWarhousePawn>(OtherActor);
+		player->KillPlayer();
+	}
+}
+
+void AWarhouseForklift::OnOverlapEnd(UPrimitiveComponent* OverlapComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
+{
 }
 
 // Called when the game starts or when spawned
