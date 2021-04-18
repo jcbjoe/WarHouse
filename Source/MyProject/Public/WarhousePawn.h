@@ -127,6 +127,8 @@ private:
 	UMaterial* smileyGrav;
 	UMaterial* tux;
 	UMaterial* tuxGrav;
+	UMaterial* ironman;
+	UMaterial* ironmanGrav;
 
 	USoundBase* dieSoundBase;
 

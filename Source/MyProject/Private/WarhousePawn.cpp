@@ -43,7 +43,9 @@ AWarhousePawn::AWarhousePawn()
 	static ConstructorHelpers::FObjectFinder<UMaterial> smileyGravMat(TEXT("/Game/Assets/ConorAssets/Player/Smiley/SmileyGrav.SmileyGrav"));
 	static ConstructorHelpers::FObjectFinder<UMaterial> tuxMat(TEXT("/Game/Assets/ConorAssets/Player/Tux/TuxBody.TuxBody"));
 	static ConstructorHelpers::FObjectFinder<UMaterial> tuxGravMat(TEXT("/Game/Assets/ConorAssets/Player/Tux/TuxGrav.TuxGrav"));
-
+	static ConstructorHelpers::FObjectFinder<UMaterial> ironManMat(TEXT("/Game/Assets/ConorAssets/Player/IronMan/IronMan.IronMan"));
+	static ConstructorHelpers::FObjectFinder<UMaterial> ironManGravMat(TEXT("/Game/Assets/ConorAssets/Player/IronMan/IronManGrav.IronManGrav"));
+	
 	red = redMat.Object;
 	redGrav = redGravMat.Object;
 	blue = blueMat.Object;
@@ -59,6 +61,8 @@ AWarhousePawn::AWarhousePawn()
 	smileyGrav = smileyGravMat.Object;
 	tux = tuxMat.Object;
 	tuxGrav = tuxGravMat.Object;
+	ironman = ironManMat.Object;
+	ironmanGrav = ironManGravMat.Object;
 
 	//--- Player model setup
 	static ConstructorHelpers::FObjectFinder<UStaticMesh> ShipMesh(TEXT("/Game/Assets/ConorAssets/Player/player_body_low.player_body_low"));
@@ -184,6 +188,11 @@ void AWarhousePawn::SetColour(EPlayerColours colour)
 		ShipMeshComponent->SetMaterial(0, tux);
 		BeamMeshComponent->SetMaterial(0, tuxGrav);
 		beamEmitter->SetColorParameter("Colour", FColor::FromHex("323234"));
+		break;
+	case EPlayerColours::ironman:
+		ShipMeshComponent->SetMaterial(0, ironman);
+		BeamMeshComponent->SetMaterial(0, ironmanGrav);
+		beamEmitter->SetColorParameter("Colour", FColor::FromHex("883436"));
 		break;
 	}
 }

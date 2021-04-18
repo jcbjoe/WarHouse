@@ -15,7 +15,8 @@ enum class EPlayerColours : uint8
 	Yellow,
 	glasses,
 	smiley,
-	tux
+	tux,
+	ironman
 };
 
 /**
