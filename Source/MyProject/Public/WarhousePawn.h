@@ -27,6 +27,8 @@ public:
 
 	void DropHeldItem();
 
+	void KillPlayer();
+
 protected:
 	//--- Unreal overrides
 	virtual void BeginPlay() override;
