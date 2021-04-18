@@ -49,36 +49,13 @@ protected:
 	UPROPERTY(EditAnywhere)
 		float GameTimer;
 	UPROPERTY(EditAnywhere)
-		float DelayTimer;
-	UPROPERTY(EditAnywhere)
 		float ForkliftTimer;
 	UPROPERTY(EditAnywhere)
-		float InitGameTimer;
-	UPROPERTY(EditAnywhere)
 		float CameraSwitchTimer = 5.0f; //how long on each camera
-	UPROPERTY(EditAnywhere)
-		float TimeDelayForCameras = 2.5f;
-
-	//Handle to manage the game timer
-	FTimerHandle GameTimerHandle;
-	//Handle to manage delays
-	FTimerHandle DelayTimerHandle;
+	
 	//Handle to manage delays
 	FTimerHandle ForkliftTimerHandle;
-	//Handle to manage init timer
-	FTimerHandle InitGameTimerHandle;
-	//Handle to manage switching cameras
-	FTimerHandle CameraSwitchHandle;
-	//Handle to manage switching cameras
-	FTimerHandle Bay1Handle;
-	//Handle to manage switching cameras
-	FTimerHandle Bay2Handle;
-	//Handle to manage switching cameras
-	FTimerHandle Bay3Handle;
-	//Handle to manage switching cameras
-	FTimerHandle Bay4Handle;
-	//Delegate for passing parametrs to function called by timer
-	FTimerDelegate CameraSwitchDelegate;
+
 
 	UPROPERTY(EditAnywhere)
 		AWarhouseClock* ClockTimerText;
@@ -89,7 +66,7 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-	void IncrementPlayerScore(int playerIndex, float amount = 1);
+	void AddToPlayerScore(int playerIndex, float packageValue = 0, float damageValue = 0);
 
 	void UpdateScores();
 
@@ -112,15 +89,15 @@ public:
 	UFUNCTION()
 		void PlayIntro();
 	UFUNCTION()
-		void SwitchCameraInCameraManager(int camera);
-	UFUNCTION()
-		void ActivateBay1Camera();
-	UFUNCTION()
-		void ActivateBay2Camera();
-	UFUNCTION()
-		void ActivateBay3Camera();
-	UFUNCTION()
-		void ActivateBay4Camera();
-	UFUNCTION()
 		void InitSpawnPlayers();
+
+	private:
+		bool initialised = false;
+		bool playingIntro = true;
+		bool playingBillboard = false;
+		float introTimer = 0.0;
+		bool gameEnded = false;
+		TArray<int> playerIdsToIntro;
+
+		void GameStart();
 };

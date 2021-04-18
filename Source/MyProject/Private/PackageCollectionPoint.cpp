@@ -117,7 +117,7 @@ void APackageCollectionPoint::Tick(float DeltaTime)
 				packageManager->RemovePackage(packageToRemove);
 				packageToRemove->Destroy();
 				
-				manager->IncrementPlayerScore(index, packageValue);
+				manager->AddToPlayerScore(index, packageValue, 0.0);
 			}
 
 			packages.Empty();

@@ -22,11 +22,7 @@ AGameManager::AGameManager()
 void AGameManager::BeginPlay()
 {
 	Super::BeginPlay();
-
-	//play intro
-	// 
-	//Initialise game
-	//GetWorld()->GetTimerManager().SetTimer(InitGameTimerHandle, this, &AGameManager::InitGame, InitGameTimer, false);
+	
 	InitGame();
 }
 
@@ -34,30 +30,77 @@ void AGameManager::BeginPlay()
 void AGameManager::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	//decrease timer over delta time
-	GameTimer -= (1 * DeltaTime);
-	if (GameTimer < 0)
-		GameTimer = 0;
-	//set clock timer text
-	ClockTimerText->SetTime(GameTimer);
+	if (initialised) {
+		if (playingIntro)
+		{
+			if (playingBillboard)
+			{
+				ACameraManager* camManager = WarhouseHelpers::GetCameraManager(GetWorld());
+				camManager->SwitchCamera(camManager->GetBillboardCamera());
+
+				introTimer += DeltaTime;
+
+				if (introTimer > CameraSwitchTimer)
+				{
+					introTimer = 0.0;
+					playingBillboard = false;
+				}
+			}
+			else
+			{
+				if (playerIdsToIntro.Num() == 0) {
+					playingIntro = false;
+					GameStart();
+				}
+				else {
+
+					ACameraManager* camManager = WarhouseHelpers::GetCameraManager(GetWorld());
+					camManager->SwitchCamera(camManager->GetBayCamera(playerIdsToIntro[0]));
+
+					introTimer += DeltaTime;
+
+					if (introTimer > CameraSwitchTimer)
+					{
+						playerIdsToIntro.RemoveAt(0);
+						introTimer = 0.0;
+					}
+				}
+			}
+		}
+		else {
+			if (!gameEnded) {
+				//decrease timer over delta time
+				GameTimer -= DeltaTime;
+				if (GameTimer <= 0)
+				{
+					GameTimer = 0;
+					OnGameEnd();
+				}
+				//set clock timer text
+				ClockTimerText->SetTime(GameTimer);
+			}
+		}
+	}
 
 }
 
-void AGameManager::IncrementPlayerScore(int playerIndex, float amount)
+void AGameManager::AddToPlayerScore(int playerIndex, float packageValue, float damageValue)
 {
+	WarhouseHelpers::GetGameInstance(GetWorld())->AddPlayerScore(playerIndex, packageValue, damageValue);
+
 	switch (playerIndex)
 	{
 	case 0:
-		player0Score += amount;
+		player0Score += packageValue;
 		break;
 	case 1:
-		player1Score += amount;
+		player1Score += packageValue;
 		break;
 	case 2:
-		player2Score += amount;
+		player2Score += packageValue;
 		break;
 	case 3:
-		player3Score += amount;
+		player3Score += packageValue;
 		break;
 	}
 
@@ -171,24 +214,14 @@ void AGameManager::InitGame()
 
 	////call intro function
 	PlayIntro();
-	//call forklift timer
-	GetWorld()->GetTimerManager().SetTimer(ForkliftTimerHandle, this, &AGameManager::ActivateForklift, ForkliftTimer, false);
-	GetWorld()->GetTimerManager().SetTimer(GameTimerHandle, this, &AGameManager::OnGameEnd, GameTimer, false);
-	//WarhouseHelpers::GetPlayerManager(GetWorld())->SpawnPlayers();
+
+	initialised = true;
 }
 
 void AGameManager::OnGameEnd()
 {
-	//pause all input
-	//needs implementing
-	//total up all players score
-	playerScores.Sort();
-	FString WinningScore = FString::FromInt(playerScores[0]);
-	//display winner - debugging only
-	if (GEngine)
-		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, WinningScore);
-	//back to main menu after a delay
-	GetWorld()->GetTimerManager().SetTimer(DelayTimerHandle, this, &AGameManager::ReturnToMainMenu, DelayTimer, false);
+	gameEnded = true;
+	UGameplayStatics::OpenLevel(GetWorld(), FName(TEXT("WinScene")));
 }
 
 void AGameManager::ReturnToMainMenu()
@@ -203,66 +236,29 @@ void AGameManager::ActivateForklift()
 
 void AGameManager::PlayIntro()
 {
-	for (int i = 0; i < numOfPlayers; i++)
+
+	for (auto player : WarhouseHelpers::GetGameInstance(GetWorld())->playerInfo)
 	{
-		switch (i)
-		{
-		case 0:
-			GetWorld()->GetTimerManager().SetTimer(Bay1Handle, this, &AGameManager::ActivateBay1Camera, CameraSwitchTimer, false);
-			CameraSwitchTimer += TimeDelayForCameras;
-			break;
-		case 1:
-			GetWorld()->GetTimerManager().SetTimer(Bay2Handle, this, &AGameManager::ActivateBay2Camera, CameraSwitchTimer, false);
-			CameraSwitchTimer += TimeDelayForCameras;
-			break;
-		case 2:
-			GetWorld()->GetTimerManager().SetTimer(Bay3Handle, this, &AGameManager::ActivateBay3Camera, CameraSwitchTimer, false);
-			CameraSwitchTimer += TimeDelayForCameras;
-			break;
-		case 3:
-			GetWorld()->GetTimerManager().SetTimer(Bay4Handle, this, &AGameManager::ActivateBay4Camera, CameraSwitchTimer, false);
-			CameraSwitchTimer += TimeDelayForCameras;
-			break;
-		default:
-			GetWorld()->GetTimerManager().SetTimer(Bay1Handle, this, &AGameManager::ActivateBay1Camera, CameraSwitchTimer, false);
-			CameraSwitchTimer += TimeDelayForCameras;
-			break;
-		}
+		playerIdsToIntro.Add(player.controllerId);
 	}
-	InitGameTimer = CameraSwitchTimer;
-	//camera switches back to main camera when players spawn
-	GetWorld()->GetTimerManager().SetTimer(InitGameTimerHandle, this, &AGameManager::InitSpawnPlayers, InitGameTimer, false);
+
+	introTimer = 0.0;
+	playingBillboard = true;
+	playingIntro = true;
+}
+
+void AGameManager::GameStart()
+{
+	ACameraManager* camManager = WarhouseHelpers::GetCameraManager(GetWorld());
+	camManager->SwitchCamera(camManager->GetMainCamera());
+
+	InitSpawnPlayers();
+
+	GetWorld()->GetTimerManager().SetTimer(ForkliftTimerHandle, this, &AGameManager::ActivateForklift, ForkliftTimer, false);
+
 }
 
 void AGameManager::InitSpawnPlayers()
 {
 	WarhouseHelpers::GetPlayerManager(GetWorld())->SpawnPlayers();
-	GameTimer = 300.0f;
-}
-
-void AGameManager::SwitchCameraInCameraManager(int camera)
-{
-	ACameraManager* camManager = WarhouseHelpers::GetCameraManager(GetWorld());
-	camManager->SwitchCamera(camManager->GetBayCamera(camera));
-}
-
-void AGameManager::ActivateBay1Camera()
-{
-	ACameraManager* camManager = WarhouseHelpers::GetCameraManager(GetWorld());
-	camManager->SwitchCamera(camManager->GetBayCamera(0));
-}
-void AGameManager::ActivateBay2Camera()
-{
-	ACameraManager* camManager = WarhouseHelpers::GetCameraManager(GetWorld());
-	camManager->SwitchCamera(camManager->GetBayCamera(1));
-}
-void AGameManager::ActivateBay3Camera()
-{
-	ACameraManager* camManager = WarhouseHelpers::GetCameraManager(GetWorld());
-	camManager->SwitchCamera(camManager->GetBayCamera(2));
-}
-void AGameManager::ActivateBay4Camera()
-{
-	ACameraManager* camManager = WarhouseHelpers::GetCameraManager(GetWorld());
-	camManager->SwitchCamera(camManager->GetBayCamera(3));
 }
