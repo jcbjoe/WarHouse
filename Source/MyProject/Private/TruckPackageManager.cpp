@@ -1,7 +1,7 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+﻿// Fill out your copyright notice in the Description page of Project Settings.
 
-#include "WarhouseHelpers.h"
 #include "TruckPackageManager.h"
+#include "WarhouseHelpers.h"
 
 // Sets default values
 ATruckPackageManager::ATruckPackageManager()
@@ -50,7 +50,7 @@ void ATruckPackageManager::IncrementTruckStage(int truckNumber)
 void ATruckPackageManager::UpdateTrucks()
 {
 	SetPackagesHidden();
-	
+
 	for (int i = 0; i < truck1Stage; i++)
 	{
 		Truck1PackageStages[i]->GetRootComponent()->SetVisibility(true);
@@ -97,7 +97,7 @@ void ATruckPackageManager::SetPackagesHidden()
 
 void ATruckPackageManager::CheckIfFull()
 {
-	if(truck1Stage == 4)
+	if (truck1Stage == 4)
 	{
 		EmptyTruck(1);
 	}
@@ -155,7 +155,7 @@ void ATruckPackageManager::EmptyTruck(int truckNumber)
 		GetWorldTimerManager().SetTimer(truck4Handle, this, &ATruckPackageManager::OpenShutterTruck4, secondsTillShutterOpens, false);
 		break;
 	}
-	
+
 }
 
 void ATruckPackageManager::OpenShutterTruck1()
