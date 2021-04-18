@@ -49,6 +49,7 @@ protected:
 	UPROPERTY(EditDefaultsOnly)
 		UNiagaraComponent* beamEmitter;
 
+
 	UPROPERTY(EditDefaultsOnly)
 		UWidgetComponent* progressBar;
 
@@ -138,4 +139,6 @@ private:
 	UAudioComponent* chargingComp;
 
 	AActor* lastHeldPackage = nullptr;
+
+	UNiagaraSystem* sparksEmitter;
 };

@@ -24,6 +24,7 @@
 #include "Components/AudioComponent.h"
 #include "PhysicsProp.h"
 #include "DestructibleProp.h"
+#include "NiagaraFunctionLibrary.h"
 #include "Engine/LatentActionManager.h"
 
 AWarhousePawn::AWarhousePawn()
@@ -86,10 +87,15 @@ AWarhousePawn::AWarhousePawn()
 
 	//--- Beam emitter setup
 	ConstructorHelpers::FObjectFinder<UNiagaraSystem> nEmitter(TEXT("/Game/Assets/JoeAssets/Beam/RobotBeam_System.RobotBeam_System"));
-	
-	beamEmitter = CreateDefaultSubobject<UNiagaraComponent>(TEXT("Beam2"));
+
+	beamEmitter = CreateDefaultSubobject<UNiagaraComponent>(TEXT("Beam"));
 	beamEmitter->SetAsset(nEmitter.Object);
 	beamEmitter->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);
+
+	//--- Sparks emitter setup
+	ConstructorHelpers::FObjectFinder<UNiagaraSystem> sparksEmitterSystem(TEXT("/Game/Assets/JoeAssets/Sparks/Sparks_System.Sparks_System"));
+	
+	sparksEmitter = sparksEmitterSystem.Object;
 
 	//--- Battery bar setup
 	progressBar = CreateDefaultSubobject<UWidgetComponent>(FName("ProgressBar"));
@@ -466,16 +472,18 @@ void AWarhousePawn::Tick(float DeltaSeconds)
 			audioComp->SetVolumeMultiplier(0.0);
 			UGameplayStatics::PlaySoundAtLocation(GetWorld(), dieSoundBase, GetActorLocation(), FRotator(0, 0, 0), deathSoundVolume);
 
+			//--- Trigger sparks
+			UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), sparksEmitter, GetActorLocation());
+			
 			//--- Set the players position under the map and reset the beam
 			auto pos = GetActorLocation();
 			pos.Z = -600;
 
 			SetActorLocation(pos);
-			
+
 			beamEmitter->SetVectorParameter(FName("Start"), pos);
 			beamEmitter->SetVectorParameter(FName("End"), pos);
-
-			//Explosion?
+			
 		}
 	}
 	else
