@@ -27,14 +27,9 @@ FString APackageManager::GetPackageDetails()
 	return Result;
 }
 
-void APackageManager::SpawnPackage(FConfig config, TArray<AActor*>& SpawnPackageLocationsCopy)
+void APackageManager::SpawnPackage(FConfig config)
 {
-	// Get random Spawnpoint
-	auto randomNumber = FMath::RandRange(0, SpawnPackageLocationsCopy.Num() - 1);
-	auto spawnPoint = SpawnPackageLocationsCopy[randomNumber];
-
-	// Remove the spawnpoint from the temporary spawnpoints so we dont spawn at the same place twice 
-	SpawnPackageLocationsCopy.Remove(spawnPoint);
+	FVector spawnLocation = GetSpawnPosition();
 
 	// Get Random package type
 	auto jsonLength = config.packages.Num();
@@ -48,15 +43,9 @@ void APackageManager::SpawnPackage(FConfig config, TArray<AActor*>& SpawnPackage
 	FActorSpawnParameters SpawnInfo;
 	SpawnInfo.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 
-	APackageBase* package = GetWorld()->SpawnActor<APackageBase>(spawnPoint->GetActorLocation(), Rotation, SpawnInfo);
+	APackageBase* package = GetWorld()->SpawnActor<APackageBase>(spawnLocation, Rotation, SpawnInfo);
 	package->InitialisePackage(packageType);
 	Packages.Add(package);
-}
-
-void APackageManager::GetSpawnLocations()
-{
-	//loop through all spawn locations and add to TArray of spawn locations
-	UGameplayStatics::GetAllActorsOfClass(GetWorld(), APackageSpawnActor::StaticClass(), SpawnPackageLocations);
 }
 
 void APackageManager::RemovePackage(APackageBase* package)
@@ -79,11 +68,10 @@ void APackageManager::ActivatePackageTimer()
 void APackageManager::NewPackages()
 {
 	// Temp list of spawnpoints
-	auto spawnPointsCopy = SpawnPackageLocations;
 	int PackagesNeeded = TotalPackagesAmount - Packages.Num();
 	for (int i = 0; i < PackagesNeeded; ++i)
 	{
-		SpawnPackage(Config, spawnPointsCopy);
+		SpawnPackage(Config);
 	}
 }
 
@@ -93,19 +81,19 @@ void APackageManager::BeginPlay()
 	Super::BeginPlay();
 	//set package threshhold for spawning new packages
 	PackageThreshold = TotalPackagesAmount * 0.5;
+	
 	//get json data
 	FString Result = GetPackageDetails();
+	
 	//pass package data into the config struct
 	Config = FConfig(Result);
+	
 	//find all spawn locations and store into a TArray
-	GetSpawnLocations();
-
-	// Temp list of spawnpoints
-	auto spawnPointsCopy = SpawnPackageLocations;
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), APackageSpawnActor::StaticClass(), SpawnPackageLocations);
 
 	for (int i = 0; i < TotalPackagesAmount; ++i)
 	{
-		SpawnPackage(Config, spawnPointsCopy);
+		SpawnPackage(Config);
 	}
 }
 
@@ -113,4 +101,35 @@ void APackageManager::BeginPlay()
 void APackageManager::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+}
+
+FVector APackageManager::GetSpawnPosition()
+{
+	bool found = false;
+	FVector spawnLoc;
+	do
+	{
+		int randomNumber = FMath::RandRange(0, SpawnPackageLocations.Num() - 1);
+		AActor* spawnPoint = SpawnPackageLocations[randomNumber];
+
+		TArray<AActor*> packages;
+		UGameplayStatics::GetAllActorsOfClass(GetWorld(), APackageBase::StaticClass(), packages);
+		bool tooClose = false;
+		for(AActor* package	: packages)
+		{
+			if (FVector::Distance(spawnPoint->GetActorLocation(), package->GetActorLocation()) < 100)
+			{
+				tooClose = true;
+				break;
+			}
+		}
+
+		if(!tooClose)
+		{
+			found = true;
+			spawnLoc = spawnPoint->GetActorLocation();
+		}
+	} while (!found);
+
+	return spawnLoc;
 }

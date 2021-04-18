@@ -26,12 +26,13 @@ public:
 
 	FString GetPackageDetails();
 	UFUNCTION()
-		void SpawnPackage(FConfig config, TArray<AActor*>& SpawnPackageLocations);
-	void GetSpawnLocations();
+		void SpawnPackage(FConfig config);
 	void RemovePackage(APackageBase* package);
 	int GetPackagesLength();
 	void ActivatePackageTimer();
 	void NewPackages();
+
+	FVector GetSpawnPosition();
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;

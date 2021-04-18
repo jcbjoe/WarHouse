@@ -125,7 +125,7 @@ FVector APlayerManager::GetRandomSpawnpoint(bool checkForPlayers)
 		bool playerToClose = false;
 		for (AWarhousePawn* player : playerList)
 		{
-			if (FVector::Distance(player->GetActorLocation(), spawnPointLoc) < 50)
+			if (FVector::Distance(player->GetActorLocation(), spawnPointLoc) < 100)
 			{
 				playerToClose = true;
 				break;
