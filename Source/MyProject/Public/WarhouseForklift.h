@@ -6,6 +6,7 @@
 #include "Components/TimelineComponent.h"
 #include "GameFramework/Actor.h"
 #include "Kismet/GameplayStatics.h"
+#include "Components/BoxComponent.h"
 #include "WarhouseForklift.generated.h"
 
 class UCurveFloat;
@@ -27,6 +28,10 @@ public:
 		void GetReadyToDeliver();
 	UFUNCTION()
 		void TimelineProgress(float value);
+	UFUNCTION()
+		void OnOverlapBegin(class UPrimitiveComponent* OverlapComponent, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+	UFUNCTION()
+		void OnOverlapEnd(UPrimitiveComponent* OverlapComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 
 protected:
 	// Called when the game starts or when spawned
@@ -49,6 +54,8 @@ protected:
 		bool isMoving;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Forklift Data")
 		float Speed = 500.0f;
+	UPROPERTY(Category = Gameplay, EditAnywhere, BlueprintReadWrite)
+		UBoxComponent* boxComponent;
 
 	float DefaultSpeed = 500.0f;
 

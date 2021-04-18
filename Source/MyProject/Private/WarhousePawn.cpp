@@ -94,7 +94,7 @@ AWarhousePawn::AWarhousePawn()
 
 	//--- Sparks emitter setup
 	ConstructorHelpers::FObjectFinder<UNiagaraSystem> sparksEmitterSystem(TEXT("/Game/Assets/JoeAssets/Sparks/Sparks_System.Sparks_System"));
-	
+
 	sparksEmitter = sparksEmitterSystem.Object;
 
 	//--- Battery bar setup
@@ -220,7 +220,7 @@ void AWarhousePawn::SetupPlayerInputComponent(class UInputComponent* PlayerInput
 void AWarhousePawn::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
-	
+
 	if (!isDead) {
 		//--- Grab controller input values
 		const float ForwardValue = GetInputAxisValue(MoveForwardBinding);
@@ -462,32 +462,34 @@ void AWarhousePawn::Tick(float DeltaSeconds)
 		//--- Kill player check
 		if (_batteryCharge <= 0)
 		{
-			//--- Player has ran out of battery
-			isDead = true;
-			respawnCounter = 0;
+			////--- Player has ran out of battery
+			//isDead = true;
+			//respawnCounter = 0;
 
-			if (PhysicsHandle->GetGrabbedComponent() != nullptr) {
-				DropHeldItem();
-			}
+			//if (PhysicsHandle->GetGrabbedComponent() != nullptr) {
+			//	DropHeldItem();
+			//}
 
-			//--- Mute the engine sounds and play the death sound
-			audioComp->SetVolumeMultiplier(0.0);
-			UGameplayStatics::PlaySoundAtLocation(GetWorld(), dieSoundBase, GetActorLocation(), FRotator(0, 0, 0), deathSoundVolume);
+			////--- Mute the engine sounds and play the death sound
+			//audioComp->SetVolumeMultiplier(0.0);
+			//UGameplayStatics::PlaySoundAtLocation(GetWorld(), dieSoundBase, GetActorLocation(), FRotator(0, 0, 0), deathSoundVolume);
 
-			beamAudioComp->SetVolumeMultiplier(0.0);
-			
-			//--- Trigger sparks
-			UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), sparksEmitter, GetActorLocation());
-			
-			//--- Set the players position under the map and reset the beam
-			auto pos = GetActorLocation();
-			pos.Z = -600;
+			//beamAudioComp->SetVolumeMultiplier(0.0);
 
-			SetActorLocation(pos);
+			////--- Trigger sparks
+			//UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), sparksEmitter, GetActorLocation());
 
-			beamEmitter->SetVectorParameter(FName("Start"), pos);
-			beamEmitter->SetVectorParameter(FName("End"), pos);
-			
+			////--- Set the players position under the map and reset the beam
+			//auto pos = GetActorLocation();
+			//pos.Z = -600;
+
+			//SetActorLocation(pos);
+
+			//beamEmitter->SetVectorParameter(FName("Start"), pos);
+			//beamEmitter->SetVectorParameter(FName("End"), pos);
+
+			KillPlayer();
+
 		}
 	}
 	else
@@ -535,6 +537,35 @@ void AWarhousePawn::DropHeldItem()
 		}
 		PhysicsHandle->ReleaseComponent();
 	}
+}
+
+void AWarhousePawn::KillPlayer()
+{
+	//--- Player has ran out of battery
+	isDead = true;
+	respawnCounter = 0;
+
+	if (PhysicsHandle->GetGrabbedComponent() != nullptr) {
+		DropHeldItem();
+	}
+
+	//--- Mute the engine sounds and play the death sound
+	audioComp->SetVolumeMultiplier(0.0);
+	UGameplayStatics::PlaySoundAtLocation(GetWorld(), dieSoundBase, GetActorLocation(), FRotator(0, 0, 0), deathSoundVolume);
+
+	beamAudioComp->SetVolumeMultiplier(0.0);
+
+	//--- Trigger sparks
+	UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), sparksEmitter, GetActorLocation());
+
+	//--- Set the players position under the map and reset the beam
+	auto pos = GetActorLocation();
+	pos.Z = -600;
+
+	SetActorLocation(pos);
+
+	beamEmitter->SetVectorParameter(FName("Start"), pos);
+	beamEmitter->SetVectorParameter(FName("End"), pos);
 }
 
 void AWarhousePawn::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
