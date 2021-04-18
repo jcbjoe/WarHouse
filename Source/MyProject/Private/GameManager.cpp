@@ -242,22 +242,27 @@ void AGameManager::InitSpawnPlayers()
 
 void AGameManager::SwitchCameraInCameraManager(int camera)
 {
-	CameraManager->SwitchCamera(CameraManager->GetBayCamera(camera));
+	ACameraManager* camManager = WarhouseHelpers::GetCameraManager(GetWorld());
+	camManager->SwitchCamera(camManager->GetBayCamera(camera));
 }
 
 void AGameManager::ActivateBay1Camera()
 {
-	CameraManager->SwitchCamera(CameraManager->GetBayCamera(0));
+	ACameraManager* camManager = WarhouseHelpers::GetCameraManager(GetWorld());
+	camManager->SwitchCamera(camManager->GetBayCamera(0));
 }
 void AGameManager::ActivateBay2Camera()
 {
-	CameraManager->SwitchCamera(CameraManager->GetBayCamera(1));
+	ACameraManager* camManager = WarhouseHelpers::GetCameraManager(GetWorld());
+	camManager->SwitchCamera(camManager->GetBayCamera(1));
 }
 void AGameManager::ActivateBay3Camera()
 {
-	CameraManager->SwitchCamera(CameraManager->GetBayCamera(2));
+	ACameraManager* camManager = WarhouseHelpers::GetCameraManager(GetWorld());
+	camManager->SwitchCamera(camManager->GetBayCamera(2));
 }
 void AGameManager::ActivateBay4Camera()
 {
-	CameraManager->SwitchCamera(CameraManager->GetBayCamera(3));
+	ACameraManager* camManager = WarhouseHelpers::GetCameraManager(GetWorld());
+	camManager->SwitchCamera(camManager->GetBayCamera(3));
 }

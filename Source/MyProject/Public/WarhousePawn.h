@@ -7,6 +7,7 @@
 #include "Components/WidgetComponent.h"
 #include "GameFramework/Character.h"
 #include "PhysicsEngine/PhysicsHandleComponent.h"
+#include "NiagaraComponent.h"
 #include "WarhousePawn.generated.h"
 
 
@@ -46,7 +47,7 @@ protected:
 		USceneComponent* HeldLocation;
 
 	UPROPERTY(EditDefaultsOnly)
-		UParticleSystemComponent* beamEmitter;
+		UNiagaraComponent* beamEmitter;
 
 	UPROPERTY(EditDefaultsOnly)
 		UWidgetComponent* progressBar;

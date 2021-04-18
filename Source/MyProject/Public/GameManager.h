@@ -84,8 +84,6 @@ protected:
 
 	UPROPERTY(EditAnywhere)
 		AWarhouseClock* ClockTimerText;
-	UPROPERTY(EditAnywhere)
-		ACameraManager* CameraManager;
 
 	FString LocalCurrencyCode;
 

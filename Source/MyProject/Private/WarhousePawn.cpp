@@ -45,7 +45,7 @@ AWarhousePawn::AWarhousePawn()
 	static ConstructorHelpers::FObjectFinder<UMaterial> tuxGravMat(TEXT("/Game/Assets/ConorAssets/Player/Tux/TuxGrav.TuxGrav"));
 	static ConstructorHelpers::FObjectFinder<UMaterial> ironManMat(TEXT("/Game/Assets/ConorAssets/Player/IronMan/IronMan.IronMan"));
 	static ConstructorHelpers::FObjectFinder<UMaterial> ironManGravMat(TEXT("/Game/Assets/ConorAssets/Player/IronMan/IronManGrav.IronManGrav"));
-	
+
 	red = redMat.Object;
 	redGrav = redGravMat.Object;
 	blue = blueMat.Object;
@@ -85,11 +85,10 @@ AWarhousePawn::AWarhousePawn()
 	HeldLocation->SetRelativeLocation({ 150,0,0, });
 
 	//--- Beam emitter setup
-	ConstructorHelpers::FObjectFinder<UParticleSystem> emitter(TEXT("/Game/Assets/JoeAssets/Beam/Beam.Beam"));
-	UParticleSystem* templateEmitter = emitter.Object;
-	beamEmitter = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("Beam"));
-	beamEmitter->Template = templateEmitter;
-	beamEmitter->SecondsBeforeInactive = 0;
+	ConstructorHelpers::FObjectFinder<UNiagaraSystem> nEmitter(TEXT("/Game/Assets/JoeAssets/Beam/RobotBeam_System.RobotBeam_System"));
+	
+	beamEmitter = CreateDefaultSubobject<UNiagaraComponent>(TEXT("Beam2"));
+	beamEmitter->SetAsset(nEmitter.Object);
 	beamEmitter->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);
 
 	//--- Battery bar setup
@@ -237,8 +236,7 @@ void AWarhousePawn::Tick(float DeltaSeconds)
 		sourceLoc.Z = GetActorLocation().Z + beamHeightOffset;
 		targetLoc.Z = GetActorLocation().Z + beamHeightOffset + additionalHeight;
 
-		//--- Set the target, source and belt rotations/location
-		BeamMeshComponent->SetWorldRotation(ArmDirection.Rotation());
+		//--- Set the target and source
 		beamSource->SetWorldLocation(sourceLoc);
 		beamTarget->SetWorldLocation(targetLoc);
 
@@ -246,14 +244,15 @@ void AWarhousePawn::Tick(float DeltaSeconds)
 		PhysicsHandle->SetTargetLocation(beamTarget->GetComponentLocation());
 
 		//--- Setup Emitter locations
-		beamEmitter->SetBeamSourcePoint(0, beamSource->GetComponentLocation(), 0);
+		beamEmitter->SetVectorParameter(FName("Start"), beamSource->GetComponentLocation());
 
 		//--- If we have a package, set the beam location to it. If not set the beam location to the calculated target
 		if (PhysicsHandle->GetGrabbedComponent() == nullptr) {
-			beamEmitter->SetBeamTargetPoint(0, beamTarget->GetComponentLocation(), 0);
+			beamEmitter->SetVectorParameter(FName("End"), beamTarget->GetComponentLocation());
 		}
 		else {
-			beamEmitter->SetBeamTargetPoint(0, PhysicsHandle->GetGrabbedComponent()->GetComponentLocation(), 0);
+
+			beamEmitter->SetVectorParameter(FName("End"), PhysicsHandle->GetGrabbedComponent()->GetComponentLocation());
 		}
 
 		//--- Check for if the thumbsticks are currently being moved
@@ -274,7 +273,9 @@ void AWarhousePawn::Tick(float DeltaSeconds)
 		else
 		{
 			//--- Thumbsticks moving
-			//--- Show beam and set volume of the beam 
+			//--- Show beam and set volume of the beam
+
+			BeamMeshComponent->SetWorldRotation(ArmDirection.Rotation());
 			beamAudioComp->SetVolumeMultiplier(audioBeamVolume);
 			beamEmitter->SetVisibility(true);
 			//play controller rumble
@@ -470,10 +471,9 @@ void AWarhousePawn::Tick(float DeltaSeconds)
 			pos.Z = -600;
 
 			SetActorLocation(pos);
-
-			beamEmitter->SetBeamSourcePoint(0, pos, 0);
-
-			beamEmitter->SetBeamTargetPoint(0, pos, 0);
+			
+			beamEmitter->SetVectorParameter(FName("Start"), pos);
+			beamEmitter->SetVectorParameter(FName("End"), pos);
 
 			//Explosion?
 		}
