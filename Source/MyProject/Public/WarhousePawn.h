@@ -95,7 +95,7 @@ private:
 	const int packageBeamSourceDistance = 50;
 
 	//rumble variables
-	const float RumbleFrequency = 0.25f;
+	const float RumbleFrequency = 0.12f;
 	const float RumbleDuration = 0.5f;
 
 	const float respawnSeconds = 5;
