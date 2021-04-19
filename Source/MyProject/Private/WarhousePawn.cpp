@@ -368,7 +368,7 @@ void AWarhousePawn::Tick(float DeltaSeconds)
 			_batteryCharge -= (MovingBatteryDrain * DeltaSeconds);
 
 			//--- Check if we are colliding and that the actor colliding with is not a package. Dont want to deflect from the package
-			if (Hit.IsValidBlockingHit() && !Hit.Actor->GetClass()->IsChildOf(APackageBase::StaticClass()))
+			if (Hit.IsValidBlockingHit() && Hit.Actor != nullptr && !Hit.Actor->GetClass()->IsChildOf(APackageBase::StaticClass()))
 			{
 				//--- Calculate the deflection
 				const FVector Normal2D = Hit.Normal.GetSafeNormal2D() * 1.3;
@@ -570,7 +570,7 @@ void AWarhousePawn::KillPlayer()
 
 void AWarhousePawn::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
 {
-	if (OtherActor->IsA(APackageBase::StaticClass()))
+	if (OtherActor != nullptr && OtherActor->IsA(APackageBase::StaticClass()))
 	{
 		if ((PhysicsHandle->GetGrabbedComponent() != nullptr && PhysicsHandle->GetGrabbedComponent()->GetOwner() == OtherActor)
 			|| OtherActor == lastHeldPackage)
