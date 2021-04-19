@@ -9,8 +9,8 @@
       ],
       "Scale": 1.0,
       "ValueRange": [
-        100,
-        200
+        20,
+        50
       ],
       "Rarity": 10,
       "PackageWeight": 10,
@@ -24,8 +24,8 @@
       ],
       "Scale": 1.0,
       "ValueRange": [
-        500,
-        600
+        10,
+        25
       ],
       "Rarity": 4,
       "PackageWeight": 5,
@@ -39,8 +39,8 @@
       ],
       "Scale": 1.0,
       "ValueRange": [
-        250,
-        400
+        5,
+        15
       ],
       "Rarity": 6,
       "PackageWeight": 1,
@@ -54,8 +54,8 @@
       ],
       "Scale": 1.0,
       "ValueRange": [
-        250,
-        400
+        10,
+        20
       ],
       "Rarity": 6,
       "PackageWeight": 5,

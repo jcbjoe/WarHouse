@@ -70,7 +70,7 @@ void APackageBase::InitialisePackage(FConfigPackage pi)
 	PackageMesh->SetMassOverrideInKg(NAME_None, Package.PackageWeight, true);
 	progressBar->SetWorldScale3D(FVector(1));
 
-	PackageHealth = 103.0f; //103 because they tale 3 damage on spawn for some reason
+	PackageHealth = 100.0f;
 }
 
 // Called when the game starts or when spawned
@@ -168,7 +168,7 @@ void APackageBase::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, 
 			UGameplayStatics::PlaySoundAtLocation(GetWorld(), soundBase, GetActorLocation());
 
 			if (PackageHealth > 0.0f && !IsBeingCollected)
-				PackageHealth -= 0.1f;
+				PackageHealth -= 1.f;
 
 			if (PackageHealth < 0.0f)
 				PackageHealth = 0.0f;

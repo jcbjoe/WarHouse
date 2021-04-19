@@ -315,7 +315,7 @@ void AWarhousePawn::Tick(float DeltaSeconds)
 
 					//--- Create the line trace
 					bool bIsHit = GetWorld()->LineTraceSingleByChannel(hit, GetActorLocation(), beamTarget->GetComponentLocation(), ECC_GameTraceChannel3, TraceParams);
-					if (bIsHit)
+					if (bIsHit && hit.Actor != nullptr)
 					{
 						//--- We are colliding with a actor
 

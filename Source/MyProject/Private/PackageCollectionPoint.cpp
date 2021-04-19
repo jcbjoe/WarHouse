@@ -113,11 +113,13 @@ void APackageCollectionPoint::Tick(float DeltaTime)
 			for (auto packageToRemove : packages)
 			{
 				//divide package health by 100 to get the percentage of what it is worth i.e. more damge, less value
-				const float packageValue = (packageToRemove->GetPackageValue() * (packageToRemove->GetPackageHealth() / 100.0f)) * PackageBonus;
+				const float packageValue = (packageToRemove->GetPackageValue()) * PackageBonus;
 				packageManager->RemovePackage(packageToRemove);
 				packageToRemove->Destroy();
+
+				float packageDamageCost = packageToRemove->GetPackageValue() * ((100 - packageToRemove->GetPackageHealth()) / 100.0f);
 				
-				manager->AddToPlayerScore(index, packageValue, 0.0);
+				manager->AddToPlayerScore(index, packageValue, packageDamageCost);
 			}
 
 			packages.Empty();
