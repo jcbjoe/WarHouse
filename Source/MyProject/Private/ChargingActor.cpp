@@ -11,7 +11,7 @@ AChargingActor::AChargingActor()
 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
-	static ConstructorHelpers::FObjectFinder<UStaticMesh> chargingStand(TEXT("/Game/Assets/JoeAssets/ChargingStand/ChargingStand.ChargingStand"));
+	static ConstructorHelpers::FObjectFinder<UStaticMesh> chargingStand(TEXT("/Game/Assets/ConorAssets/ChargingStation/ChargingPad.ChargingPad"));
 	// Create the mesh component
 	pad = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ChargingStand"));
 
@@ -19,9 +19,19 @@ AChargingActor::AChargingActor()
 
 	pad->SetRelativeScale3D(FVector(2.269586, 2.269586, 2.2695860));
 
+	static ConstructorHelpers::FObjectFinder<UMaterial> chargingMatRef(TEXT("/Game/Assets/ConorAssets/ChargingStation/ChargingPadActiveMat.ChargingPadActiveMat"));
+	static ConstructorHelpers::FObjectFinder<UMaterial> idleMatRef(TEXT("/Game/Assets/ConorAssets/ChargingStation/ChargingPadIdleMat.ChargingPadIdleMat"));
+
+	 chargingMat = chargingMatRef.Object;
+	 idleMat = idleMatRef.Object;
+
+	 pad->SetMaterial(0, idleMat);
+
+
 	RootComponent = pad;
 
 	ConstructorHelpers::FObjectFinder<UParticleSystem> emitter(TEXT("/Game/Assets/JoeAssets/ChargingStand/ChargingStandEmitter.ChargingStandEmitter"));
+
 
 	UParticleSystem* templateEmitter = emitter.Object;
 
@@ -35,7 +45,7 @@ AChargingActor::AChargingActor()
 
 	boxComponent = CreateDefaultSubobject<UBoxComponent>(TEXT("BoxCollision"));
 
-	boxComponent->SetRelativeLocation(FVector(0, 0, 47.0));
+	boxComponent->SetRelativeLocation(FVector(0, 0, 60.0));
 
 	boxComponent->InitBoxExtent(FVector(32.0, 32.0, 60.0));
 
@@ -58,15 +68,25 @@ void AChargingActor::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	if(actorsOnPad.Num() == 0)
+	{
+		pad->SetMaterial(0, idleMat);
+	} else
+	{
+		pad->SetMaterial(0, chargingMat);
+	}
+
 }
 
 void AChargingActor::OnOverlapBegin(UPrimitiveComponent* OverlapComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
+	
 	if (OtherActor->IsA(AWarhousePawn::StaticClass()))
 	{
 		auto player = Cast<AWarhousePawn>(OtherActor);
 
 		player->SetIsOnCharger(true);
+		actorsOnPad.Add(OtherActor);
 	}
 }
 
@@ -77,6 +97,7 @@ void AChargingActor::OnOverlapEnd(UPrimitiveComponent* OverlapComponent, AActor*
 		auto player = Cast<AWarhousePawn>(OtherActor);
 
 		player->SetIsOnCharger(false);
+		actorsOnPad.Remove(OtherActor);
 	}
 }
 

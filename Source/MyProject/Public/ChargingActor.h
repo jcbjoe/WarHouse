@@ -30,12 +30,16 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Components")
 		UBoxComponent* boxComponent;
 
+	UMaterial* idleMat;
+	UMaterial* chargingMat;
+
 	UFUNCTION()
 		void OnOverlapBegin(class UPrimitiveComponent* OverlapComponent, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
 	UFUNCTION()
 		void OnOverlapEnd(UPrimitiveComponent* OverlapComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 
+	TArray<AActor*> actorsOnPad;
 
 public:
 	// Called every frame
