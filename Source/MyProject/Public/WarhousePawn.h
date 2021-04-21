@@ -90,7 +90,7 @@ private:
 	const float audioStationaryVolume = 0.05f;
 	const float audioMovingVolume = 0.1f;
 	const float audioChargingVolume = 0.6f;
-	const float audioBeamVolume = 0.2f;
+	const float audioBeamVolume = 0.1f;
 	const float deathSoundVolume = 0.5f;
 
 	const int packageHoldDistance = 160;
