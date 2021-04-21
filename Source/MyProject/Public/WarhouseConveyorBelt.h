@@ -20,6 +20,8 @@ public:
 		UStaticMeshComponent* BaseMesh;
 	UPROPERTY(Category = Gameplay, EditAnywhere, BlueprintReadWrite)
 		UBoxComponent* boxComponent;
+	UPROPERTY(Category = Gameplay, EditAnywhere, BlueprintReadWrite)
+		TArray<AActor*> OverlappingActors;
 
 protected:
 	// Called when the game starts or when spawned
