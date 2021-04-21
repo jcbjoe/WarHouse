@@ -22,8 +22,10 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 	//properties
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Mesh")
-		UStaticMeshComponent* PropMesh;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		UStaticMeshComponent* PropMeshComponent;
+
+	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Prop Options")
 		bool IsDestructible;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Prop Options")
@@ -34,8 +36,11 @@ protected:
 		bool CanPickUp;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Prop Data")
 		float PropHealth;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Prop Extras")
-		UParticleSystemComponent* ParticleSystem;
+
+	
+	UPROPERTY(EditAnywhere)
+		UParticleSystemComponent* ParticleSystemComponent;
+
 
 	//for deactivating particles after a set time
 	FTimerHandle ParticlesTimerHandle;
@@ -44,6 +49,12 @@ protected:
 
 	bool isParticleSystemActive = false;
 	bool isPropDead = false;
+
+	FTimerHandle timer;
+
+	bool canRegisterHit = true;
+
+	void AllowHit();
 
 public:
 	// Called every frame

@@ -9,21 +9,31 @@ APhysicsProp::APhysicsProp()
 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 	//set up mesh
-	PropMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("packageMesh"));
-	PropMesh->SetNotifyRigidBodyCollision(true);
-	RootComponent = PropMesh;
+	PropMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("packageMesh"));
+	PropMeshComponent->SetNotifyRigidBodyCollision(true);
+
 	//set health
 	PropHealth = 100.0f;
 	//simulate physics
-	PropMesh->SetSimulatePhysics(true);
+	PropMeshComponent->SetSimulatePhysics(true);
 
+	PropMeshComponent->SetMassOverrideInKg(NAME_None, 20);
+
+	RootComponent = PropMeshComponent;
+
+	ParticleSystemComponent = CreateDefaultSubobject<UParticleSystemComponent>(FName("ParticleEmitter"));
+
+	ParticleSystemComponent->SetupAttachment(RootComponent);
+
+	ParticleSystemComponent->SetVisibility(false);
 }
 
 // Called when the game starts or when spawned
 void APhysicsProp::BeginPlay()
 {
 	Super::BeginPlay();
-	PropMesh->OnComponentHit.AddDynamic(this, &APhysicsProp::OnHit);
+	ParticleSystemComponent->DeactivateSystem();
+	PropMeshComponent->OnComponentHit.AddDynamic(this, &APhysicsProp::OnHit);
 
 	//check properties to see what behaviour should be allowed
 	if (IsFragile)
@@ -61,14 +71,18 @@ bool APhysicsProp::GetIsFragile()
 
 void APhysicsProp::ActivateParticles()
 {
-	ParticleSystem->ActivateSystem(true);
+	//ParticleSystemComponent->Activate();
+
+	ParticleSystemComponent->SetVisibility(true);
+	ParticleSystemComponent->ActivateSystem();
 	//set timer to deactivate particle system
 	GetWorld()->GetTimerManager().SetTimer(ParticlesTimerHandle, this, &APhysicsProp::DeactivateParticles, ParticleLife, false);
 }
 
 void APhysicsProp::DeactivateParticles()
 {
-	ParticleSystem->DeactivateSystem();
+	ParticleSystemComponent->DeactivateSystem();
+	ParticleSystemComponent->SetVisibility(false);
 }
 
 void APhysicsProp::DestroyProp()
@@ -80,18 +94,27 @@ void APhysicsProp::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, 
 {
 	if ((OtherActor != NULL) && (OtherActor != this) && (OtherComp != NULL))
 	{
-		float velocity = this->GetVelocity().Size();
-		if ((velocity > 1.0f) && (!isPropDead))
+		auto velocity = this->GetVelocity().Size();
+
+		if (velocity > 105 && !isPropDead && canRegisterHit)
 		{
-			PropHealth -= 10.0f;
+			PropHealth -= 5.0f;
 		}
 
-	}
+		if (GetUseParticleEmitter() && PropHealth < 0.0f)
+		{
+			PropHealth = 0.0f;
+			isPropDead = true;
+			ActivateParticles();
+		}
 
-	if (GetUseParticleEmitter() && PropHealth < 0.0f)
-	{
-		PropHealth = 0.0f;
-		isPropDead = true;
-		ActivateParticles();
+		GetWorld()->GetTimerManager().SetTimer(timer, this, &APhysicsProp::AllowHit, 0.5f, false);
+
 	}
 }
+
+void APhysicsProp::AllowHit()
+{
+	canRegisterHit = true;
+}
+
