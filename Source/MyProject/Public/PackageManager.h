@@ -41,6 +41,8 @@ protected:
 	FConfig Config;
 
 	TArray<AActor*> SpawnPackageLocations;
+	TArray<AActor*> SpecialPackageLocations;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data")
 		TArray<APackageBase*> Packages;
 	UPROPERTY(EditAnywhere)
