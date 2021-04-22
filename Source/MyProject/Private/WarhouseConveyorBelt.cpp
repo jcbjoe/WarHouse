@@ -49,6 +49,8 @@ void AWarhouseConveyorBelt::MoveObjectOnBelt(float DeltaTime)
 	{
 		if (IsOverlappingActor(actor))
 			actor->AddActorWorldOffset(Direction);
+		else
+			OverlappingActors.Remove(actor);
 	}
 }
 
