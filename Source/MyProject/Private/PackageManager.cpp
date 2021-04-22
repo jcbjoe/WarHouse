@@ -51,24 +51,27 @@ void APackageManager::SpawnPackage(FConfig config)
 
 void APackageManager::SpawnSpecialPackage(FConfig config)
 {
-	//get location to spawn
-	FVector Location = SpecialPackageLocations[0]->GetActorLocation(); //temp for now, change to loop later
-	// Get Random package type
-	auto jsonLength = config.packages.Num();
-	auto randomNumber2 = FMath::RandRange(0, jsonLength - 1);
-	auto packageType = config.packages[randomNumber2];
-	FRotator Rotation(0.0f, 0.0f, 0.0f); //we may need to change this later to an actual rotation
-	FActorSpawnParameters SpawnInfo;
-	SpawnInfo.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
-	//spawn package
-	APackageBase* package = GetWorld()->SpawnActor<APackageBase>(Location, Rotation, SpawnInfo);
-	package->InitialisePackage(packageType);
-	//increase value
+	for (int i = 0; i < SpecialPackageLocations.Num(); i++)
+	{
+		//get location to spawn
+		FVector Location = SpecialPackageLocations[i]->GetActorLocation(); //temp for now, change to loop later
+		// Get Random package type
+		auto jsonLength = config.packages.Num();
+		auto randomNumber2 = FMath::RandRange(0, jsonLength - 1);
+		auto packageType = config.packages[randomNumber2];
+		FRotator Rotation(0.0f, 0.0f, 0.0f); //we may need to change this later to an actual rotation
+		FActorSpawnParameters SpawnInfo;
+		SpawnInfo.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+		//spawn package
+		APackageBase* package = GetWorld()->SpawnActor<APackageBase>(Location, Rotation, SpawnInfo);
+		package->InitialisePackage(packageType);
+		//increase value
 
-	//add emmisive material/particle effect
+		//add emmisive material/particle effect
 
-	//add to list of packages
-	Packages.Add(package);
+		//add to list of packages
+		Packages.Add(package);
+	}
 }
 
 void APackageManager::RemovePackage(APackageBase* package)

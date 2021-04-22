@@ -7,6 +7,7 @@
 #include "GameFramework/Actor.h"
 #include "Kismet/GameplayStatics.h"
 #include "Components/BoxComponent.h"
+#include "Components/ChildActorComponent.h"
 #include "WarhouseForklift.generated.h"
 
 class UCurveFloat;
@@ -56,6 +57,10 @@ protected:
 		float Speed = 500.0f;
 	UPROPERTY(Category = Gameplay, EditAnywhere, BlueprintReadWrite)
 		UBoxComponent* boxComponent;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Package Spawn Points")
+		UChildActorComponent* PackageSpawn1;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Package Spawn Points")
+		UChildActorComponent* PackageSpawn2;
 
 	float DefaultSpeed = 500.0f;
 
