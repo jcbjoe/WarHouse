@@ -150,6 +150,13 @@ void APackageBase::SetIsBeingCollected(bool collected)
 	IsBeingCollected = collected;
 }
 
+void APackageBase::SetPackageSpecial()
+{
+	PackageValue *= 2; //double its value
+	//change its material
+
+}
+
 FConfigPackage APackageBase::GetPackageDetails()
 {
 	return Package;

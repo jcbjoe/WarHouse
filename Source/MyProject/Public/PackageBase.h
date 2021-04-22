@@ -66,6 +66,7 @@ public:
 	float GetPackageHealth();
 	bool GetIsBeingCollected();
 	void SetIsBeingCollected(bool collected);
+	void SetPackageSpecial();
 	FConfigPackage GetPackageDetails();
 
 	void AllowHit();

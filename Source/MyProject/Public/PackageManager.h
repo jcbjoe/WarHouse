@@ -27,6 +27,8 @@ public:
 	FString GetPackageDetails();
 	UFUNCTION()
 		void SpawnPackage(FConfig config);
+	UFUNCTION()
+		void SpawnSpecialPackage(FConfig config);
 	void RemovePackage(APackageBase* package);
 	int GetPackagesLength();
 	void ActivatePackageTimer();

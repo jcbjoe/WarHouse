@@ -3,6 +3,7 @@
 
 #include "PackageManager.h"
 #include "PackageSpawnActor.h"
+#include "SpecialPackageSpawnActor.h"
 #include "WarhouseHelpers.h"
 #include "Kismet/GameplayStatics.h"
 #include "Misc/FileHelper.h"
@@ -48,6 +49,28 @@ void APackageManager::SpawnPackage(FConfig config)
 	Packages.Add(package);
 }
 
+void APackageManager::SpawnSpecialPackage(FConfig config)
+{
+	//get location to spawn
+	FVector Location = SpecialPackageLocations[0]->GetActorLocation(); //temp for now, change to loop later
+	// Get Random package type
+	auto jsonLength = config.packages.Num();
+	auto randomNumber2 = FMath::RandRange(0, jsonLength - 1);
+	auto packageType = config.packages[randomNumber2];
+	FRotator Rotation(0.0f, 0.0f, 0.0f); //we may need to change this later to an actual rotation
+	FActorSpawnParameters SpawnInfo;
+	SpawnInfo.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+	//spawn package
+	APackageBase* package = GetWorld()->SpawnActor<APackageBase>(Location, Rotation, SpawnInfo);
+	package->InitialisePackage(packageType);
+	//increase value
+
+	//add emmisive material/particle effect
+
+	//add to list of packages
+	Packages.Add(package);
+}
+
 void APackageManager::RemovePackage(APackageBase* package)
 {
 	Packages.RemoveSingle(package);
@@ -81,20 +104,23 @@ void APackageManager::BeginPlay()
 	Super::BeginPlay();
 	//set package threshhold for spawning new packages
 	PackageThreshold = TotalPackagesAmount * 0.5;
-	
+
 	//get json data
 	FString Result = GetPackageDetails();
-	
+
 	//pass package data into the config struct
 	Config = FConfig(Result);
-	
+
 	//find all spawn locations and store into a TArray
 	UGameplayStatics::GetAllActorsOfClass(GetWorld(), APackageSpawnActor::StaticClass(), SpawnPackageLocations);
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ASpecialPackageSpawnActor::StaticClass(), SpecialPackageLocations);
 
 	for (int i = 0; i < TotalPackagesAmount; ++i)
 	{
 		SpawnPackage(Config);
 	}
+
+	SpawnSpecialPackage(Config);
 }
 
 // Called every frame
@@ -115,7 +141,7 @@ FVector APackageManager::GetSpawnPosition()
 		TArray<AActor*> packages;
 		UGameplayStatics::GetAllActorsOfClass(GetWorld(), APackageBase::StaticClass(), packages);
 		bool tooClose = false;
-		for(AActor* package	: packages)
+		for (AActor* package : packages)
 		{
 			if (FVector::Distance(spawnPoint->GetActorLocation(), package->GetActorLocation()) < 100)
 			{
@@ -124,7 +150,7 @@ FVector APackageManager::GetSpawnPosition()
 			}
 		}
 
-		if(!tooClose)
+		if (!tooClose)
 		{
 			found = true;
 			spawnLoc = spawnPoint->GetActorLocation();
