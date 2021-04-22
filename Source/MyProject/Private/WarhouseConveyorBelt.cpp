@@ -45,10 +45,10 @@ void AWarhouseConveyorBelt::MoveObjectOnBelt(float DeltaTime)
 {
 	float Speed = BeltSpeed * DeltaTime;
 	FVector Direction = (BaseMesh->GetRightVector()) * Speed;
-
 	for (AActor* actor : OverlappingActors)
 	{
-		actor->AddActorWorldOffset(Direction);
+		if (IsOverlappingActor(actor))
+			actor->AddActorWorldOffset(Direction);
 	}
 }
 
@@ -62,5 +62,5 @@ void AWarhouseConveyorBelt::OnOverlapBegin(UPrimitiveComponent* OverlapComponent
 
 void AWarhouseConveyorBelt::OnOverlapEnd(UPrimitiveComponent* OverlapComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
-	OverlappingActors.Remove(OtherActor);
+
 }
