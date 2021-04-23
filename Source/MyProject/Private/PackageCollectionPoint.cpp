@@ -94,7 +94,7 @@ void APackageCollectionPoint::Tick(float DeltaTime)
 			bool found = true;
 
 			AGameManager* manager = WarhouseHelpers::GetGameManager(GetWorld());
-			
+
 			for (APackageCollectionPoint* collectionPoint : manager->GetCollectionPoints())
 			{
 				if (collectionPoint == this)
@@ -109,22 +109,25 @@ void APackageCollectionPoint::Tick(float DeltaTime)
 
 			//--- Wait for the door to reopen
 			if (!manager->shutters[index]->isShutterOpen()) return;
-			
+
 			for (auto packageToRemove : packages)
 			{
 				//divide package health by 100 to get the percentage of what it is worth i.e. more damge, less value
-				const float packageValue = (packageToRemove->GetPackageValue()) * PackageBonus;
+				float packageValue = (packageToRemove->GetPackageValue()) * PackageBonus;
+				//check if special package
+				if (packageToRemove->GetIsSpecial())
+					packageValue = packageValue * 2;
 				packageManager->RemovePackage(packageToRemove);
 				packageToRemove->Destroy();
 
 				float packageDamageCost = packageToRemove->GetPackageValue() * ((100 - packageToRemove->GetPackageHealth()) / 100.0f);
-				
+
 				manager->AddToPlayerScore(index, packageValue, packageDamageCost);
 			}
 
 			packages.Empty();
 
-			WarhouseHelpers::GetTruckPackageManager(GetWorld())->IncrementTruckStage(index+1);
+			WarhouseHelpers::GetTruckPackageManager(GetWorld())->IncrementTruckStage(index + 1);
 
 			packagesBeingRemoved = false;
 

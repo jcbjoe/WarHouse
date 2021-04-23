@@ -65,10 +65,8 @@ void APackageManager::SpawnSpecialPackage(FConfig config)
 		//spawn package
 		APackageBase* package = GetWorld()->SpawnActor<APackageBase>(Location, Rotation, SpawnInfo);
 		package->InitialisePackage(packageType);
-		//increase value
-
-		//add emmisive material/particle effect
-
+		//make special
+		package->SetPackageSpecial();
 		//add to list of packages
 		Packages.Add(package);
 	}
