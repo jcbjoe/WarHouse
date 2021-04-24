@@ -41,6 +41,8 @@ protected:
 		float PackageValue;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Package")
 		bool IsBeingCollected = false;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Package")
+		bool IsSpecial = false;
 
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
@@ -66,8 +68,9 @@ public:
 	float GetPackageHealth();
 	bool GetIsBeingCollected();
 	void SetIsBeingCollected(bool collected);
+	void SetPackageSpecial();
 	FConfigPackage GetPackageDetails();
-
+	bool GetIsSpecial();
 	void AllowHit();
 
 

@@ -150,9 +150,46 @@ void APackageBase::SetIsBeingCollected(bool collected)
 	IsBeingCollected = collected;
 }
 
+void APackageBase::SetPackageSpecial()
+{
+	//set special
+	IsSpecial = true;
+	//change its material
+	UMaterial* mat;
+	switch (Package.PackageSizeID)
+	{
+	case 1:
+		mat = Cast<UMaterial>(StaticLoadObject(UMaterial::StaticClass(), NULL, *Package.SpecialMaterialReferences[0])); // 0 becuase theres only one in the array?
+		PackageMesh->SetMaterial(0, mat);
+		break;
+	case 2:
+		mat = Cast<UMaterial>(StaticLoadObject(UMaterial::StaticClass(), NULL, *Package.SpecialMaterialReferences[0]));
+		PackageMesh->SetMaterial(0, mat);
+		break;
+	case 3:
+		mat = Cast<UMaterial>(StaticLoadObject(UMaterial::StaticClass(), NULL, *Package.SpecialMaterialReferences[0]));
+		PackageMesh->SetMaterial(0, mat);
+		break;
+	case 4:
+		mat = Cast<UMaterial>(StaticLoadObject(UMaterial::StaticClass(), NULL, *Package.SpecialMaterialReferences[0]));
+		PackageMesh->SetMaterial(0, mat);
+		break;
+	default:
+		mat = Cast<UMaterial>(StaticLoadObject(UMaterial::StaticClass(), NULL, *Package.SpecialMaterialReferences[0]));
+		PackageMesh->SetMaterial(0, mat);
+		break;
+	}
+
+}
+
 FConfigPackage APackageBase::GetPackageDetails()
 {
 	return Package;
+}
+
+bool APackageBase::GetIsSpecial()
+{
+	return IsSpecial;
 }
 
 void APackageBase::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)

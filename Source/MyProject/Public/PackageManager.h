@@ -27,6 +27,8 @@ public:
 	FString GetPackageDetails();
 	UFUNCTION()
 		void SpawnPackage(FConfig config);
+	UFUNCTION()
+		void SpawnSpecialPackage(FConfig config);
 	void RemovePackage(APackageBase* package);
 	int GetPackagesLength();
 	void ActivatePackageTimer();
@@ -41,6 +43,8 @@ protected:
 	FConfig Config;
 
 	TArray<AActor*> SpawnPackageLocations;
+	TArray<AActor*> SpecialPackageLocations;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data")
 		TArray<APackageBase*> Packages;
 	UPROPERTY(EditAnywhere)

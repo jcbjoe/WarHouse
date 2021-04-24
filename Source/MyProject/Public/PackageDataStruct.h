@@ -20,6 +20,8 @@ struct FConfigPackage
 
 	UPROPERTY()
 		TArray<FString> MaterialReferences;
+	UPROPERTY()
+		TArray<FString> SpecialMaterialReferences;
 
 	UPROPERTY()
 		float Scale;

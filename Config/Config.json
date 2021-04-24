@@ -7,6 +7,9 @@
       "MaterialReferences": [
         "/Game/Assets/ConorAssets/BigBox/BigBoxMat.BigBoxMat"
       ],
+      "SpecialMaterialReferences": [
+        "/Game/Assets/ConorAssets/SpecialPackages/SpecialMaterials/BigSpecial.BigSpecial"
+      ],
       "Scale": 1.0,
       "ValueRange": [
         20,
@@ -21,6 +24,9 @@
       "ModelReference": "/Game/Assets/ConorAssets/MediumBox/mediumBox.mediumBox",
       "MaterialReferences": [
         "/Game/Assets/ConorAssets/MediumBox/MediumBoxMat.MediumBoxMat"
+      ],
+      "SpecialMaterialReferences": [
+        "/Game/Assets/ConorAssets/SpecialPackages/SpecialMaterials/MedSpecial.MedSpecial"
       ],
       "Scale": 1.0,
       "ValueRange": [
@@ -37,6 +43,9 @@
       "MaterialReferences": [
         "/Game/Assets/ConorAssets/SmallBox/SmalBoxMat.SmalBoxMat"
       ],
+      "SpecialMaterialReferences": [
+        "/Game/Assets/ConorAssets/SpecialPackages/SpecialMaterials/SmallSpecial.SmallSpecial"
+      ],
       "Scale": 1.0,
       "ValueRange": [
         5,
@@ -51,6 +60,9 @@
       "ModelReference": "/Game/Assets/ConorAssets/RectangleBox/rectanglebox.rectanglebox",
       "MaterialReferences": [
         "/Game/Assets/ConorAssets/RectangleBox/RectBoxMat.RectBoxMat"
+      ],
+      "SpecialMaterialReferences": [
+        "/Game/Assets/ConorAssets/SpecialPackages/SpecialMaterials/RectangleSpecial.RectangleSpecial"
       ],
       "Scale": 1.0,
       "ValueRange": [
