@@ -45,9 +45,9 @@ protected:
 	float player2Score;
 	float player3Score;
 	int numOfPlayers;
-
-	UPROPERTY(VisibleAnywhere)
+	
 		TArray<float> playerScores;
+	
 	UPROPERTY(EditAnywhere)
 		float GameTimer;
 	UPROPERTY(EditAnywhere)

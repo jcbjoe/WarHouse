@@ -31,6 +31,13 @@ void AGameManager::BeginPlay()
 {
 	Super::BeginPlay();
 
+	check(floatingScores.Num() != 0);
+	check(packageCollectionPoints.Num() != 0);
+	check(winScreenBillboard != nullptr);
+	check(shutters.Num() != 0);
+	check(Forklift != nullptr);
+	check(ClockTimerText != nullptr);
+
 	InitGame();
 }
 
