@@ -29,7 +29,7 @@ AWarhouseForklift::AWarhouseForklift()
 	boxComponent->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);
 	boxComponent->OnComponentBeginOverlap.AddDynamic(this, &AWarhouseForklift::OnOverlapBegin);
 	boxComponent->OnComponentEndOverlap.AddDynamic(this, &AWarhouseForklift::OnOverlapEnd);
-	boxComponent->SetBoxExtent(FVector(158, 128, 60));
+	boxComponent->SetBoxExtent(FVector(120, 100, 60));
 	boxComponent->SetRelativeLocation(FVector(380, 0, 70));
 
 	PackageSpawn1 = CreateDefaultSubobject<UChildActorComponent>(TEXT("Spawn1"));
