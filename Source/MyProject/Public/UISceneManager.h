@@ -28,6 +28,9 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		TSubclassOf<UUserWidget> playerSelect;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		TSubclassOf<UUserWidget> mapSelect;
 	
 
 private:

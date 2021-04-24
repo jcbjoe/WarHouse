@@ -99,4 +99,10 @@ void AUISceneManager::ChangeActiveWidget(FString widgetName) {
 		LoadWidget(splashScreen);
 	}
 
+	if (widgetName == "mapselect")
+	{
+		if (oldName == splashScreen->GetName()) return;
+		LoadWidget(mapSelect);
+	}
+
 }
