@@ -33,47 +33,48 @@ void ACameraManager::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	APlayerManager* PlayerManager = WarhouseHelpers::GetPlayerManager(GetWorld());
+	if (isCameraFollowingPlayers) {
+		APlayerManager* PlayerManager = WarhouseHelpers::GetPlayerManager(GetWorld());
 
-	auto players = PlayerManager->GetPlayers();
+		auto players = PlayerManager->GetPlayers();
 
-	FVector middlePos;
-	for (int i = 0; i < players.Num(); ++i)
-	{
-		if (players[i]->IsDead()) continue;
-		if (i == 0) middlePos = players[0]->GetActorLocation();
-		else middlePos = (middlePos + players[i]->GetActorLocation()) / 2;
-	}
-
-	const FRotator loc = UKismetMathLibrary::FindLookAtRotation(MainCamera->GetActorLocation(), middlePos);
-
-	const FRotator lerped = FMath::Lerp(MainCamera->GetActorRotation(), loc, DeltaTime);
-
-	MainCamera->SetActorRotation(lerped);
-
-	float maxDistance = 0;
-
-	for (int i = 0; i < players.Num(); ++i)
-	{
-		if (players[i]->IsDead()) continue;
-		const float dist = FVector::Distance(players[i]->GetActorLocation(), middlePos);
-		if (maxDistance == 0) maxDistance = dist;
-		else
+		FVector middlePos;
+		for (int i = 0; i < players.Num(); ++i)
 		{
-			if (dist > maxDistance) maxDistance = dist;
+			if (players[i]->IsDead()) continue;
+			if (i == 0) middlePos = players[0]->GetActorLocation();
+			else middlePos = (middlePos + players[i]->GetActorLocation()) / 2;
 		}
 
+		const FRotator loc = UKismetMathLibrary::FindLookAtRotation(MainCamera->GetActorLocation(), middlePos);
+
+		const FRotator lerped = FMath::Lerp(MainCamera->GetActorRotation(), loc, DeltaTime);
+
+		MainCamera->SetActorRotation(lerped);
+
+		float maxDistance = 0;
+
+		for (int i = 0; i < players.Num(); ++i)
+		{
+			if (players[i]->IsDead()) continue;
+			const float dist = FVector::Distance(players[i]->GetActorLocation(), middlePos);
+			if (maxDistance == 0) maxDistance = dist;
+			else
+			{
+				if (dist > maxDistance) maxDistance = dist;
+			}
+
+		}
+
+		const int minDist = 57;
+		const int maxDist = 2000;
+
+		const float zoom = 90 - UKismetMathLibrary::MapRangeClamped(maxDistance, minDist, maxDist, 45, 90);
+
+		const float lerpedZooom = FMath::Lerp(MainCamera->GetCameraComponent()->FieldOfView, 90 - zoom, DeltaTime);
+
+		MainCamera->GetCameraComponent()->FieldOfView = lerpedZooom;
 	}
-
-	const int minDist = 57;
-	const int maxDist = 2000;
-
-	const float zoom = 90 - UKismetMathLibrary::MapRangeClamped(maxDistance, minDist, maxDist, 45, 90);
-
-	const float lerpedZooom = FMath::Lerp(MainCamera->GetCameraComponent()->FieldOfView, 90 - zoom, DeltaTime);
-
-	MainCamera->GetCameraComponent()->FieldOfView = lerpedZooom;
-
 }
 
 ACameraActor* ACameraManager::GetBayCamera(int bay) const
@@ -98,8 +99,12 @@ ACameraActor* ACameraManager::GetBayCamera(int bay) const
 	}
 }
 
-void ACameraManager::SwitchCamera(ACameraActor* camera)
+void ACameraManager::SwitchCamera(ACameraActor* camera, int blendTime)
 {
 	auto p = UGameplayStatics::GetPlayerController(GetWorld(), 0);
-	p->SetViewTargetWithBlend(camera);
+	p->SetViewTargetWithBlend(camera, blendTime);
+}
+void ACameraManager::SetMainCameraFollowingPlayers(bool isFollowing)
+{
+	isCameraFollowingPlayers = isFollowing;
 }

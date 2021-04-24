@@ -31,6 +31,8 @@ protected:
 		ACameraActor* Bay3Camera;
 	UPROPERTY(Category = Gameplay, EditAnywhere, BlueprintReadWrite)
 		ACameraActor* Bay4Camera;
+	UPROPERTY(Category = Gameplay, EditAnywhere, BlueprintReadWrite)
+		ACameraActor* WinScreenCamera;
 
 public:
 	// Called every frame
@@ -46,6 +48,11 @@ public:
 		return BillboardCamera;
 	}
 
+	ACameraActor* GetWinScreenCamera() const
+	{
+		return WinScreenCamera;
+	}
+
 	ACameraActor* GetBayCamera(int bay) const;
 
 	TArray<ACameraActor*> BayCameras;
@@ -56,5 +63,9 @@ public:
 	}
 
 	UFUNCTION()
-		void SwitchCamera(ACameraActor* camera);
+		void SwitchCamera(ACameraActor* camera, int blendTime = 0);
+
+	void SetMainCameraFollowingPlayers(bool isFollowing);
+private:
+	bool isCameraFollowingPlayers = true;
 };

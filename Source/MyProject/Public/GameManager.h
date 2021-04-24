@@ -11,7 +11,9 @@
 #include "Shutter.h"
 #include "WarhouseClock.h"
 #include "WarhouseForklift.h"
-#include "CameraManager.h"
+#include "Components/WidgetComponent.h"
+#include "LevelSequencePlayer.h"
+#include "Engine/StaticMeshActor.h"
 #include "GameManager.generated.h"
 
 UCLASS()
@@ -52,7 +54,7 @@ protected:
 		float ForkliftTimer;
 	UPROPERTY(EditAnywhere)
 		float CameraSwitchTimer = 5.0f; //how long on each camera
-	
+
 	//Handle to manage delays
 	FTimerHandle ForkliftTimerHandle;
 
@@ -61,6 +63,15 @@ protected:
 		AWarhouseClock* ClockTimerText;
 
 	FString LocalCurrencyCode;
+
+	UPROPERTY(EditDefaultsOnly)
+		UWidgetComponent* winScreen;
+
+	UPROPERTY(Category = Gameplay, EditAnywhere, BlueprintReadWrite)
+	AStaticMeshActor* winScreenBillboard;
+
+	
+	TSubclassOf<UUserWidget> winscreenWidget;
 
 public:
 	// Called every frame
@@ -91,13 +102,13 @@ public:
 	UFUNCTION()
 		void InitSpawnPlayers();
 
-	private:
-		bool initialised = false;
-		bool playingIntro = true;
-		bool playingBillboard = false;
-		float introTimer = 0.0;
-		bool gameEnded = false;
-		TArray<int> playerIdsToIntro;
+private:
+	bool initialised = false;
+	bool playingIntro = true;
+	bool playingBillboard = false;
+	float introTimer = 0.0;
+	bool gameEnded = false;
+	TArray<int> playerIdsToIntro;
 
-		void GameStart();
+	void GameStart();
 };

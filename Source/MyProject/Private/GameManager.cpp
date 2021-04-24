@@ -2,6 +2,8 @@
 
 
 #include "GameManager.h"
+
+#include "MovieSceneSequencePlayer.h"
 #include "WarhouseHelpers.h"
 #include "PackageSpawnActor.h"
 #include "Kismet/GameplayStatics.h"
@@ -16,13 +18,19 @@ AGameManager::AGameManager()
 	base = CreateDefaultSubobject<USceneComponent>(FName("Root"));
 
 	RootComponent = base;
+
+	winScreen = CreateDefaultSubobject<UWidgetComponent>(FName("WinScreen"));
+	winScreen->SetupAttachment(RootComponent);
+	winScreen->SetWidgetSpace(EWidgetSpace::World);
+	static ConstructorHelpers::FClassFinder<UUserWidget> winScreenWidgetObj(TEXT("/Game/UI/Menus/WinScreen/WinScreenWidget"));
+	winscreenWidget = winScreenWidgetObj.Class;
 }
 
 // Called when the game starts or when spawned
 void AGameManager::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
 	InitGame();
 }
 
@@ -185,7 +193,9 @@ void AGameManager::InitGame()
 
 		for (int i = 0; i < instance->playerInfo.Num(); ++i)
 		{
-			switch (instance->playerInfo[i].controllerId)
+			const int controllerId = instance->playerInfo[i].controllerId;
+			
+			switch (controllerId)
 			{
 			case 0:
 				playerScores.Add(player0Score);
@@ -205,10 +215,10 @@ void AGameManager::InitGame()
 				break;
 			}
 
-			packageCollectionPoints[i]->SetActorHiddenInGame(false);
-			floatingScores[i]->SetActorHiddenInGame(false);
-			shutters[i]->Open();
-			shutters[i]->SetColour(instance->playerInfo[i].colour);
+			packageCollectionPoints[controllerId]->SetActorHiddenInGame(false);
+			floatingScores[controllerId]->SetActorHiddenInGame(false);
+			shutters[controllerId]->Open();
+			shutters[controllerId]->SetColour(instance->playerInfo[i].colour);
 		}
 	}
 
@@ -221,7 +231,16 @@ void AGameManager::InitGame()
 void AGameManager::OnGameEnd()
 {
 	gameEnded = true;
-	UGameplayStatics::OpenLevel(GetWorld(), FName(TEXT("WinScene")));
+	winScreen->SetWidgetClass(winscreenWidget);
+	winScreen->SetDrawSize(FVector2D(1920, 1080));
+	FVector newpos = winScreenBillboard->GetActorLocation();
+	newpos.Y = newpos.Y + 7.5;
+	Cast<USceneComponent>(winScreen)->SetWorldLocationAndRotation(newpos, winScreenBillboard->GetActorRotation());
+	Cast<USceneComponent>(winScreen)->SetRelativeScale3D({ 1.0,0.342417 ,0.342417 });
+	
+	WarhouseHelpers::GetCameraManager(GetWorld())->SetMainCameraFollowingPlayers(false);
+	WarhouseHelpers::GetCameraManager(GetWorld())->SwitchCamera(WarhouseHelpers::GetCameraManager(GetWorld())->GetWinScreenCamera(), 3);
+	//UGameplayStatics::OpenLevel(GetWorld(), FName(TEXT("WinScene")));
 }
 
 void AGameManager::ReturnToMainMenu()
