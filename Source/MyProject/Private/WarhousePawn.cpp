@@ -287,7 +287,6 @@ void AWarhousePawn::Tick(float DeltaSeconds)
 			beamAudioComp->SetVolumeMultiplier(audioBeamVolume);
 			beamEmitter->SetVisibility(true);
 			//play controller rumble
-			//auto pc = UGameplayStatics::GetPlayerController(GetWorld(), PlayerID);
 			auto pc = Cast<AMyPlayerController>(GetController());
 			pc->PlayDynamicForceFeedback(RumbleFrequency, RumbleDuration, true, true, true, true, EDynamicForceFeedbackAction::Start); // change first 2 floats for vibration intenisty and duration, 4 bools are diff motors
 
