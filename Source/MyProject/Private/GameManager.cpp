@@ -241,7 +241,7 @@ void AGameManager::OnGameEnd()
 	winScreen->SetWidgetClass(winscreenWidget);
 	winScreen->SetDrawSize(FVector2D(1920, 1080));
 	FVector newpos = winScreenBillboard->GetActorLocation();
-	newpos.Y = newpos.Y + 7.5;
+	newpos.Y = newpos.Y + WinBillboardUIOffset;
 	Cast<USceneComponent>(winScreen)->SetWorldLocationAndRotation(newpos, winScreenBillboard->GetActorRotation());
 	Cast<USceneComponent>(winScreen)->SetRelativeScale3D({ 1.0,0.342417 ,0.342417 });
 	

@@ -62,6 +62,9 @@ protected:
 	UPROPERTY(EditAnywhere)
 		AWarhouseClock* ClockTimerText;
 
+	UPROPERTY(EditAnywhere)
+		float WinBillboardUIOffset = -7.5;
+
 	FString LocalCurrencyCode;
 
 	UPROPERTY(EditDefaultsOnly)
