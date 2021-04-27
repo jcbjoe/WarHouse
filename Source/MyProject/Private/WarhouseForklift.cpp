@@ -58,7 +58,6 @@ void AWarhouseForklift::GetReadyToDeliver()
 void AWarhouseForklift::TimelineProgress(float value)
 {
 	Location.Z = FMath::Lerp(GetActorLocation().Z, EndLocation.Z, value);
-	//SetActorLocation(Location);
 }
 
 void AWarhouseForklift::OnOverlapBegin(UPrimitiveComponent* OverlapComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
@@ -68,10 +67,19 @@ void AWarhouseForklift::OnOverlapBegin(UPrimitiveComponent* OverlapComponent, AA
 		auto player = Cast<AWarhousePawn>(OtherActor);
 		player->KillPlayer();
 	}
+
+	if (OtherActor->IsA(APackageBase::StaticClass()))
+	{
+		AddPackageToArray((APackageBase*)OtherActor);
+	}
 }
 
 void AWarhouseForklift::OnOverlapEnd(UPrimitiveComponent* OverlapComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
+	if (OtherActor->IsA(APackageBase::StaticClass()))
+	{
+		PackagesToRemove.RemoveSingle((APackageBase*)OtherActor);
+	}
 }
 
 // Called when the game starts or when spawned
@@ -102,9 +110,14 @@ void AWarhouseForklift::MoveForklift(float deltaTime)
 	SetActorLocation(Location);
 }
 
+void AWarhouseForklift::RotateForklift()
+{
+	SetActorRotation(GetActorRotation() * -1);
+}
+
 void AWarhouseForklift::Stop()
 {
-	//	isMoving = false;
+	//isMoving = false;
 	Speed = 0.0f;
 	GetWorld()->GetTimerManager().SetTimer(ForkliftTimerHandle, this, &AWarhouseForklift::ResumeMovement, ForkliftWaitSeconds, false);
 }
@@ -121,9 +134,36 @@ void AWarhouseForklift::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 	CurveTimeline.TickTimeline(DeltaTime);
-	//if (isMoving)
-	//{
 	MoveForklift(DeltaTime);
 	RotateWheels();
-	//}
+}
+
+void AWarhouseForklift::PrepareForkliftForAnotherDelivery()
+{
+	Stop();
+	//remove any special packages still on the forklift by looping through a tarray
+	RemoveAndDestroyPackages();
+	RotateForklift();
+	//spawn special packages on forklift + conveyor
+	PackageManager->SpawnSpecialPackage(PackageManager->GetConfig());
+}
+
+void AWarhouseForklift::AddPackageToArray(APackageBase* package)
+{
+	PackagesToRemove.Add(package);
+}
+
+void AWarhouseForklift::RemoveAndDestroyPackages()
+{
+	//loop through PackagesToRemove
+	for (int i = 0; i < PackagesToRemove.Num(); i++)
+	{
+		APackageBase* package = PackagesToRemove[i];
+		//remove this package from array in package manager
+		PackageManager->RemovePackage(package);
+		//remove from packages to remove
+		PackagesToRemove.RemoveSingle(package);
+		//destroy this package
+		package->Destroy();
+	}
 }
