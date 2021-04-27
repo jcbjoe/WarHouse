@@ -21,13 +21,16 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-	UStaticMesh* shutterOpen;
-	UStaticMesh* shutterClosed;
-
 	UStaticMeshComponent* mesh;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	bool isOpen = false;
+
+	UPROPERTY(EditAnywhere)
+		int MaxMoveAmount = 500;
+
+	UPROPERTY(EditAnywhere)
+		int ShutterMovementSpeed = 100;
 
 public:
 	// Called every frame
@@ -41,9 +44,19 @@ public:
 
 	bool isShutterOpen() { return isOpen; }
 
+	
+
 private:
 	UMaterial* red;
 	UMaterial* blue;
 	UMaterial* yellow;
 	UMaterial* white;
+
+	bool opening = false;
+	bool closing = false;
+
+	float currentMoveAmount = 0;
+
+	float minZ;
+	float maxZ;
 };

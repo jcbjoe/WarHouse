@@ -19,23 +19,11 @@ AShutter::AShutter()
 	yellow = yellowMat.Object;
 	white = whiteMat.Object;
 
-	static ConstructorHelpers::FObjectFinder<UStaticMesh> shutterOpenMesh(TEXT("/Game/Assets/ConorAssets/Shutters/ShutterDoor_1.ShutterDoor_1"));
-	static ConstructorHelpers::FObjectFinder<UStaticMesh> shutterClosedMesh(TEXT("/Game/Assets/ConorAssets/Shutters/ShutterDoor_1.ShutterDoor_1"));
-
-	shutterOpen = shutterOpenMesh.Object;
-	shutterClosed = shutterClosedMesh.Object;
+	static ConstructorHelpers::FObjectFinder<UStaticMesh> shutterMesh(TEXT("/Game/Assets/ConorAssets/Shutters/ShutterDoor_1.ShutterDoor_1"));
 
 	mesh = CreateDefaultSubobject<UStaticMeshComponent>(FName("Mesh"));
 
-	if(isOpen)
-	{
-		mesh->SetStaticMesh(shutterOpen);
-
-	} else
-	{
-		mesh->SetStaticMesh(shutterClosed);
-
-	}
+	mesh->SetStaticMesh(shutterMesh.Object);
 
 	RootComponent = mesh;
 
@@ -46,6 +34,9 @@ void AShutter::BeginPlay()
 {
 	Super::BeginPlay();
 
+	minZ = GetActorLocation().Z;
+	maxZ = GetActorLocation().Z + MaxMoveAmount;
+
 }
 
 // Called every frame
@@ -53,18 +44,56 @@ void AShutter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	if (opening || closing) {
+		float amount = ShutterMovementSpeed * DeltaTime;
+
+		currentMoveAmount += amount;
+
+		FVector pos = GetActorLocation();
+		
+		if (opening)
+		{
+			pos.Z = FMath::Clamp(pos.Z + amount, minZ, maxZ);
+			SetActorLocation(pos);
+		}
+
+		if (closing)
+		{
+			pos.Z = FMath::Clamp(pos.Z - amount, minZ, maxZ);
+			SetActorLocation(pos);
+		}
+
+		if (currentMoveAmount > MaxMoveAmount || GetActorLocation().Z >= maxZ || GetActorLocation().Z <= minZ)
+		{
+			currentMoveAmount = 0;
+			if (opening)
+			{
+				opening = false;
+				isOpen = true;
+			}
+			
+			if (closing)
+			{
+				closing = false;
+				isOpen = false;
+			}
+
+		}
+	}
 }
 
 void AShutter::Open()
 {
-	mesh->SetStaticMesh(shutterOpen);
-	isOpen = true;
+	currentMoveAmount = 0;
+	opening = true;
+	closing = false;
 }
 
 void AShutter::Close()
 {
-	mesh->SetStaticMesh(shutterClosed);
-	isOpen = false;
+	currentMoveAmount = 0;
+	opening = false;
+	closing = true;
 }
 
 void AShutter::SetColour(EPlayerColours colour)
@@ -81,6 +110,18 @@ void AShutter::SetColour(EPlayerColours colour)
 		mesh->SetMaterial(0, blue);
 		break;
 	case EPlayerColours::Yellow:
+		mesh->SetMaterial(0, yellow);
+		break;
+	case EPlayerColours::smiley:
+		mesh->SetMaterial(0, yellow);
+		break;
+	case EPlayerColours::tux:
+		mesh->SetMaterial(0, yellow);
+		break;
+	case EPlayerColours::glasses:
+		mesh->SetMaterial(0, yellow);
+		break;
+	case EPlayerColours::ironman:
 		mesh->SetMaterial(0, yellow);
 		break;
 	}

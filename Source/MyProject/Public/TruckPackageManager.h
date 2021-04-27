@@ -26,13 +26,13 @@ public:
 
 	void EmptyTruck(int truckNumber);
 
-	void OpenShutterTruck1();
+	void RemovePackagesFromTruck1();
 
-	void OpenShutterTruck2();
+	void RemovePackagesFromTruck2();
 
-	void OpenShutterTruck3();
+	void RemovePackagesFromTruck3();
 
-	void OpenShutterTruck4();
+	void RemovePackagesFromTruck4();
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -50,7 +50,7 @@ protected:
 		TArray<AStaticMeshActor*> Truck4PackageStages;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		int secondsTillShutterOpens = 3;
+		int secondsTillShutterOpens = 6;
 
 private:
 	int truck1Stage = 0;

@@ -66,6 +66,10 @@ public:
 		void SwitchCamera(ACameraActor* camera, int blendTime = 0);
 
 	void SetMainCameraFollowingPlayers(bool isFollowing);
+
+	ACameraActor* GetCurrentCamera();
 private:
 	bool isCameraFollowingPlayers = true;
+
+	ACameraActor* currentCamera = nullptr;
 };

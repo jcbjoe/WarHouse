@@ -121,59 +121,48 @@ void ATruckPackageManager::CheckIfFull()
 void ATruckPackageManager::EmptyTruck(int truckNumber)
 {
 	WarhouseHelpers::GetGameManager(GetWorld())->shutters[truckNumber - 1]->Close();
-
 	switch (truckNumber)
 	{
 	case 1:
-		truck1Stage = 0;
+		GetWorldTimerManager().SetTimer(truck1Handle, this, &ATruckPackageManager::RemovePackagesFromTruck1, secondsTillShutterOpens, false);
 		break;
 	case 2:
-		truck2Stage = 0;
+		GetWorldTimerManager().SetTimer(truck2Handle, this, &ATruckPackageManager::RemovePackagesFromTruck2, secondsTillShutterOpens, false);
 		break;
 	case 3:
-		truck3Stage = 0;
+		GetWorldTimerManager().SetTimer(truck3Handle, this, &ATruckPackageManager::RemovePackagesFromTruck3, secondsTillShutterOpens, false);
 		break;
 	case 4:
-		truck4Stage = 0;
-		break;
-	}
-
-	UpdateTrucks();
-
-	switch (truckNumber)
-	{
-	case 1:
-		GetWorldTimerManager().SetTimer(truck1Handle, this, &ATruckPackageManager::OpenShutterTruck1, secondsTillShutterOpens, false);
-		break;
-	case 2:
-		GetWorldTimerManager().SetTimer(truck2Handle, this, &ATruckPackageManager::OpenShutterTruck2, secondsTillShutterOpens, false);
-		break;
-	case 3:
-		GetWorldTimerManager().SetTimer(truck3Handle, this, &ATruckPackageManager::OpenShutterTruck3, secondsTillShutterOpens, false);
-		break;
-	case 4:
-		GetWorldTimerManager().SetTimer(truck4Handle, this, &ATruckPackageManager::OpenShutterTruck4, secondsTillShutterOpens, false);
+		GetWorldTimerManager().SetTimer(truck4Handle, this, &ATruckPackageManager::RemovePackagesFromTruck4, secondsTillShutterOpens, false);
 		break;
 	}
 
 }
 
-void ATruckPackageManager::OpenShutterTruck1()
+void ATruckPackageManager::RemovePackagesFromTruck1()
 {
+	truck1Stage = 0;
+	UpdateTrucks();
 	WarhouseHelpers::GetGameManager(GetWorld())->shutters[0]->Open();
 }
 
-void ATruckPackageManager::OpenShutterTruck2()
+void ATruckPackageManager::RemovePackagesFromTruck2()
 {
+	truck2Stage = 0;
+	UpdateTrucks();
 	WarhouseHelpers::GetGameManager(GetWorld())->shutters[1]->Open();
 }
 
-void ATruckPackageManager::OpenShutterTruck3()
+void ATruckPackageManager::RemovePackagesFromTruck3()
 {
+	truck3Stage = 0;
+	UpdateTrucks();
 	WarhouseHelpers::GetGameManager(GetWorld())->shutters[2]->Open();
 }
 
-void ATruckPackageManager::OpenShutterTruck4()
+void ATruckPackageManager::RemovePackagesFromTruck4()
 {
+	truck4Stage = 0;
+	UpdateTrucks();
 	WarhouseHelpers::GetGameManager(GetWorld())->shutters[3]->Open();
 }

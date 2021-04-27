@@ -103,8 +103,15 @@ void ACameraManager::SwitchCamera(ACameraActor* camera, int blendTime)
 {
 	auto p = UGameplayStatics::GetPlayerController(GetWorld(), 0);
 	p->SetViewTargetWithBlend(camera, blendTime);
+
+	currentCamera = camera;
 }
 void ACameraManager::SetMainCameraFollowingPlayers(bool isFollowing)
 {
 	isCameraFollowingPlayers = isFollowing;
+}
+
+ACameraActor* ACameraManager::GetCurrentCamera()
+{
+	return currentCamera;
 }

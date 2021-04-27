@@ -70,6 +70,12 @@ void AGameManager::Tick(float DeltaTime)
 				else {
 
 					ACameraManager* camManager = WarhouseHelpers::GetCameraManager(GetWorld());
+
+					if (camManager->GetCurrentCamera() != camManager->GetBayCamera(playerIdsToIntro[0]))
+					{
+						shutters[playerIdsToIntro[0]]->Open();
+					}
+
 					camManager->SwitchCamera(camManager->GetBayCamera(playerIdsToIntro[0]));
 
 					introTimer += DeltaTime;
@@ -201,7 +207,7 @@ void AGameManager::InitGame()
 		for (int i = 0; i < instance->playerInfo.Num(); ++i)
 		{
 			const int controllerId = instance->playerInfo[i].controllerId;
-			
+
 			switch (controllerId)
 			{
 			case 0:
@@ -224,7 +230,6 @@ void AGameManager::InitGame()
 
 			packageCollectionPoints[controllerId]->SetActorHiddenInGame(false);
 			floatingScores[controllerId]->SetActorHiddenInGame(false);
-			shutters[controllerId]->Open();
 			shutters[controllerId]->SetColour(instance->playerInfo[i].colour);
 		}
 	}
@@ -244,7 +249,7 @@ void AGameManager::OnGameEnd()
 	newpos.Y = newpos.Y + WinBillboardUIOffset;
 	Cast<USceneComponent>(winScreen)->SetWorldLocationAndRotation(newpos, winScreenBillboard->GetActorRotation());
 	Cast<USceneComponent>(winScreen)->SetRelativeScale3D({ 1.0,0.342417 ,0.342417 });
-	
+
 	WarhouseHelpers::GetCameraManager(GetWorld())->SetMainCameraFollowingPlayers(false);
 	WarhouseHelpers::GetCameraManager(GetWorld())->SwitchCamera(WarhouseHelpers::GetCameraManager(GetWorld())->GetWinScreenCamera(), 3);
 	//UGameplayStatics::OpenLevel(GetWorld(), FName(TEXT("WinScene")));
