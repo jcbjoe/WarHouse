@@ -15,9 +15,11 @@ APackageCollectionPoint::APackageCollectionPoint()
 
 	base = CreateDefaultSubobject<UStaticMeshComponent>(FName("Platform"));
 
-	static ConstructorHelpers::FObjectFinder<UStaticMesh> platformMesh(TEXT("/Game/Assets/ConorAssets/PackagePlatform.PackagePlatform"));
+	static ConstructorHelpers::FObjectFinder<UStaticMesh> platformMesh(TEXT("/Game/Assets/ConorAssets/DeliveryLift/DeliveryLift.DeliveryLift"));
+	static ConstructorHelpers::FObjectFinder<UMaterial> DeliveryLiftMat(TEXT("/Game/Assets/ConorAssets/DeliveryLift/DeliveryLiftMat.DeliveryLiftMat"));
 
 	base->SetStaticMesh(platformMesh.Object);
+	base->SetMaterial(0, DeliveryLiftMat.Object);
 
 	RootComponent = base;
 
@@ -31,7 +33,7 @@ APackageCollectionPoint::APackageCollectionPoint()
 
 	boxComponent->OnComponentEndOverlap.AddDynamic(this, &APackageCollectionPoint::OnOverlapEnd);
 
-	boxComponent->SetBoxExtent(FVector(240, 160, 60));
+	boxComponent->SetBoxExtent(FVector(260, 180, 90));
 	boxComponent->SetRelativeLocation(FVector(0, 0, 70));
 
 	static ConstructorHelpers::FObjectFinder<USoundWave> beepSoundObj(TEXT("/Game/Sounds/beep.beep"));

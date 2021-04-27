@@ -3,9 +3,9 @@
   "packages": [
     {
       "PackageName": "BigBox",
-      "ModelReference": "/Game/Assets/ConorAssets/BigBox/bigBox.bigBox",
+      "ModelReference": "/Game/Assets/ConorAssets/Boxes/Boxes/BigBox/bigBox.bigBox",
       "MaterialReferences": [
-        "/Game/Assets/ConorAssets/BigBox/BigBoxMat.BigBoxMat"
+        "/Game/Assets/ConorAssets/Boxes/Boxes/BigBox/BigBoxMat.BigBoxMat"
       ],
       "SpecialMaterialReferences": [
         "/Game/Assets/ConorAssets/SpecialPackages/SpecialMaterials/BigSpecial.BigSpecial"
@@ -21,9 +21,9 @@
     },
     {
       "PackageName": "MediumBox",
-      "ModelReference": "/Game/Assets/ConorAssets/MediumBox/mediumBox.mediumBox",
+      "ModelReference": "/Game/Assets/ConorAssets/Boxes/Boxes/MediumBox/mediumBox.mediumBox",
       "MaterialReferences": [
-        "/Game/Assets/ConorAssets/MediumBox/MediumBoxMat.MediumBoxMat"
+        "/Game/Assets/ConorAssets/Boxes/Boxes/MediumBox/MediumBoxMat.MediumBoxMat"
       ],
       "SpecialMaterialReferences": [
         "/Game/Assets/ConorAssets/SpecialPackages/SpecialMaterials/MedSpecial.MedSpecial"
@@ -39,12 +39,12 @@
     },
     {
       "PackageName": "SmallBox",
-      "ModelReference": "/Game/Assets/ConorAssets/SmallBox/smallBox.smallBox",
+      "ModelReference": "/Game/Assets/ConorAssets/Boxes/Boxes/SmallBox/smallBox.smallBox",
       "MaterialReferences": [
-        "/Game/Assets/ConorAssets/SmallBox/SmalBoxMat.SmalBoxMat"
+        "/Game/Assets/ConorAssets/Boxes/Boxes/SmallBox/SmalBoxMat.SmalBoxMat"
       ],
       "SpecialMaterialReferences": [
-        "/Game/Assets/ConorAssets/SpecialPackages/SpecialMaterials/SmallSpecial.SmallSpecial"
+        "/Game/Assets/ConorAssets/SpecialPackages/SpecialMaterials/RectangleSpecial.RectangleSpecial"
       ],
       "Scale": 1.0,
       "ValueRange": [
@@ -57,12 +57,12 @@
     },
     {
       "PackageName": "RectangleBox",
-      "ModelReference": "/Game/Assets/ConorAssets/RectangleBox/rectanglebox.rectanglebox",
+      "ModelReference": "/Game/Assets/ConorAssets/Boxes/Boxes/RectangleBox/rectanglebox.rectanglebox",
       "MaterialReferences": [
-        "/Game/Assets/ConorAssets/RectangleBox/RectBoxMat.RectBoxMat"
+        "/Game/Assets/ConorAssets/Boxes/Boxes/RectangleBox/RectBoxMat.RectBoxMat"
       ],
       "SpecialMaterialReferences": [
-        "/Game/Assets/ConorAssets/SpecialPackages/SpecialMaterials/RectangleSpecial.RectangleSpecial"
+        "/Game/Assets/ConorAssets/SpecialPackages/SpecialMaterials/SmallSpecial.SmallSpecial"
       ],
       "Scale": 1.0,
       "ValueRange": [

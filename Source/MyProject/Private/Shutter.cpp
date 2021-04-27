@@ -19,8 +19,8 @@ AShutter::AShutter()
 	yellow = yellowMat.Object;
 	white = whiteMat.Object;
 
-	static ConstructorHelpers::FObjectFinder<UStaticMesh> shutterOpenMesh(TEXT("/Game/Assets/ConorAssets/Shutters/ShuttersOpen.ShuttersOpen"));
-	static ConstructorHelpers::FObjectFinder<UStaticMesh> shutterClosedMesh(TEXT("/Game/Assets/ConorAssets/Shutters/ShuttersClosed.ShuttersClosed"));
+	static ConstructorHelpers::FObjectFinder<UStaticMesh> shutterOpenMesh(TEXT("/Game/Assets/ConorAssets/Shutters/ShutterDoor_1.ShutterDoor_1"));
+	static ConstructorHelpers::FObjectFinder<UStaticMesh> shutterClosedMesh(TEXT("/Game/Assets/ConorAssets/Shutters/ShutterDoor_1.ShutterDoor_1"));
 
 	shutterOpen = shutterOpenMesh.Object;
 	shutterClosed = shutterClosedMesh.Object;
