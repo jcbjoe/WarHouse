@@ -6,6 +6,7 @@
 #include "GameFramework/Actor.h"
 #include "Components/BoxComponent.h"
 #include "WarhouseForklift.h"
+#include "PackageBase.h"
 #include "WarhouseForkliftTrigger.generated.h"
 
 UCLASS()

@@ -9,6 +9,7 @@
 #include "Components/BoxComponent.h"
 #include "Components/ChildActorComponent.h"
 #include "PackageManager.h"
+#include "PackageBase.h"
 #include "WarhouseForklift.generated.h"
 
 class UCurveFloat;
@@ -85,6 +86,8 @@ protected:
 		float ZOffset;
 	UPROPERTY(EditAnywhere, Category = "Data")
 		FRotator TurnAround;
+	UPROPERTY(EditAnywhere, Category = "Data")
+		TArray<APackageBase*> PackagesToRemove;
 
 	void Stop();
 	void RotateWheels();
@@ -95,5 +98,6 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 	void PrepareForkliftForAnotherDelivery();
-
+	void AddPackageToArray(APackageBase* package);
+	void RemoveAndDestroyPackages();
 };
