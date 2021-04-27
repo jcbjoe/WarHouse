@@ -8,6 +8,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "Components/BoxComponent.h"
 #include "Components/ChildActorComponent.h"
+#include "PackageManager.h"
 #include "WarhouseForklift.generated.h"
 
 class UCurveFloat;
@@ -61,6 +62,8 @@ protected:
 		UChildActorComponent* PackageSpawn1;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Package Spawn Points")
 		UChildActorComponent* PackageSpawn2;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Package Manager")
+		APackageManager* PackageManager;
 
 	float DefaultSpeed = 500.0f;
 

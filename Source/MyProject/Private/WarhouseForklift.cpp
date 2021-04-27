@@ -110,7 +110,7 @@ void AWarhouseForklift::RotateForklift()
 
 void AWarhouseForklift::Stop()
 {
-	//	isMoving = false;
+	//isMoving = false;
 	Speed = 0.0f;
 	GetWorld()->GetTimerManager().SetTimer(ForkliftTimerHandle, this, &AWarhouseForklift::ResumeMovement, ForkliftWaitSeconds, false);
 }
@@ -138,6 +138,6 @@ void AWarhouseForklift::PrepareForkliftForAnotherDelivery()
 {
 	Stop();
 	RotateForklift();
-	//spawn packages
-	//call timer to deliver packages
+	//spawn special packages on forklift + conveyor
+	PackageManager->SpawnSpecialPackage(PackageManager->GetConfig());
 }
