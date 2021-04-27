@@ -80,13 +80,17 @@ protected:
 		FVector Location;
 	UPROPERTY(EditAnywhere, Category = "Timeline")
 		float ZOffset;
+	UPROPERTY(EditAnywhere, Category = "Data")
+		FRotator TurnAround;
 
 	void Stop();
 	void RotateWheels();
 	void MoveForklift(float DeltaTime);
+	void RotateForklift();
 public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+	void PrepareForkliftForAnotherDelivery();
 
 };

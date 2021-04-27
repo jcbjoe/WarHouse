@@ -91,6 +91,7 @@ void AWarhouseForklift::BeginPlay()
 	}
 
 	Speed = 0.0f;
+	TurnAround = GetActorRotation();
 }
 
 void AWarhouseForklift::MoveForklift(float deltaTime)
@@ -100,6 +101,11 @@ void AWarhouseForklift::MoveForklift(float deltaTime)
 	FVector Direction = GetActorForwardVector();
 	Location += Direction * Speed * deltaTime;
 	SetActorLocation(Location);
+}
+
+void AWarhouseForklift::RotateForklift()
+{
+	SetActorRotation(GetActorRotation() * -1);
 }
 
 void AWarhouseForklift::Stop()
@@ -126,4 +132,12 @@ void AWarhouseForklift::Tick(float DeltaTime)
 	MoveForklift(DeltaTime);
 	RotateWheels();
 	//}
+}
+
+void AWarhouseForklift::PrepareForkliftForAnotherDelivery()
+{
+	Stop();
+	RotateForklift();
+	//spawn packages
+	//call timer to deliver packages
 }
