@@ -46,6 +46,8 @@ void AWarhouseConveyorBelt::MoveObjectOnBelt(float DeltaTime)
 {
 	float Speed = BeltSpeed * DeltaTime;
 	FVector Direction = (BaseMesh->GetRightVector()) * Speed;
+	//this needs looking at, causes an issue when removing package while checking the loop
+	//not sure how to fix this?
 	for (AActor* actor : OverlappingActors)
 	{
 		if (IsOverlappingActor(actor))

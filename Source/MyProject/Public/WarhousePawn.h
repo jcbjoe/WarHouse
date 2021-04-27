@@ -98,7 +98,7 @@ private:
 
 	//rumble variables
 	const float RumbleFrequency = 0.12f;
-	const float RumbleDuration = 0.5f;
+	const float RumbleDuration = 0.15f;
 
 	const float respawnSeconds = 5;
 	const float DefaultMoveSpeed = 1000.0f;

@@ -54,7 +54,7 @@ void APackageManager::SpawnSpecialPackage(FConfig config)
 	for (int i = 0; i < SpecialPackageLocations.Num(); i++)
 	{
 		//get location to spawn
-		FVector Location = SpecialPackageLocations[i]->GetActorLocation(); //temp for now, change to loop later
+		FVector Location = SpecialPackageLocations[i]->GetActorLocation();
 		// Get Random package type
 		auto jsonLength = config.packages.Num();
 		auto randomNumber2 = FMath::RandRange(0, jsonLength - 1);
@@ -159,4 +159,9 @@ FVector APackageManager::GetSpawnPosition()
 	} while (!found);
 
 	return spawnLoc;
+}
+
+FConfig APackageManager::GetConfig()
+{
+	return Config;
 }

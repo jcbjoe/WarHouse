@@ -287,9 +287,11 @@ void AWarhousePawn::Tick(float DeltaSeconds)
 			beamAudioComp->SetVolumeMultiplier(audioBeamVolume);
 			beamEmitter->SetVisibility(true);
 			//play controller rumble
-			//auto pc = UGameplayStatics::GetPlayerController(GetWorld(), PlayerID);
 			auto pc = Cast<AMyPlayerController>(GetController());
-			pc->PlayDynamicForceFeedback(RumbleFrequency, RumbleDuration, true, true, true, true, EDynamicForceFeedbackAction::Start); // change first 2 floats for vibration intenisty and duration, 4 bools are diff motors
+			if ((ArmForwardValue + ArmRightValue) < 0.0f)
+				pc->PlayDynamicForceFeedback((ArmForwardValue + ArmRightValue) * -1, RumbleDuration, true, true, true, true, EDynamicForceFeedbackAction::Start); // change first 2 floats for vibration intenisty and duration, 4 bools are diff motors
+			else
+				pc->PlayDynamicForceFeedback((ArmForwardValue + ArmRightValue), RumbleDuration, true, true, true, true, EDynamicForceFeedbackAction::Start); // change first 2 floats for vibration intenisty and duration, 4 bools are diff motors
 
 			//--- Check if an item is held
 			float distance = FVector::Dist(sourceLoc, targetLoc);
