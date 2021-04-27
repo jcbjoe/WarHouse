@@ -22,8 +22,9 @@ AWarhouseConveyorBelt::AWarhouseConveyorBelt()
 	boxComponent->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);
 	boxComponent->OnComponentBeginOverlap.AddDynamic(this, &AWarhouseConveyorBelt::OnOverlapBegin);
 	boxComponent->OnComponentEndOverlap.AddDynamic(this, &AWarhouseConveyorBelt::OnOverlapEnd);
-	boxComponent->SetBoxExtent(FVector(158, 128, 60));
-	boxComponent->SetRelativeLocation(FVector(380, 0, 70));
+	boxComponent->SetBoxExtent(FVector(2025, 85, 115));
+	boxComponent->SetRelativeLocation(FVector(0
+		, 0, 70));
 	//set speed
 	BeltSpeed = 40.0f;
 }
