@@ -15,9 +15,9 @@ ACollectionPointButton::ACollectionPointButton()
 
 	base = CreateDefaultSubobject<UStaticMeshComponent>(FName("Platform"));
 
-	static ConstructorHelpers::FObjectFinder<UStaticMesh> platformMesh(TEXT("/Game/Assets/JoeAssets/ButtonStand/ButtonStand.ButtonStand"));
+	static ConstructorHelpers::FObjectFinder<UStaticMesh> buttonMesh(TEXT("/Game/Assets/ConorAssets/DeliveryLift/LiftButton/LiftButton.LiftButton"));
 
-	base->SetStaticMesh(platformMesh.Object);
+	base->SetStaticMesh(buttonMesh.Object);
 
 	RootComponent = base;
 
@@ -31,8 +31,8 @@ ACollectionPointButton::ACollectionPointButton()
 
 	boxComponent->OnComponentEndOverlap.AddDynamic(this, &ACollectionPointButton::OnOverlapEnd);
 
-	boxComponent->SetBoxExtent(FVector(70, 110, 110));
-	boxComponent->SetRelativeLocation(FVector(0, -60, 40));
+	boxComponent->SetBoxExtent(FVector(120, 120, 120));
+	boxComponent->SetRelativeLocation(FVector(0, 0, 120));
 
 	BillboardComponent = CreateDefaultSubobject<UBillboardComponent>(TEXT("Billboard Comp"));
 
@@ -40,9 +40,9 @@ ACollectionPointButton::ACollectionPointButton()
 
 	BillboardComponent->Sprite = aButtonTex.Object;
 
-	BillboardComponent->SetRelativeLocation({ 0,0,100 });
+	BillboardComponent->SetRelativeLocation({ 0,0,160 });
 
-	BillboardComponent->SetHiddenInGame(false);
+	BillboardComponent->SetHiddenInGame(true);
 	
 	BillboardComponent->SetupAttachment(RootComponent);
 
@@ -73,6 +73,14 @@ void ACollectionPointButton::Tick(float DeltaTime)
 	} else
 	{
 		SetActorHiddenInGame(false);
+	}
+
+	if(CollidingPlayers.Num() > 0)
+	{
+		BillboardComponent->SetHiddenInGame(false);
+	} else
+	{
+		BillboardComponent->SetHiddenInGame(true);
 	}
 
 }
