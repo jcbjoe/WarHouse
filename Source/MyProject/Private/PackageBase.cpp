@@ -202,7 +202,7 @@ void APackageBase::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, 
 
 		if (velocity > 105)
 		{
-			UGameplayStatics::PlaySoundAtLocation(GetWorld(), soundBase, GetActorLocation());
+			UGameplayStatics::PlaySoundAtLocation(GetWorld(), soundBase, GetActorLocation(), 0.5f);
 
 			if (PackageHealth > 0.0f && !IsBeingCollected)
 				PackageHealth -= 1.f;

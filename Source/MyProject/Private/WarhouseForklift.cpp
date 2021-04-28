@@ -36,6 +36,9 @@ AWarhouseForklift::AWarhouseForklift()
 	PackageSpawn1->SetChildActorClass(ASpecialPackageSpawnActor::StaticClass());
 	PackageSpawn2 = CreateDefaultSubobject<UChildActorComponent>(TEXT("Spawn2"));
 	PackageSpawn2->SetChildActorClass(ASpecialPackageSpawnActor::StaticClass());
+	//set up audio
+	AudioComponent = CreateDefaultSubobject<UAudioComponent>(FName("Audio"));
+	AudioComponent->SetupAttachment(RootComponent);
 }
 
 void AWarhouseForklift::DeliverPackages()
@@ -108,6 +111,8 @@ void AWarhouseForklift::MoveForklift(float deltaTime)
 	FVector Direction = GetActorForwardVector();
 	Location += Direction * Speed * deltaTime;
 	SetActorLocation(Location);
+	/*UGameplayStatics::PlaySoundAtLocation(GetWorld(), SoundBase, GetActorLocation(), 0.15f);*/
+	AudioComponent->Play();
 }
 
 void AWarhouseForklift::RotateForklift()
@@ -120,6 +125,7 @@ void AWarhouseForklift::Stop()
 	//isMoving = false;
 	Speed = 0.0f;
 	GetWorld()->GetTimerManager().SetTimer(ForkliftTimerHandle, this, &AWarhouseForklift::ResumeMovement, ForkliftWaitSeconds, false);
+	AudioComponent->Stop();
 }
 
 void AWarhouseForklift::RotateWheels()

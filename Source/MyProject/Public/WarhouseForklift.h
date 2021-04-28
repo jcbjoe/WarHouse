@@ -10,6 +10,7 @@
 #include "Components/ChildActorComponent.h"
 #include "PackageManager.h"
 #include "PackageBase.h"
+#include "Components/AudioComponent.h"
 #include "WarhouseForklift.generated.h"
 
 class UCurveFloat;
@@ -65,6 +66,8 @@ protected:
 		UChildActorComponent* PackageSpawn2;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Package Manager")
 		APackageManager* PackageManager;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sound")
+		UAudioComponent* AudioComponent;
 
 	float DefaultSpeed = 500.0f;
 
