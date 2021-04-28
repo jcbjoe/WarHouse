@@ -22,9 +22,8 @@ AWarhouseConveyorBelt::AWarhouseConveyorBelt()
 	boxComponent->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);
 	boxComponent->OnComponentBeginOverlap.AddDynamic(this, &AWarhouseConveyorBelt::OnOverlapBegin);
 	boxComponent->OnComponentEndOverlap.AddDynamic(this, &AWarhouseConveyorBelt::OnOverlapEnd);
-	boxComponent->SetBoxExtent(FVector(2025, 85, 115));
-	boxComponent->SetRelativeLocation(FVector(0
-		, 0, 70));
+	boxComponent->SetBoxExtent(FVector(2025, 85, 40));
+	boxComponent->SetRelativeLocation(FVector(0, 0, 70));
 	//set speed
 	BeltSpeed = 40.0f;
 }
@@ -46,16 +45,7 @@ void AWarhouseConveyorBelt::MoveObjectOnBelt(float DeltaTime)
 {
 	float Speed = BeltSpeed * DeltaTime;
 	FVector Direction = (BaseMesh->GetForwardVector()) * Speed;
-	//this needs looking at, causes an issue when removing package while checking the loop
-	//not sure how to fix this?
-	/*for (AActor* actor : OverlappingActors)
-	{
-		if (IsOverlappingActor(actor))
-			actor->AddActorWorldOffset(Direction);
-		else
-			OverlappingActors.Remove(actor);
-	}*/
-
+	//get all overlapping actors then loop through them, moving each one
 	boxComponent->GetOverlappingActors(OverlappingActors);
 	for (AActor* actor : OverlappingActors)
 	{
@@ -65,10 +55,7 @@ void AWarhouseConveyorBelt::MoveObjectOnBelt(float DeltaTime)
 
 void AWarhouseConveyorBelt::OnOverlapBegin(UPrimitiveComponent* OverlapComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	/*if (OtherActor->IsA(APackageBase::StaticClass()) || OtherActor->IsA(APhysicsProp::StaticClass()) || OtherActor->IsA(ADestructibleProp::StaticClass()))
-	{
-		OverlappingActors.Add(OtherActor);
-	}*/
+
 }
 
 void AWarhouseConveyorBelt::OnOverlapEnd(UPrimitiveComponent* OverlapComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
