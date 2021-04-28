@@ -92,14 +92,13 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "Data")
 		TArray<APackageBase*> PackagesToRemove;
 
-	void Stop();
 	void RotateWheels();
 	void MoveForklift(float DeltaTime);
 	void RotateForklift();
 public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
-
+	void Stop();
 	void PrepareForkliftForAnotherDelivery();
 	void AddPackageToArray(APackageBase* package);
 	void RemoveAndDestroyPackages();

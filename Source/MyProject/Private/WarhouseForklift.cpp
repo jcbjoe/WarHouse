@@ -65,7 +65,7 @@ void AWarhouseForklift::TimelineProgress(float value)
 
 void AWarhouseForklift::OnOverlapBegin(UPrimitiveComponent* OverlapComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	if (OtherActor->IsA(AWarhousePawn::StaticClass()))
+	if (OtherActor->IsA(AWarhousePawn::StaticClass()) && isMoving)
 	{
 		auto player = Cast<AWarhousePawn>(OtherActor);
 		player->KillPlayer();
@@ -102,6 +102,7 @@ void AWarhouseForklift::BeginPlay()
 	}
 
 	Speed = 0.0f;
+	boxComponent->SetGenerateOverlapEvents(false);
 }
 
 void AWarhouseForklift::MoveForklift(float deltaTime)
@@ -125,6 +126,7 @@ void AWarhouseForklift::Stop()
 	Speed = 0.0f;
 	GetWorld()->GetTimerManager().SetTimer(ForkliftTimerHandle, this, &AWarhouseForklift::ResumeMovement, ForkliftWaitSeconds, false);
 	AudioComponent->Stop();
+	boxComponent->SetGenerateOverlapEvents(true);
 }
 
 void AWarhouseForklift::RotateWheels()
@@ -152,6 +154,7 @@ void AWarhouseForklift::PrepareForkliftForAnotherDelivery()
 	RotateForklift();
 	//spawn special packages on forklift + conveyor
 	PackageManager->SpawnSpecialPackage(PackageManager->GetConfig());
+	boxComponent->SetGenerateOverlapEvents(false);
 }
 
 void AWarhouseForklift::AddPackageToArray(APackageBase* package)
