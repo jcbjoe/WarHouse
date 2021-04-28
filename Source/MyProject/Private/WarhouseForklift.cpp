@@ -89,6 +89,7 @@ void AWarhouseForklift::OnOverlapEnd(UPrimitiveComponent* OverlapComponent, AAct
 void AWarhouseForklift::BeginPlay()
 {
 	Super::BeginPlay();
+
 	if (CurveFloat)
 	{
 		FOnTimelineFloat TimelineProgress;
@@ -97,7 +98,6 @@ void AWarhouseForklift::BeginPlay()
 		CurveTimeline.SetLooping(true);
 		StartLocation = EndLocation = GetActorLocation();
 		EndLocation.Z = ZOffset;
-
 		CurveTimeline.PlayFromStart();
 	}
 
@@ -106,12 +106,11 @@ void AWarhouseForklift::BeginPlay()
 
 void AWarhouseForklift::MoveForklift(float deltaTime)
 {
-	//isMoving = true;
+	isMoving = true;
 	Location = GetActorLocation();
 	FVector Direction = GetActorForwardVector();
 	Location += Direction * Speed * deltaTime;
 	SetActorLocation(Location);
-	/*UGameplayStatics::PlaySoundAtLocation(GetWorld(), SoundBase, GetActorLocation(), 0.15f);*/
 	AudioComponent->Play();
 }
 
@@ -122,7 +121,7 @@ void AWarhouseForklift::RotateForklift()
 
 void AWarhouseForklift::Stop()
 {
-	//isMoving = false;
+	isMoving = false;
 	Speed = 0.0f;
 	GetWorld()->GetTimerManager().SetTimer(ForkliftTimerHandle, this, &AWarhouseForklift::ResumeMovement, ForkliftWaitSeconds, false);
 	AudioComponent->Stop();
@@ -140,7 +139,8 @@ void AWarhouseForklift::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 	CurveTimeline.TickTimeline(DeltaTime);
-	MoveForklift(DeltaTime);
+	if (isMoving)
+		MoveForklift(DeltaTime);
 	RotateWheels();
 }
 
