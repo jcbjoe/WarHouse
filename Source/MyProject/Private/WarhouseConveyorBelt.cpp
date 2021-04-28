@@ -45,24 +45,30 @@ void AWarhouseConveyorBelt::Tick(float DeltaTime)
 void AWarhouseConveyorBelt::MoveObjectOnBelt(float DeltaTime)
 {
 	float Speed = BeltSpeed * DeltaTime;
-	FVector Direction = (BaseMesh->GetRightVector()) * Speed;
+	FVector Direction = (BaseMesh->GetForwardVector()) * Speed;
 	//this needs looking at, causes an issue when removing package while checking the loop
 	//not sure how to fix this?
-	for (AActor* actor : OverlappingActors)
+	/*for (AActor* actor : OverlappingActors)
 	{
 		if (IsOverlappingActor(actor))
 			actor->AddActorWorldOffset(Direction);
 		else
 			OverlappingActors.Remove(actor);
+	}*/
+
+	boxComponent->GetOverlappingActors(OverlappingActors);
+	for (AActor* actor : OverlappingActors)
+	{
+		actor->AddActorWorldOffset(Direction);
 	}
 }
 
 void AWarhouseConveyorBelt::OnOverlapBegin(UPrimitiveComponent* OverlapComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	if (OtherActor->IsA(APackageBase::StaticClass()) || OtherActor->IsA(APhysicsProp::StaticClass()) || OtherActor->IsA(ADestructibleProp::StaticClass()))
+	/*if (OtherActor->IsA(APackageBase::StaticClass()) || OtherActor->IsA(APhysicsProp::StaticClass()) || OtherActor->IsA(ADestructibleProp::StaticClass()))
 	{
 		OverlappingActors.Add(OtherActor);
-	}
+	}*/
 }
 
 void AWarhouseConveyorBelt::OnOverlapEnd(UPrimitiveComponent* OverlapComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
