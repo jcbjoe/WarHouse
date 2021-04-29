@@ -34,6 +34,11 @@ bool ADestructibleProp::GetUseParticleEmitter()
 	return UseParticleEmitter;
 }
 
+bool ADestructibleProp::GetCanExplode()
+{
+	return CanExplode;
+}
+
 
 void ADestructibleProp::ActivateParticles()
 {
@@ -50,6 +55,13 @@ void ADestructibleProp::DeactivateParticles()
 void ADestructibleProp::DestroyProp()
 {
 	this->Destroy();
+}
+
+void ADestructibleProp::Explode()
+{
+	//radial impule
+	//particle fire
+	//particle smoke
 }
 
 //void ADestructibleProp::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
