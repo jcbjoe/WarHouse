@@ -53,7 +53,7 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Mesh")
 		UStaticMeshComponent* Pallet;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Forklift Data")
-		float ForkliftWaitSeconds = 2.0f;
+		float ForkliftWaitSeconds = 5.0f;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Forklift Data")
 		bool isMoving;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Forklift Data")
