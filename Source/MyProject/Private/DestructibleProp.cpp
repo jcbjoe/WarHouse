@@ -19,6 +19,11 @@ ADestructibleProp::ADestructibleProp()
 
 }
 
+void ADestructibleProp::CanHit()
+{
+	canRegisterHit = true;
+}
+
 // Called when the game starts or when spawned
 void ADestructibleProp::BeginPlay()
 {
@@ -80,7 +85,7 @@ void ADestructibleProp::Explode()
 
 //void ADestructibleProp::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
 //{
-//	if ((OtherActor != NULL) && (OtherActor != this) && (OtherComp != NULL))
+//	/*if ((OtherActor != NULL) && (OtherActor != this) && (OtherComp != NULL))
 //	{
 //		float velocity = this->GetVelocity().Size();
 //		if ((velocity > 1.0f) && (!isPropDead))
@@ -98,6 +103,6 @@ void ADestructibleProp::Explode()
 //		PropHealth = 0.0f;
 //		isPropDead = true;
 //		ActivateParticles();
-//	}
+//	}*/
 //
 //}

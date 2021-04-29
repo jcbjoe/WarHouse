@@ -20,6 +20,7 @@ public:
 	// Sets default values for this actor's properties
 	ADestructibleProp();
 
+	void CanHit();
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -46,6 +47,7 @@ protected:
 
 	bool isParticleSystemActive = false;
 	bool isPropDead = false;
+	bool canRegisterHit;
 public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
