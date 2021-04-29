@@ -68,6 +68,8 @@ void ADestructibleProp::DestroyProp()
 
 void ADestructibleProp::Explode()
 {
+	//activate particles
+	// 
 	//radial impulse
 	FHitResult Hit;
 	FCollisionShape SphereCol = FCollisionShape::MakeSphere(ImpactRadius);
@@ -83,26 +85,25 @@ void ADestructibleProp::Explode()
 	}
 }
 
-//void ADestructibleProp::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
-//{
-//	/*if ((OtherActor != NULL) && (OtherActor != this) && (OtherComp != NULL))
-//	{
-//		float velocity = this->GetVelocity().Size();
-//		if ((velocity > 1.0f) && (!isPropDead))
-//		{
-//			if (IsFragile)
-//				PropHealth -= PropHealth;
-//			else
-//				PropHealth -= 10.0f;
-//		}
-//
-//	}
-//
-//	if (GetUseParticleEmitter() && PropHealth < 0.0f)
-//	{
-//		PropHealth = 0.0f;
-//		isPropDead = true;
-//		ActivateParticles();
-//	}*/
-//
-//}
+void ADestructibleProp::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
+{
+	if ((OtherActor != NULL) && (OtherActor != this) && (OtherComp != NULL))
+	{
+		auto velocity = this->GetVelocity().Size();
+
+		if (velocity > 105 && !isPropDead && canRegisterHit)
+		{
+			PropHealth -= 5.0f;
+		}
+
+		if (GetUseParticleEmitter() && PropHealth < 0.0f)
+		{
+			PropHealth = 0.0f;
+			isPropDead = true;
+			Explode();
+		}
+
+		GetWorld()->GetTimerManager().SetTimer(timer, this, &ADestructibleProp::CanHit, 0.5f, false);
+	}
+
+}

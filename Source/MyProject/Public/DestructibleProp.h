@@ -42,8 +42,11 @@ protected:
 		float ImpactRadius;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Prop Data")
 		float RadialImpactForce;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Prop Data")
+		float PropHealth;
 	//for checking who is hit by the radial force
 	TArray<FHitResult> HitActors;
+	FTimerHandle timer;
 
 	bool isParticleSystemActive = false;
 	bool isPropDead = false;
@@ -61,6 +64,6 @@ public:
 		void DestroyProp();
 	UFUNCTION()
 		void Explode();
-	/*UFUNCTION()
-		void OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);*/
+	UFUNCTION()
+		void OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
 };
