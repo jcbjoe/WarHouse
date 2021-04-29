@@ -103,7 +103,7 @@ AWarhousePawn::AWarhousePawn()
 	progressBar->SetWidgetSpace(EWidgetSpace::World);
 	static ConstructorHelpers::FClassFinder<UUserWidget> progressbarWidget(TEXT("/Game/UI/PackageCollectionBar"));
 	progressBar->SetWidgetClass(progressbarWidget.Class);
-	progressBar->SetDrawSize(FVector2D(200, 30));
+	progressBar->SetDrawSize(FVector2D(100, 30));
 
 	//--- Floor crosshair/decal setup
 	static ConstructorHelpers::FObjectFinder<UMaterial> decalMat(TEXT("/Game/Assets/JoeAssets/FloorMarker/FloorDecal.FloorDecal"));
@@ -439,13 +439,10 @@ void AWarhousePawn::Tick(float DeltaSeconds)
 		//--- Calculate the rotation so the battery bar is pointing towards the camera
 		const ACameraActor* cam = WarhouseHelpers::GetCameraManager(GetWorld())->GetMainCamera();
 		FRotator rot = UKismetMathLibrary::FindLookAtRotation(progressBar->GetComponentLocation(), cam->GetActorLocation());
-		rot.Yaw = 180;
 		progressBar->SetWorldRotation(rot);
 
 		//--- Set the battery bar location
-		FVector newLoc = GetActorLocation();
-		newLoc.Z = 10;
-		progressBar->SetWorldLocation(newLoc);
+		progressBar->SetRelativeLocation({ 0,0,275 });
 
 		//--- Set the charging pad volume and the charge rate
 		if (isOnChargingPad)
