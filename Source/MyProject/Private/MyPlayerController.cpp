@@ -13,7 +13,7 @@ void AMyPlayerController::Tick(float DeltaSeconds)
 	Super::Tick(DeltaSeconds);
 
 	TArray<UUserWidget*> widgets;
-	UWidgetBlueprintLibrary::GetAllWidgetsOfClass(GetWorld(), widgets, UUserInterfaceBase::StaticClass());
+	UWidgetBlueprintLibrary::GetAllWidgetsOfClass(GetWorld(), widgets, UUserInterfaceBase::StaticClass(), false);
 
 	if (widgets.Num() == 0) return;
 
