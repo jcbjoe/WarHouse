@@ -34,6 +34,11 @@ void AWarhouseForkliftTrigger::Tick(float DeltaTime)
 
 void AWarhouseForkliftTrigger::OnOverlapBegin(UPrimitiveComponent* OverlapComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
+	if (OtherActor->IsA(AWarhouseForklift::StaticClass()) && IsStopping)
+	{
+		StopForklift();
+	}
+
 	if (OtherActor->IsA(AWarhouseForklift::StaticClass()) && IsTurningAround)
 	{
 		Forklift->PrepareForkliftForAnotherDelivery();
@@ -42,10 +47,7 @@ void AWarhouseForkliftTrigger::OnOverlapBegin(UPrimitiveComponent* OverlapCompon
 
 void AWarhouseForkliftTrigger::OnOverlapEnd(UPrimitiveComponent* OverlapComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
-	if (OtherActor->IsA(AWarhouseForklift::StaticClass()) && IsStopping)
-	{
-		StopForklift();
-	}
+
 }
 
 void AWarhouseForkliftTrigger::StopForklift()
