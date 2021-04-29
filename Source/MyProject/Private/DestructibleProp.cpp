@@ -59,8 +59,10 @@ void ADestructibleProp::DestroyProp()
 
 void ADestructibleProp::Explode()
 {
-	//radial impule
+	//radial impulse
+	// 
 	//particle fire
+	// 
 	//particle smoke
 }
 

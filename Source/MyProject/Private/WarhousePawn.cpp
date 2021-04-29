@@ -464,34 +464,7 @@ void AWarhousePawn::Tick(float DeltaSeconds)
 		//--- Kill player check
 		if (_batteryCharge <= 0)
 		{
-			////--- Player has ran out of battery
-			//isDead = true;
-			//respawnCounter = 0;
-
-			//if (PhysicsHandle->GetGrabbedComponent() != nullptr) {
-			//	DropHeldItem();
-			//}
-
-			////--- Mute the engine sounds and play the death sound
-			//audioComp->SetVolumeMultiplier(0.0);
-			//UGameplayStatics::PlaySoundAtLocation(GetWorld(), dieSoundBase, GetActorLocation(), FRotator(0, 0, 0), deathSoundVolume);
-
-			//beamAudioComp->SetVolumeMultiplier(0.0);
-
-			////--- Trigger sparks
-			//UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), sparksEmitter, GetActorLocation());
-
-			////--- Set the players position under the map and reset the beam
-			//auto pos = GetActorLocation();
-			//pos.Z = -600;
-
-			//SetActorLocation(pos);
-
-			//beamEmitter->SetVectorParameter(FName("Start"), pos);
-			//beamEmitter->SetVectorParameter(FName("End"), pos);
-
 			KillPlayer();
-
 		}
 	}
 	else
