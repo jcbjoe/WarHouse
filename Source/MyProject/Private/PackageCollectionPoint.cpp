@@ -112,6 +112,8 @@ void APackageCollectionPoint::Tick(float DeltaTime)
 			//--- Wait for the door to reopen
 			if (!manager->shutters[index]->isShutterOpen()) return;
 
+			int amountOfPackages = packages.Num();
+			
 			for (auto packageToRemove : packages)
 			{
 				//divide package health by 100 to get the percentage of what it is worth i.e. more damge, less value
@@ -129,7 +131,7 @@ void APackageCollectionPoint::Tick(float DeltaTime)
 
 			packages.Empty();
 
-			WarhouseHelpers::GetTruckPackageManager(GetWorld())->IncrementTruckStage(index + 1);
+			if(amountOfPackages > 0) WarhouseHelpers::GetTruckPackageManager(GetWorld())->IncrementTruckStage(index + 1);
 
 			packagesBeingRemoved = false;
 
