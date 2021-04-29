@@ -37,6 +37,12 @@ protected:
 	FTimerHandle ParticlesTimerHandle;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Prop Data")
 		float ParticleLife = 3.0f;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Prop Data")
+		float ImpactRadius;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Prop Data")
+		float RadialImpactForce;
+	//for checking who is hit by the radial force
+	TArray<FHitResult> HitActors;
 
 	bool isParticleSystemActive = false;
 	bool isPropDead = false;
