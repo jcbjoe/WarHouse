@@ -10,6 +10,7 @@
 #include "Components/ChildActorComponent.h"
 #include "PackageManager.h"
 #include "PackageBase.h"
+#include "Components/AudioComponent.h"
 #include "WarhouseForklift.generated.h"
 
 class UCurveFloat;
@@ -52,7 +53,7 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Mesh")
 		UStaticMeshComponent* Pallet;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Forklift Data")
-		float ForkliftWaitSeconds = 2.0f;
+		float ForkliftWaitSeconds = 5.0f;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Forklift Data")
 		bool isMoving;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Forklift Data")
@@ -65,6 +66,8 @@ protected:
 		UChildActorComponent* PackageSpawn2;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Package Manager")
 		APackageManager* PackageManager;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sound")
+		UAudioComponent* AudioComponent;
 
 	float DefaultSpeed = 500.0f;
 
@@ -89,14 +92,13 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "Data")
 		TArray<APackageBase*> PackagesToRemove;
 
-	void Stop();
 	void RotateWheels();
 	void MoveForklift(float DeltaTime);
 	void RotateForklift();
 public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
-
+	void Stop();
 	void PrepareForkliftForAnotherDelivery();
 	void AddPackageToArray(APackageBase* package);
 	void RemoveAndDestroyPackages();

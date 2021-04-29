@@ -36,6 +36,9 @@ AWarhouseForklift::AWarhouseForklift()
 	PackageSpawn1->SetChildActorClass(ASpecialPackageSpawnActor::StaticClass());
 	PackageSpawn2 = CreateDefaultSubobject<UChildActorComponent>(TEXT("Spawn2"));
 	PackageSpawn2->SetChildActorClass(ASpecialPackageSpawnActor::StaticClass());
+	//set up audio
+	AudioComponent = CreateDefaultSubobject<UAudioComponent>(FName("Audio"));
+	AudioComponent->SetupAttachment(RootComponent);
 }
 
 void AWarhouseForklift::DeliverPackages()
@@ -62,7 +65,7 @@ void AWarhouseForklift::TimelineProgress(float value)
 
 void AWarhouseForklift::OnOverlapBegin(UPrimitiveComponent* OverlapComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	if (OtherActor->IsA(AWarhousePawn::StaticClass()))
+	if (OtherActor->IsA(AWarhousePawn::StaticClass()) && isMoving)
 	{
 		auto player = Cast<AWarhousePawn>(OtherActor);
 		player->KillPlayer();
@@ -86,6 +89,7 @@ void AWarhouseForklift::OnOverlapEnd(UPrimitiveComponent* OverlapComponent, AAct
 void AWarhouseForklift::BeginPlay()
 {
 	Super::BeginPlay();
+
 	if (CurveFloat)
 	{
 		FOnTimelineFloat TimelineProgress;
@@ -94,20 +98,21 @@ void AWarhouseForklift::BeginPlay()
 		CurveTimeline.SetLooping(true);
 		StartLocation = EndLocation = GetActorLocation();
 		EndLocation.Z = ZOffset;
-
 		CurveTimeline.PlayFromStart();
 	}
 
 	Speed = 0.0f;
+	boxComponent->SetGenerateOverlapEvents(false);
 }
 
 void AWarhouseForklift::MoveForklift(float deltaTime)
 {
-	//isMoving = true;
+	isMoving = true;
 	Location = GetActorLocation();
 	FVector Direction = GetActorForwardVector();
 	Location += Direction * Speed * deltaTime;
 	SetActorLocation(Location);
+	AudioComponent->Play();
 }
 
 void AWarhouseForklift::RotateForklift()
@@ -117,9 +122,11 @@ void AWarhouseForklift::RotateForklift()
 
 void AWarhouseForklift::Stop()
 {
-	//isMoving = false;
+	isMoving = false;
 	Speed = 0.0f;
 	GetWorld()->GetTimerManager().SetTimer(ForkliftTimerHandle, this, &AWarhouseForklift::ResumeMovement, ForkliftWaitSeconds, false);
+	AudioComponent->Stop();
+	boxComponent->SetGenerateOverlapEvents(true);
 }
 
 void AWarhouseForklift::RotateWheels()
@@ -134,7 +141,8 @@ void AWarhouseForklift::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 	CurveTimeline.TickTimeline(DeltaTime);
-	MoveForklift(DeltaTime);
+	if (isMoving)
+		MoveForklift(DeltaTime);
 	RotateWheels();
 }
 
@@ -146,6 +154,7 @@ void AWarhouseForklift::PrepareForkliftForAnotherDelivery()
 	RotateForklift();
 	//spawn special packages on forklift + conveyor
 	PackageManager->SpawnSpecialPackage(PackageManager->GetConfig());
+	boxComponent->SetGenerateOverlapEvents(false);
 }
 
 void AWarhouseForklift::AddPackageToArray(APackageBase* package)
