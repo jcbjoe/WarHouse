@@ -45,7 +45,8 @@ protected:
 
 	UPROPERTY(EditAnywhere)
 		UParticleSystemComponent* ParticleSystemComponent;
-
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Prop Data")
+		USoundBase* soundBase;
 
 	//for deactivating particles after a set time
 	FTimerHandle ParticlesTimerHandle;

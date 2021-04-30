@@ -12,24 +12,22 @@ APhysicsProp::APhysicsProp()
 	//set up mesh
 	PropMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("packageMesh"));
 	PropMeshComponent->SetNotifyRigidBodyCollision(true);
-
 	//set health
 	PropHealth = 100.0f;
 	//simulate physics
 	PropMeshComponent->SetSimulatePhysics(true);
-
 	PropMeshComponent->SetMassOverrideInKg(NAME_None, 20);
-
 	RootComponent = PropMeshComponent;
-
+	//set up particles
 	ParticleSystemComponent = CreateDefaultSubobject<UParticleSystemComponent>(FName("ParticleEmitter"));
-
 	ParticleSystemComponent->SetupAttachment(RootComponent);
-
 	ParticleSystemComponent->SetVisibility(false);
 	//set radial impact data
 	ImpactRadius = 500.0f;
 	RadialImpactForce = 5000.0f;
+	//set up audio
+	static ConstructorHelpers::FObjectFinder<USoundBase> sound(TEXT("/Game/Extras/Audio/Explosion_Cue.Explosion_Cue"));
+	soundBase = sound.Object;
 }
 
 // Called when the game starts or when spawned
@@ -133,8 +131,10 @@ void APhysicsProp::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, 
 
 void APhysicsProp::Explode()
 {
+	//play sound
+	UGameplayStatics::PlaySoundAtLocation(GetWorld(), soundBase, this->GetActorLocation(), 1.0f);
 	//activate particles
-	// 
+	ActivateParticles();
 	//radial impulse
 	FVector Location = this->GetActorLocation();
 	FCollisionShape SphereCol = FCollisionShape::MakeSphere(ImpactRadius);
@@ -144,6 +144,9 @@ void APhysicsProp::Explode()
 	{
 		for (auto& hit : HitActors)
 		{
+			//check if its a player and kill them
+
+			//get the mesh and apply force
 			UStaticMeshComponent* mesh = Cast<UStaticMeshComponent>((hit.GetActor()->GetRootComponent()));
 			if (mesh)
 				mesh->AddRadialImpulse(Location, ImpactRadius, RadialImpactForce, ERadialImpulseFalloff::RIF_Constant, true);
