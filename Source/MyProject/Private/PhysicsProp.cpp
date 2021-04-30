@@ -26,6 +26,9 @@ APhysicsProp::APhysicsProp()
 	ParticleSystemComponent->SetupAttachment(RootComponent);
 
 	ParticleSystemComponent->SetVisibility(false);
+	//set radial impact data
+	ImpactRadius = 200.0f;
+	RadialImpactForce = 2000.0f;
 }
 
 // Called when the game starts or when spawned
@@ -69,6 +72,11 @@ bool APhysicsProp::GetIsFragile()
 	return IsFragile;
 }
 
+bool APhysicsProp::GetCanExplode()
+{
+	return CanExplode;
+}
+
 void APhysicsProp::ActivateParticles()
 {
 	//ParticleSystemComponent->Activate();
@@ -108,8 +116,36 @@ void APhysicsProp::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, 
 			ActivateParticles();
 		}
 
+		if (GetCanExplode() && PropHealth < 0.0f)
+		{
+			PropHealth = 0.0f;
+			isPropDead = true;
+			if (ParticleSystemComponent)
+				ActivateParticles();
+			Explode();
+		}
+
 		GetWorld()->GetTimerManager().SetTimer(timer, this, &APhysicsProp::AllowHit, 0.5f, false);
 
+	}
+}
+
+void APhysicsProp::Explode()
+{
+	//activate particles
+	// 
+	//radial impulse
+	FHitResult Hit;
+	FCollisionShape SphereCol = FCollisionShape::MakeSphere(ImpactRadius);
+	bool SweepHit = GetWorld()->SweepMultiByChannel(HitActors, Hit.Location, Hit.Location + FVector(0.1f, 0.1f, 0.1f), FQuat::Identity, ECC_WorldStatic, SphereCol);
+	if (SweepHit)
+	{
+		for (auto& hit : HitActors)
+		{
+			UStaticMeshComponent* mesh = Cast<UStaticMeshComponent>(Hit.GetActor()->GetRootComponent());
+			if (mesh)
+				mesh->AddRadialImpulse(Hit.Location, ImpactRadius, RadialImpactForce, ERadialImpulseFalloff::RIF_Constant, false);
+		}
 	}
 }
 
@@ -117,4 +153,3 @@ void APhysicsProp::AllowHit()
 {
 	canRegisterHit = true;
 }
-

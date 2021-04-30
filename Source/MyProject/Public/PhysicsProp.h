@@ -25,7 +25,7 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		UStaticMeshComponent* PropMeshComponent;
 
-	
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Prop Options")
 		bool IsDestructible;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Prop Options")
@@ -34,10 +34,15 @@ protected:
 		bool IsFragile;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Prop Options")
 		bool CanPickUp;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Prop Options")
+		bool CanExplode;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Prop Data")
 		float PropHealth;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Prop Data")
+		float ImpactRadius;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Prop Data")
+		float RadialImpactForce;
 
-	
 	UPROPERTY(EditAnywhere)
 		UParticleSystemComponent* ParticleSystemComponent;
 
@@ -49,7 +54,8 @@ protected:
 
 	bool isParticleSystemActive = false;
 	bool isPropDead = false;
-
+	//for checking who is hit by the radial force
+	TArray<FHitResult> HitActors;
 	FTimerHandle timer;
 
 	bool canRegisterHit = true;
@@ -64,7 +70,7 @@ public:
 	bool GetDestructible();
 	bool GetUseParticleEmitter();
 	bool GetIsFragile();
-
+	bool GetCanExplode();
 	UFUNCTION()
 		void ActivateParticles();
 	UFUNCTION()
@@ -73,4 +79,6 @@ public:
 		void DestroyProp();
 	UFUNCTION()
 		void OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
+	UFUNCTION()
+		void Explode();
 };
