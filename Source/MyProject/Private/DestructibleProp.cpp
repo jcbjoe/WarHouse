@@ -13,6 +13,7 @@ ADestructibleProp::ADestructibleProp()
 	PropMesh->SetNotifyRigidBodyCollision(true);
 	RootComponent = PropMesh;
 	PropMesh->SetSimulatePhysics(true);
+
 }
 
 // Called when the game starts or when spawned
@@ -29,49 +30,7 @@ void ADestructibleProp::Tick(float DeltaTime)
 
 }
 
-bool ADestructibleProp::GetUseParticleEmitter()
-{
-	return UseParticleEmitter;
-}
-
-
-void ADestructibleProp::ActivateParticles()
-{
-	ParticleSystem->ActivateSystem(true);
-	//set timer to deactivate particle system
-	GetWorld()->GetTimerManager().SetTimer(ParticlesTimerHandle, this, &ADestructibleProp::DeactivateParticles, ParticleLife, false);
-}
-
-void ADestructibleProp::DeactivateParticles()
-{
-	ParticleSystem->DeactivateSystem();
-}
-
 void ADestructibleProp::DestroyProp()
 {
 	this->Destroy();
 }
-
-//void ADestructibleProp::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
-//{
-//	if ((OtherActor != NULL) && (OtherActor != this) && (OtherComp != NULL))
-//	{
-//		float velocity = this->GetVelocity().Size();
-//		if ((velocity > 1.0f) && (!isPropDead))
-//		{
-//			if (IsFragile)
-//				PropHealth -= PropHealth;
-//			else
-//				PropHealth -= 10.0f;
-//		}
-//
-//	}
-//
-//	if (GetUseParticleEmitter() && PropHealth < 0.0f)
-//	{
-//		PropHealth = 0.0f;
-//		isPropDead = true;
-//		ActivateParticles();
-//	}
-//
-//}

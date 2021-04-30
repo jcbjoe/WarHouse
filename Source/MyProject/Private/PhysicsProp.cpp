@@ -2,7 +2,8 @@
 
 
 #include "PhysicsProp.h"
-
+#include "DrawDebugHelpers.h"
+#include "WarhousePawn.h"
 // Sets default values
 APhysicsProp::APhysicsProp()
 {
@@ -11,21 +12,22 @@ APhysicsProp::APhysicsProp()
 	//set up mesh
 	PropMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("packageMesh"));
 	PropMeshComponent->SetNotifyRigidBodyCollision(true);
-
 	//set health
 	PropHealth = 100.0f;
 	//simulate physics
 	PropMeshComponent->SetSimulatePhysics(true);
-
 	PropMeshComponent->SetMassOverrideInKg(NAME_None, 20);
-
 	RootComponent = PropMeshComponent;
-
+	//set up particles
 	ParticleSystemComponent = CreateDefaultSubobject<UParticleSystemComponent>(FName("ParticleEmitter"));
-
 	ParticleSystemComponent->SetupAttachment(RootComponent);
-
 	ParticleSystemComponent->SetVisibility(false);
+	//set radial impact data
+	ImpactRadius = 500.0f;
+	RadialImpactForce = 5000.0f;
+	//set up audio
+	static ConstructorHelpers::FObjectFinder<USoundBase> sound(TEXT("/Game/Extras/Audio/Explosion_Cue.Explosion_Cue"));
+	soundBase = sound.Object;
 }
 
 // Called when the game starts or when spawned
@@ -69,6 +71,11 @@ bool APhysicsProp::GetIsFragile()
 	return IsFragile;
 }
 
+bool APhysicsProp::GetCanExplode()
+{
+	return CanExplode;
+}
+
 void APhysicsProp::ActivateParticles()
 {
 	//ParticleSystemComponent->Activate();
@@ -108,8 +115,46 @@ void APhysicsProp::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, 
 			ActivateParticles();
 		}
 
+		if (GetCanExplode() && PropHealth < 0.0f)
+		{
+			PropHealth = 0.0f;
+			isPropDead = true;
+			if (ParticleSystemComponent)
+				ActivateParticles();
+			Explode();
+		}
+
 		GetWorld()->GetTimerManager().SetTimer(timer, this, &APhysicsProp::AllowHit, 0.5f, false);
 
+	}
+}
+
+void APhysicsProp::Explode()
+{
+	//play sound
+	UGameplayStatics::PlaySoundAtLocation(GetWorld(), soundBase, this->GetActorLocation(), 1.0f);
+	//activate particles
+	ActivateParticles();
+	//radial impulse
+	FVector Location = this->GetActorLocation();
+	FCollisionShape SphereCol = FCollisionShape::MakeSphere(ImpactRadius);
+	//DrawDebugSphere(GetWorld(), this->GetActorLocation(), SphereCol.GetSphereRadius(), 50, FColor::Emerald, true);
+	bool SweepHit = GetWorld()->SweepMultiByChannel(HitActors, Location, Location, FQuat::Identity, ECC_WorldStatic, SphereCol);
+	if (SweepHit)
+	{
+		for (auto& hit : HitActors)
+		{
+			//check if its a player and kill them
+			if (hit.GetActor()->IsA(AWarhousePawn::StaticClass()))
+			{
+				AWarhousePawn* player = Cast<AWarhousePawn>(hit.GetActor());
+				player->KillPlayer();
+			}
+			//get the mesh and apply force
+			UStaticMeshComponent* mesh = Cast<UStaticMeshComponent>((hit.GetActor()->GetRootComponent()));
+			if (mesh)
+				mesh->AddRadialImpulse(Location, ImpactRadius, RadialImpactForce, ERadialImpulseFalloff::RIF_Constant, true);
+		}
 	}
 }
 
@@ -117,4 +162,3 @@ void APhysicsProp::AllowHit()
 {
 	canRegisterHit = true;
 }
-

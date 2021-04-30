@@ -17,7 +17,6 @@ APackageBase::APackageBase()
 	PrimaryActorTick.bCanEverTick = false; //package does not need to tick?
 
 	static ConstructorHelpers::FObjectFinder<USoundBase> sound(TEXT("/Game/Sounds/Cardboard/DropBox.DropBox"));
-
 	soundBase = sound.Object;
 
 	PackageMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("packageMesh"));
