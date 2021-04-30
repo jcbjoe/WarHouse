@@ -2,7 +2,8 @@
 
 
 #include "PhysicsProp.h"
-
+#include "DrawDebugHelpers.h"
+#include "Engine.h"
 // Sets default values
 APhysicsProp::APhysicsProp()
 {
@@ -27,8 +28,8 @@ APhysicsProp::APhysicsProp()
 
 	ParticleSystemComponent->SetVisibility(false);
 	//set radial impact data
-	ImpactRadius = 200.0f;
-	RadialImpactForce = 2000.0f;
+	ImpactRadius = 500.0f;
+	RadialImpactForce = 5000.0f;
 }
 
 // Called when the game starts or when spawned
@@ -135,16 +136,17 @@ void APhysicsProp::Explode()
 	//activate particles
 	// 
 	//radial impulse
-	FHitResult Hit;
+	FVector Location = this->GetActorLocation();
 	FCollisionShape SphereCol = FCollisionShape::MakeSphere(ImpactRadius);
-	bool SweepHit = GetWorld()->SweepMultiByChannel(HitActors, Hit.Location, Hit.Location + FVector(0.1f, 0.1f, 0.1f), FQuat::Identity, ECC_WorldStatic, SphereCol);
+	DrawDebugSphere(GetWorld(), this->GetActorLocation(), SphereCol.GetSphereRadius(), 50, FColor::Emerald, true);
+	bool SweepHit = GetWorld()->SweepMultiByChannel(HitActors, Location, Location, FQuat::Identity, ECC_WorldStatic, SphereCol);
 	if (SweepHit)
 	{
 		for (auto& hit : HitActors)
 		{
-			UStaticMeshComponent* mesh = Cast<UStaticMeshComponent>(Hit.GetActor()->GetRootComponent());
+			UStaticMeshComponent* mesh = Cast<UStaticMeshComponent>((hit.GetActor()->GetRootComponent()));
 			if (mesh)
-				mesh->AddRadialImpulse(Hit.Location, ImpactRadius, RadialImpactForce, ERadialImpulseFalloff::RIF_Constant, false);
+				mesh->AddRadialImpulse(hit.GetActor()->GetActorLocation(), ImpactRadius, RadialImpactForce, ERadialImpulseFalloff::RIF_Constant, true);
 		}
 	}
 }
