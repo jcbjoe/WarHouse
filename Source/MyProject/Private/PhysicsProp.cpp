@@ -138,7 +138,7 @@ void APhysicsProp::Explode()
 	//radial impulse
 	FVector Location = this->GetActorLocation();
 	FCollisionShape SphereCol = FCollisionShape::MakeSphere(ImpactRadius);
-	DrawDebugSphere(GetWorld(), this->GetActorLocation(), SphereCol.GetSphereRadius(), 50, FColor::Emerald, true);
+	//DrawDebugSphere(GetWorld(), this->GetActorLocation(), SphereCol.GetSphereRadius(), 50, FColor::Emerald, true);
 	bool SweepHit = GetWorld()->SweepMultiByChannel(HitActors, Location, Location, FQuat::Identity, ECC_WorldStatic, SphereCol);
 	if (SweepHit)
 	{
@@ -146,7 +146,7 @@ void APhysicsProp::Explode()
 		{
 			UStaticMeshComponent* mesh = Cast<UStaticMeshComponent>((hit.GetActor()->GetRootComponent()));
 			if (mesh)
-				mesh->AddRadialImpulse(hit.GetActor()->GetActorLocation(), ImpactRadius, RadialImpactForce, ERadialImpulseFalloff::RIF_Constant, true);
+				mesh->AddRadialImpulse(Location, ImpactRadius, RadialImpactForce, ERadialImpulseFalloff::RIF_Constant, true);
 		}
 	}
 }
