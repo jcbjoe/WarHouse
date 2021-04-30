@@ -3,7 +3,7 @@
 
 #include "PhysicsProp.h"
 #include "DrawDebugHelpers.h"
-#include "Engine.h"
+#include "WarhousePawn.h"
 // Sets default values
 APhysicsProp::APhysicsProp()
 {
@@ -145,7 +145,11 @@ void APhysicsProp::Explode()
 		for (auto& hit : HitActors)
 		{
 			//check if its a player and kill them
-
+			if (hit.GetActor()->IsA(AWarhousePawn::StaticClass()))
+			{
+				AWarhousePawn* player = Cast<AWarhousePawn>(hit.GetActor());
+				player->KillPlayer();
+			}
 			//get the mesh and apply force
 			UStaticMeshComponent* mesh = Cast<UStaticMeshComponent>((hit.GetActor()->GetRootComponent()));
 			if (mesh)
