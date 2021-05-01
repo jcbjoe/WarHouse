@@ -105,4 +105,16 @@ void AUISceneManager::ChangeActiveWidget(FString widgetName) {
 		LoadWidget(mapSelect);
 	}
 
+	if (widgetName == "credits")
+	{
+		if (oldName == credits->GetName()) return;
+		LoadWidget(credits);
+	}
+
+	if (widgetName == "options")
+	{
+		if (oldName == options->GetName()) return;
+		LoadWidget(options);
+	}
+
 }

@@ -11,8 +11,8 @@ UCLASS()
 class MYPROJECT_API AUISceneManager : public AActor
 {
 	GENERATED_BODY()
-	
-public:	
+
+public:
 	// Sets default values for this actor's properties
 	AUISceneManager();
 
@@ -31,21 +31,27 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		TSubclassOf<UUserWidget> mapSelect;
-	
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		TSubclassOf<UUserWidget> credits;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		TSubclassOf<UUserWidget> options;
+
 
 private:
 	UUserWidget* currentLoadedWidget;
 
 	void SetupPlayerControllersForUI();
 
-public:	
+public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
 	void LoadWidget(TSubclassOf<UUserWidget> widget);
 
 	void UnloadCurrentWidget();
-	
+
 	UFUNCTION(BlueprintCallable)
-	void ChangeActiveWidget(FString widgetName);
+		void ChangeActiveWidget(FString widgetName);
 };
