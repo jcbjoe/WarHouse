@@ -60,7 +60,7 @@ void APlayerManager::SpawnPlayers()
 			playerList.Add(playerPawn);
 
 			auto spawn = tmpSpawn->GetActorLocation();
-			spawn.Z = 50;
+			spawn.Z = PlayerHeight;
 
 			playerPawn->SetActorLocation(spawn);
 			tmpSpawns.Remove(tmpSpawn);
@@ -83,7 +83,7 @@ void APlayerManager::SpawnPlayers()
 			playerList.Add(playerPawn);
 
 			auto spawn = tmpSpawn->GetActorLocation();
-			spawn.Z = 50;
+			spawn.Z = PlayerHeight;
 
 			playerPawn->SetActorLocation(spawn);
 			tmpSpawns.Remove(tmpSpawn);
@@ -139,7 +139,7 @@ FVector APlayerManager::GetRandomSpawnpoint(bool checkForPlayers)
 		}
 	} while (!spawnFound);
 
-	spawn.Z = 50;
+	spawn.Z = PlayerHeight;
 
 	return spawn;
 }
