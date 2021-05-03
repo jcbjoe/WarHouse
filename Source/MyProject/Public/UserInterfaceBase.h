@@ -34,10 +34,12 @@ public:
 
 	UFUNCTION(BlueprintImplementableEvent)
 		void UpPressed(int32 playerId);
-	
+
 	UFUNCTION(BlueprintImplementableEvent)
 		void DownPressed(int32 playerId);
 
 	UFUNCTION(BlueprintCallable)
 		AUISceneManager* GetUISceneManager();
+
+	bool canRecieveInput = true;
 };

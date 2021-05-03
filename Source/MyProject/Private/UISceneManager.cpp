@@ -1,5 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 #include "UISceneManager.h"
+
+#include "UserInterfaceBase.h"
 #include "WarhouseHelpers.h"
 
 
@@ -20,12 +22,12 @@ void AUISceneManager::BeginPlay()
 
 	if (WarhouseHelpers::GetGameInstance(GetWorldSettings())->hasSplashRan)
 	{
-		LoadWidget(mainMenu);
+		ChangeActiveWidget("mainmenu");
 	}
 	else
 	{
 		WarhouseHelpers::GetGameInstance(GetWorldSettings())->hasSplashRan = true;
-		LoadWidget(splashScreen);
+		ChangeActiveWidget("splashscreen");
 	}
 
 }
@@ -37,21 +39,15 @@ void AUISceneManager::Tick(float DeltaTime)
 
 }
 
-void AUISceneManager::LoadWidget(TSubclassOf<UUserWidget> widget)
-{
-	auto playerController = UGameplayStatics::GetPlayerController(GetWorld(), 0);
-
-	currentLoadedWidget = UUserWidget::CreateWidgetInstance(*playerController, widget, FName(widget->GetName()));
-
-	currentLoadedWidget->AddToViewport();
-}
-
 void AUISceneManager::UnloadCurrentWidget()
 {
-	currentLoadedWidget->RemoveFromViewport();
-	currentLoadedWidget->Destruct();
-
-	currentLoadedWidget = nullptr;
+	if(currentWidget != nullptr)
+	{
+		Cast<UUserInterfaceBase>(currentWidget)->canRecieveInput = false;
+		currentWidget->SetVisibility(ESlateVisibility::Hidden);
+		currentWidget->RemoveFromParent();
+		currentWidget = nullptr;
+	}
 }
 
 void AUISceneManager::SetupPlayerControllersForUI()
@@ -71,50 +67,19 @@ void AUISceneManager::SetupPlayerControllersForUI()
 	}
 }
 
-void AUISceneManager::ChangeActiveWidget(FString widgetName) {
+void AUISceneManager::ChangeActiveWidget(FName widgetName) {
 
-	FString oldName = FString("");
-	if (currentLoadedWidget != nullptr) {
-		oldName = currentLoadedWidget->GetName();
-		UnloadCurrentWidget();
+	UnloadCurrentWidget();
 
-	}
+	check(widgets.Contains(widgetName));
+	
+	auto widget = widgets[widgetName];
+	auto playerController = UGameplayStatics::GetPlayerController(GetWorld(), 0);
+	auto newWidget = UUserWidget::CreateWidgetInstance(*playerController, widget, FName(widget->GetName()));
 
-	if (widgetName == "playerselect")
-	{
-		if (oldName == playerSelect->GetName()) return;
-		LoadWidget(playerSelect);
-	}
+	Cast<UUserInterfaceBase>(newWidget)->canRecieveInput = true;
 
-	if (widgetName == "mainmenu")
-	{
-		if (oldName == mainMenu->GetName()) return;
-		LoadWidget(mainMenu);
-	}
+	currentWidget = newWidget;
 
-
-	if (widgetName == "splash")
-	{
-		if (oldName == splashScreen->GetName()) return;
-		LoadWidget(splashScreen);
-	}
-
-	if (widgetName == "mapselect")
-	{
-		if (oldName == splashScreen->GetName()) return;
-		LoadWidget(mapSelect);
-	}
-
-	if (widgetName == "credits")
-	{
-		if (oldName == credits->GetName()) return;
-		LoadWidget(credits);
-	}
-
-	if (widgetName == "options")
-	{
-		if (oldName == options->GetName()) return;
-		LoadWidget(options);
-	}
-
+	newWidget->AddToViewport();	
 }

@@ -21,37 +21,22 @@ protected:
 	virtual void BeginPlay() override;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		TSubclassOf<UUserWidget> splashScreen;
+		TMap<FName, TSubclassOf<UUserWidget>> widgets;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		TSubclassOf<UUserWidget> mainMenu;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		TSubclassOf<UUserWidget> playerSelect;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		TSubclassOf<UUserWidget> mapSelect;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		TSubclassOf<UUserWidget> credits;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		TSubclassOf<UUserWidget> options;
 
 
 private:
-	UUserWidget* currentLoadedWidget;
 
 	void SetupPlayerControllersForUI();
+
+	UUserWidget* currentWidget = nullptr;
 
 public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
-
-	void LoadWidget(TSubclassOf<UUserWidget> widget);
-
+	
 	void UnloadCurrentWidget();
 
 	UFUNCTION(BlueprintCallable)
-		void ChangeActiveWidget(FString widgetName);
+		void ChangeActiveWidget(FName widgetName);
 };

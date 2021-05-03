@@ -12,10 +12,18 @@ void AMyPlayerController::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
 
-	TArray<UUserWidget*> widgets;
-	UWidgetBlueprintLibrary::GetAllWidgetsOfClass(GetWorld(), widgets, UUserInterfaceBase::StaticClass(), false);
+	TArray<UUserWidget*> widgetsFound;
+	UWidgetBlueprintLibrary::GetAllWidgetsOfClass(GetWorld(), widgetsFound, UUserInterfaceBase::StaticClass(), false);
 
-	if (widgets.Num() == 0) return;
+	if (widgetsFound.Num() == 0) return;
+
+	TArray<UUserInterfaceBase*> widgets;
+
+	for (auto widget : widgetsFound)
+	{
+		UUserInterfaceBase* userInterface = Cast<UUserInterfaceBase>(widget);
+		if (userInterface->canRecieveInput && userInterface->IsConstructed() && userInterface->IsVisible()) widgets.Add(userInterface);
+	}
 
 	const int32 controllerId = UGameplayStatics::GetPlayerControllerID(this);
 
@@ -23,8 +31,7 @@ void AMyPlayerController::Tick(float DeltaSeconds)
 	{
 		for (auto widget : widgets)
 		{
-			UUserInterfaceBase* userInterface = Cast<UUserInterfaceBase>(widget);
-			userInterface->LeftPressed(controllerId);
+			widget->LeftPressed(controllerId);
 		}
 	}
 
@@ -32,8 +39,7 @@ void AMyPlayerController::Tick(float DeltaSeconds)
 	{
 		for (auto widget : widgets)
 		{
-			UUserInterfaceBase* userInterface = Cast<UUserInterfaceBase>(widget);
-			userInterface->RightPressed(controllerId);
+			widget->RightPressed(controllerId);
 		}
 	}
 
@@ -41,8 +47,7 @@ void AMyPlayerController::Tick(float DeltaSeconds)
 	{
 		for (auto widget : widgets)
 		{
-			UUserInterfaceBase* userInterface = Cast<UUserInterfaceBase>(widget);
-			userInterface->SelectPressed(controllerId);
+			widget->SelectPressed(controllerId);
 		}
 	}
 
@@ -50,8 +55,7 @@ void AMyPlayerController::Tick(float DeltaSeconds)
 	{
 		for (auto widget : widgets)
 		{
-			UUserInterfaceBase* userInterface = Cast<UUserInterfaceBase>(widget);
-			userInterface->UnSelectPressed(controllerId);
+			widget->UnSelectPressed(controllerId);
 		}
 	}
 
@@ -59,8 +63,7 @@ void AMyPlayerController::Tick(float DeltaSeconds)
 	{
 		for (auto widget : widgets)
 		{
-			UUserInterfaceBase* userInterface = Cast<UUserInterfaceBase>(widget);
-			userInterface->StartPressed(controllerId);
+			widget->StartPressed(controllerId);
 		}
 	}
 
@@ -68,8 +71,7 @@ void AMyPlayerController::Tick(float DeltaSeconds)
 	{
 		for (auto widget : widgets)
 		{
-			UUserInterfaceBase* userInterface = Cast<UUserInterfaceBase>(widget);
-			userInterface->UpPressed(controllerId);
+			widget->UpPressed(controllerId);
 		}
 	}
 
@@ -77,8 +79,7 @@ void AMyPlayerController::Tick(float DeltaSeconds)
 	{
 		for (auto widget : widgets)
 		{
-			UUserInterfaceBase* userInterface = Cast<UUserInterfaceBase>(widget);
-			userInterface->DownPressed(controllerId);
+			widget->DownPressed(controllerId);
 		}
 	}
 }
