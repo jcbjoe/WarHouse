@@ -41,9 +41,9 @@ void AWarhouseConveyorBeltTrigger::OnOverlapBegin(UPrimitiveComponent* OverlapCo
 			Package = Cast<APackageBase>(OtherActor);
 			ResetPackagePosition();
 		}
+		else
+			OtherActor->Destroy();
 	}
-	else
-		Destroy();
 }
 
 void AWarhouseConveyorBeltTrigger::ResetPackagePosition()
