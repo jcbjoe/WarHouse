@@ -7,6 +7,7 @@
 #include "Kismet/KismetMathLibrary.h"
 #include "CameraManager.h"
 #include "PackageProgressBar.h"
+#include "SettingsSave.h"
 #include "WarhouseHelpers.h"
 #include "UObject/ConstructorHelpers.h"
 
@@ -78,6 +79,11 @@ void APackageBase::BeginPlay()
 	Super::BeginPlay();
 
 	PackageMesh->OnComponentHit.AddDynamic(this, &APackageBase::OnHit);
+
+	if (USettingsSave* LoadedGame = Cast<USettingsSave>(UGameplayStatics::LoadGameFromSlot("SettingsSlot", 0)))
+	{
+		volumeMultiplier = LoadedGame->SFXVolume;
+	}
 }
 
 // Called every frame
@@ -201,7 +207,7 @@ void APackageBase::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, 
 
 		if (velocity > 105)
 		{
-			UGameplayStatics::PlaySoundAtLocation(GetWorld(), soundBase, GetActorLocation(), 0.5f);
+			UGameplayStatics::PlaySoundAtLocation(GetWorld(), soundBase, GetActorLocation(), packageDropSoundMultiplier * volumeMultiplier);
 
 			if (PackageHealth > 0.0f && !IsBeingCollected)
 				PackageHealth -= 1.f;

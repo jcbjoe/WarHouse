@@ -77,4 +77,8 @@ public:
 	UFUNCTION()
 		void OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
 
+private:
+	float volumeMultiplier = 1.0;
+
+	const float packageDropSoundMultiplier = 0.5;
 };

@@ -51,4 +51,8 @@ private:
 		void OnOverlapEnd(UPrimitiveComponent* OverlapComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 
 	UAudioComponent* audioComp;
+
+	float volumeMultiplier = 1.0;
+
+	const float buttonPushSoundMultiplier = 0.5f;
 };

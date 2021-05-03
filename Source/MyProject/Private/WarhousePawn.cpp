@@ -25,6 +25,7 @@
 #include "PhysicsProp.h"
 #include "DestructibleProp.h"
 #include "NiagaraFunctionLibrary.h"
+#include "SettingsSave.h"
 #include "Engine/LatentActionManager.h"
 
 AWarhousePawn::AWarhousePawn()
@@ -130,7 +131,6 @@ AWarhousePawn::AWarhousePawn()
 	beamAudioComp->SetSound(beamSound.Object);
 	chargingComp->SetSound(chargingSound.Object);
 
-	audioComp->SetVolumeMultiplier(audioStationaryVolume);
 	beamAudioComp->SetVolumeMultiplier(0.0f);
 	chargingComp->SetVolumeMultiplier(0.0f);
 
@@ -153,6 +153,14 @@ void AWarhousePawn::BeginPlay()
 	chargingComp->Play();
 
 	ShipMeshComponent->OnComponentHit.AddDynamic(this, &AWarhousePawn::OnHit);
+
+	if (USettingsSave* LoadedGame = Cast<USettingsSave>(UGameplayStatics::LoadGameFromSlot("SettingsSlot", 0)))
+	{
+		volumeMultiplier = LoadedGame->SFXVolume;
+		canVibrate = LoadedGame->VibrationEnabled;
+	}
+
+	audioComp->SetVolumeMultiplier(audioStationaryVolume * volumeMultiplier);
 }
 
 void AWarhousePawn::SetColour(EPlayerColours colour)
@@ -284,15 +292,16 @@ void AWarhousePawn::Tick(float DeltaSeconds)
 			//--- Show beam and set volume of the beam
 
 			BeamMeshComponent->SetWorldRotation(ArmDirection.Rotation());
-			beamAudioComp->SetVolumeMultiplier(audioBeamVolume);
+			beamAudioComp->SetVolumeMultiplier(audioBeamVolume * volumeMultiplier);
 			beamEmitter->SetVisibility(true);
 			//play controller rumble
-			auto pc = Cast<AMyPlayerController>(GetController());
-			if ((ArmForwardValue + ArmRightValue) < 0.0f)
-				pc->PlayDynamicForceFeedback((ArmForwardValue + ArmRightValue) * -1, RumbleDuration, true, true, true, true, EDynamicForceFeedbackAction::Start); // change first 2 floats for vibration intenisty and duration, 4 bools are diff motors
-			else
-				pc->PlayDynamicForceFeedback((ArmForwardValue + ArmRightValue), RumbleDuration, true, true, true, true, EDynamicForceFeedbackAction::Start); // change first 2 floats for vibration intenisty and duration, 4 bools are diff motors
-
+			if (canVibrate) {
+				auto pc = Cast<AMyPlayerController>(GetController());
+				if ((ArmForwardValue + ArmRightValue) < 0.0f)
+					pc->PlayDynamicForceFeedback((ArmForwardValue + ArmRightValue) * -1, RumbleDuration, true, true, true, true, EDynamicForceFeedbackAction::Start); // change first 2 floats for vibration intenisty and duration, 4 bools are diff motors
+				else
+					pc->PlayDynamicForceFeedback((ArmForwardValue + ArmRightValue), RumbleDuration, true, true, true, true, EDynamicForceFeedbackAction::Start); // change first 2 floats for vibration intenisty and duration, 4 bools are diff motors
+			}
 			//--- Check if an item is held
 			float distance = FVector::Dist(sourceLoc, targetLoc);
 			if (PhysicsHandle->GetGrabbedComponent() == nullptr) {
@@ -356,7 +365,7 @@ void AWarhousePawn::Tick(float DeltaSeconds)
 		if (Movement.SizeSquared() > 0.0f)
 		{
 			//--- Change the audio volume when moving
-			audioComp->SetVolumeMultiplier(audioMovingVolume);
+			audioComp->SetVolumeMultiplier(audioMovingVolume * volumeMultiplier);
 
 			//--- Calculate rotation of the drone
 			const FRotator NewRotation = Movement.Rotation();
@@ -381,7 +390,7 @@ void AWarhousePawn::Tick(float DeltaSeconds)
 		else
 		{
 			//--- Set the volume back to the idle level and decrement the battery using the idle drain
-			audioComp->SetVolumeMultiplier(audioStationaryVolume);
+			audioComp->SetVolumeMultiplier(audioStationaryVolume * volumeMultiplier);
 			_batteryCharge -= (NonMovingBatteryDrain * DeltaSeconds);
 		}
 
@@ -448,7 +457,7 @@ void AWarhousePawn::Tick(float DeltaSeconds)
 		if (isOnChargingPad)
 		{
 			_batteryCharge += (chargingPadRate * DeltaSeconds);
-			chargingComp->SetVolumeMultiplier(audioChargingVolume);
+			chargingComp->SetVolumeMultiplier(audioChargingVolume * volumeMultiplier);
 		}
 		else
 		{

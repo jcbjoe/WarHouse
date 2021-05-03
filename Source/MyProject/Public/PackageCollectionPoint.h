@@ -74,4 +74,9 @@ private:
 
 	UAudioComponent* beepSound;
 	UAudioComponent* liftSound;
+
+	const float beepSoundMultipler = 0.75;
+	const float liftSoundMultipler = 0.6;
+	
+	float volumeMultiplier = 1.0;
 };

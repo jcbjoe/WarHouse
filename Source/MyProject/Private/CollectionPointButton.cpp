@@ -4,8 +4,10 @@
 #include "CollectionPointButton.h"
 
 #include "PackageCollectionPoint.h"
+#include "SettingsSave.h"
 #include "Components/BillboardComponent.h"
 #include "Components/AudioComponent.h"
+#include "Kismet/GameplayStatics.h"
 
 // Sets default values
 ACollectionPointButton::ACollectionPointButton()
@@ -60,6 +62,11 @@ ACollectionPointButton::ACollectionPointButton()
 void ACollectionPointButton::BeginPlay()
 {
 	Super::BeginPlay();
+
+	if (USettingsSave* LoadedGame = Cast<USettingsSave>(UGameplayStatics::LoadGameFromSlot("SettingsSlot", 0)))
+	{
+		volumeMultiplier = LoadedGame->SFXVolume;
+	}
 }
 
 // Called every frame
@@ -107,7 +114,7 @@ void ACollectionPointButton::OnOverlapEnd(UPrimitiveComponent* OverlapComponent,
 
 void ACollectionPointButton::AButtonPressed()
 {
-	audioComp->SetVolumeMultiplier(0.5f);
+	audioComp->SetVolumeMultiplier(buttonPushSoundMultiplier * volumeMultiplier);
 	audioComp->Play();
 	packageCollectionPoint->ButtonPressed();
 }

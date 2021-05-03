@@ -4,6 +4,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "PackageProgressBar.h"
+#include "SettingsSave.h"
 #include "WarhouseHelpers.h"
 #include "Components/AudioComponent.h"
 
@@ -58,6 +59,11 @@ void APackageCollectionPoint::BeginPlay()
 {
 	Super::BeginPlay();
 	PackageManager = WarhouseHelpers::GetPackageManager(GetWorld());
+
+	if (USettingsSave* LoadedGame = Cast<USettingsSave>(UGameplayStatics::LoadGameFromSlot("SettingsSlot", 0)))
+	{
+		volumeMultiplier = LoadedGame->SFXVolume;
+	}
 }
 
 // Called every frame
@@ -237,8 +243,8 @@ void APackageCollectionPoint::ButtonPressed()
 
 	platformMovingUp = true;
 
-	beepSound->SetVolumeMultiplier(0.75);
+	beepSound->SetVolumeMultiplier(beepSoundMultipler * volumeMultiplier);
 	beepSound->Play();
-	liftSound->SetVolumeMultiplier(0.6);
+	liftSound->SetVolumeMultiplier(liftSoundMultipler * volumeMultiplier);
 	liftSound->Play();
 }

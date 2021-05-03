@@ -143,4 +143,8 @@ private:
 	AActor* lastHeldPackage = nullptr;
 
 	UNiagaraSystem* sparksEmitter;
+
+	float volumeMultiplier = 1.0;
+
+	bool canVibrate = true;
 };
