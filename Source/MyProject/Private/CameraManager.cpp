@@ -38,12 +38,27 @@ void ACameraManager::Tick(float DeltaTime)
 
 		auto players = PlayerManager->GetPlayers();
 
+		bool middlePosStarted = false;
 		FVector middlePos;
 		for (int i = 0; i < players.Num(); ++i)
 		{
 			if (players[i]->IsDead()) continue;
-			if (i == 0) middlePos = players[0]->GetActorLocation();
-			else middlePos = (middlePos + players[i]->GetActorLocation()) / 2;
+			if (!middlePosStarted) {
+				middlePos = players[i]->GetActorLocation();
+				middlePosStarted = true;
+			}
+			else {
+				middlePos = (middlePos + players[i]->GetActorLocation()) / 2;
+			}
+		}
+
+		if(middlePosStarted)
+		{
+			lastGoodPos = middlePos;
+			
+		} else
+		{
+			middlePos = lastGoodPos;
 		}
 
 		const FRotator loc = UKismetMathLibrary::FindLookAtRotation(MainCamera->GetActorLocation(), middlePos);

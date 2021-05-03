@@ -11,6 +11,11 @@ void UMyGameInstance::addPlayer(int32 controllerId, EPlayerColours colour)
 	playerInfo.Add(playerInfoInd);
 }
 
+void UMyGameInstance::WipePlayerList()
+{
+	playerInfo.Empty();
+}
+
 void UMyGameInstance::AddPlayerScore(int playerId, float value, float damage)
 {
 	for(FPlayerInfo& playerInfoIndividual: playerInfo)

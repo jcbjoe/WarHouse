@@ -72,4 +72,6 @@ private:
 	bool isCameraFollowingPlayers = true;
 
 	ACameraActor* currentCamera = nullptr;
+
+	FVector lastGoodPos = {0,0,0};
 };

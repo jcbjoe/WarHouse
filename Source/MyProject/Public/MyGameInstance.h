@@ -54,6 +54,9 @@ public:
 
 	UFUNCTION(BlueprintPure)
 		EPlayerColours GetPlayerColour(int32 controllerId);
+
+	UFUNCTION(BlueprintCallable)
+	void WipePlayerList();
 	
 	bool hasSplashRan = false;
 };
