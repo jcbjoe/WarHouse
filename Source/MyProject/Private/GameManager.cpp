@@ -6,6 +6,7 @@
 #include "MovieSceneSequencePlayer.h"
 #include "WarhouseHelpers.h"
 #include "PackageSpawnActor.h"
+#include "SettingsSave.h"
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetSystemLibrary.h"
 
@@ -24,6 +25,12 @@ AGameManager::AGameManager()
 	winScreen->SetWidgetSpace(EWidgetSpace::World);
 	static ConstructorHelpers::FClassFinder<UUserWidget> winScreenWidgetObj(TEXT("/Game/UI/Menus/WinScreen/WinScreenWidget"));
 	winscreenWidget = winScreenWidgetObj.Class;
+
+	backgroundMusic = CreateDefaultSubobject<UAudioComponent >(FName("BackgroundMusic"));
+
+	backgroundMusic->SetAutoActivate(false);
+	
+	backgroundMusic->SetupAttachment(RootComponent);
 }
 
 // Called when the game starts or when spawned
@@ -37,6 +44,17 @@ void AGameManager::BeginPlay()
 	check(shutters.Num() != 0);
 	check(Forklift != nullptr);
 	check(ClockTimerText != nullptr);
+
+	float soundVol = 0.1;
+	
+	if (USettingsSave* LoadedGame = Cast<USettingsSave>(UGameplayStatics::LoadGameFromSlot("SettingsSlot", 0)))
+	{
+		soundVol = soundVol * LoadedGame->MusicVolume;
+	}
+
+	backgroundMusic->SetSound(backgroundMusicTrack);
+	backgroundMusic->SetVolumeMultiplier(soundVol);
+	backgroundMusic->Play();
 
 	InitGame();
 }

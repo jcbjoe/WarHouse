@@ -22,7 +22,7 @@ void AMyPlayerController::Tick(float DeltaSeconds)
 	for (auto widget : widgetsFound)
 	{
 		UUserInterfaceBase* userInterface = Cast<UUserInterfaceBase>(widget);
-		if (userInterface->canRecieveInput && userInterface->IsConstructed() && userInterface->IsVisible()) widgets.Add(userInterface);
+		if (userInterface->canRecieveInput && userInterface->IsConstructed()) widgets.Add(userInterface);
 	}
 
 	const int32 controllerId = UGameplayStatics::GetPlayerControllerID(this);

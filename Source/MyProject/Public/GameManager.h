@@ -14,6 +14,7 @@
 #include "Components/WidgetComponent.h"
 #include "LevelSequencePlayer.h"
 #include "Engine/StaticMeshActor.h"
+#include "Components/AudioComponent.h"
 #include "GameManager.generated.h"
 
 UCLASS()
@@ -54,6 +55,12 @@ protected:
 		float ForkliftTimer;
 	UPROPERTY(EditAnywhere)
 		float CameraSwitchTimer = 5.0f; //how long on each camera
+
+	UPROPERTY(EditAnywhere)
+	USoundBase* backgroundMusicTrack;
+	
+	UPROPERTY(EditAnywhere)
+		UAudioComponent* backgroundMusic;
 
 	//Handle to manage delays
 	FTimerHandle ForkliftTimerHandle;
