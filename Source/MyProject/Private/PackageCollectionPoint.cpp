@@ -36,6 +36,7 @@ APackageCollectionPoint::APackageCollectionPoint()
 
 	boxComponent->SetBoxExtent(FVector(260, 180, 90));
 	boxComponent->SetRelativeLocation(FVector(0, 0, 70));
+	boxComponent->SetRelativeRotation(FRotator(0, 90, 0));
 
 	static ConstructorHelpers::FObjectFinder<USoundWave> beepSoundObj(TEXT("/Game/Sounds/beep.beep"));
 
