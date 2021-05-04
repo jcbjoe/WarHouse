@@ -4,6 +4,8 @@
 #include "PhysicsProp.h"
 #include "DrawDebugHelpers.h"
 #include "WarhousePawn.h"
+#include "DestructibleComponent.h"
+#include "DestructibleProp.h"
 // Sets default values
 APhysicsProp::APhysicsProp()
 {
@@ -124,7 +126,7 @@ void APhysicsProp::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, 
 			Explode();
 		}
 
-		GetWorld()->GetTimerManager().SetTimer(timer, this, &APhysicsProp::AllowHit, 0.5f, false);
+		GetWorld()->GetTimerManager().SetTimer(Timer, this, &APhysicsProp::AllowHit, 0.5f, false);
 
 	}
 }
@@ -154,8 +156,20 @@ void APhysicsProp::Explode()
 			UStaticMeshComponent* mesh = Cast<UStaticMeshComponent>((hit.GetActor()->GetRootComponent()));
 			if (mesh)
 				mesh->AddRadialImpulse(Location, ImpactRadius, RadialImpactForce, ERadialImpulseFalloff::RIF_Constant, true);
+			//get destructible and apply force
+			ADestructibleProp* destructible = Cast<ADestructibleProp>(hit.GetActor());
+			if (destructible)
+			{
+				destructible->FireRadialImpulse();
+			}
 		}
 	}
+	GetWorld()->GetTimerManager().SetTimer(DestroySelfTimer, this, &APhysicsProp::DestroySelf, SelfDestroyTime, false);
+}
+
+void APhysicsProp::DestroySelf()
+{
+	this->Destroy();
 }
 
 void APhysicsProp::AllowHit()

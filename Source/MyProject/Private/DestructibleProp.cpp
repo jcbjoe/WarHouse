@@ -13,7 +13,14 @@ ADestructibleProp::ADestructibleProp()
 	PropMesh->SetNotifyRigidBodyCollision(true);
 	RootComponent = PropMesh;
 	PropMesh->SetSimulatePhysics(true);
-
+	//set up radial force
+	Force = CreateDefaultSubobject<URadialForceComponent>(TEXT("RadialForce")); // minor force component to add some impulse on break
+	Force->SetMobility(EComponentMobility::Static);
+	Force->SetupAttachment(RootComponent);
+	Force->Radius = 100.0f;
+	Force->ImpulseStrength = ImpulseForce;
+	Force->bImpulseVelChange = true;
+	Force->AddCollisionChannelToAffect(ECC_WorldDynamic);
 }
 
 // Called when the game starts or when spawned
@@ -33,4 +40,9 @@ void ADestructibleProp::Tick(float DeltaTime)
 void ADestructibleProp::DestroyProp()
 {
 	this->Destroy();
+}
+
+void ADestructibleProp::FireRadialImpulse()
+{
+	Force->FireImpulse();
 }
