@@ -62,7 +62,7 @@ private:
 
 	float moveIncrement = 0.5;
 
-	float amountToMove = 200;
+	float amountToMove = 163;
 
 	FVector originalPos;
 
