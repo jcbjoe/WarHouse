@@ -50,8 +50,7 @@ public:
 		void OnOverlapEnd(UPrimitiveComponent* OverlapComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 
 	TArray<APackageBase*> packages = TArray<APackageBase*>();
-
-
+	TArray<AActor*> OverlappingActors;
 	void ButtonPressed();
 
 private:
@@ -77,6 +76,6 @@ private:
 
 	const float beepSoundMultipler = 0.75;
 	const float liftSoundMultipler = 0.6;
-	
+
 	float volumeMultiplier = 1.0;
 };

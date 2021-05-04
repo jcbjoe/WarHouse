@@ -119,7 +119,7 @@ void APackageCollectionPoint::Tick(float DeltaTime)
 			if (!manager->shutters[index]->isShutterOpen()) return;
 
 			int amountOfPackages = packages.Num();
-			
+
 			for (auto packageToRemove : packages)
 			{
 				//divide package health by 100 to get the percentage of what it is worth i.e. more damge, less value
@@ -137,7 +137,7 @@ void APackageCollectionPoint::Tick(float DeltaTime)
 
 			packages.Empty();
 
-			if(amountOfPackages > 0) WarhouseHelpers::GetTruckPackageManager(GetWorld())->IncrementTruckStage(index + 1);
+			if (amountOfPackages > 0) WarhouseHelpers::GetTruckPackageManager(GetWorld())->IncrementTruckStage(index + 1);
 
 			packagesBeingRemoved = false;
 
@@ -198,12 +198,11 @@ void APackageCollectionPoint::OnOverlapBegin(UPrimitiveComponent* OverlapCompone
 				break;
 			}
 		}
-
-
 	}
 }
 
-void APackageCollectionPoint::OnOverlapEnd(UPrimitiveComponent* OverlapComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex) {
+void APackageCollectionPoint::OnOverlapEnd(UPrimitiveComponent* OverlapComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
+{
 	if (OtherActor->IsA(APackageBase::StaticClass())) {
 		auto package = Cast<APackageBase>(OtherActor);
 		if (!packagesBeingRemoved)
@@ -229,7 +228,6 @@ void APackageCollectionPoint::OnOverlapEnd(UPrimitiveComponent* OverlapComponent
 					break;
 				}
 			}
-
 		}
 	}
 }
@@ -247,4 +245,15 @@ void APackageCollectionPoint::ButtonPressed()
 	beepSound->Play();
 	liftSound->SetVolumeMultiplier(liftSoundMultipler * volumeMultiplier);
 	liftSound->Play();
+
+	//check if players are within the collider and kill them
+	boxComponent->GetOverlappingActors(OverlappingActors);
+	for (AActor* actor : OverlappingActors)
+	{
+		if (actor->IsA(AWarhousePawn::StaticClass()))
+		{
+			AWarhousePawn* player = Cast<AWarhousePawn>(actor);
+			player->KillPlayer();
+		}
+	}
 }
