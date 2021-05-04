@@ -11,7 +11,7 @@ AWarhouseForkliftTrigger::AWarhouseForkliftTrigger()
 	//box component
 	boxComponent = CreateDefaultSubobject<UBoxComponent>(FName("Collision Mesh"));
 	boxComponent->SetWorldLocation(GetActorLocation());
-	boxComponent->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);
+	boxComponent->SetupAttachment(RootComponent);
 	boxComponent->OnComponentBeginOverlap.AddDynamic(this, &AWarhouseForkliftTrigger::OnOverlapBegin);
 	boxComponent->OnComponentEndOverlap.AddDynamic(this, &AWarhouseForkliftTrigger::OnOverlapEnd);
 	boxComponent->SetBoxExtent(FVector(158, 128, 60));

@@ -3,6 +3,9 @@
 
 #include "BarGate.h"
 
+#include "PackageCollectionPoint.h"
+#include "WarhouseForklift.h"
+
 // Sets default values
 ABarGate::ABarGate()
 {
@@ -25,14 +28,24 @@ ABarGate::ABarGate()
 	Bar->SetRelativeLocation({ 0,34,153 });
 	Bar->SetupAttachment(RootComponent);
 
+	boxComponent = CreateDefaultSubobject<UBoxComponent>(FName("Collision Mesh"));
+
+	boxComponent->SetWorldLocation(GetActorLocation());
+	boxComponent->SetupAttachment(RootComponent);
+
+	boxComponent->SetBoxExtent({ 230,250,100 });
+	boxComponent->SetRelativeLocation({ -260,0,100 });
+
+	boxComponent->OnComponentBeginOverlap.AddDynamic(this, &ABarGate::OnOverlapBegin);
+
+	boxComponent->OnComponentEndOverlap.AddDynamic(this, &ABarGate::OnOverlapEnd);
+
 }
 
 // Called when the game starts or when spawned
 void ABarGate::BeginPlay()
 {
 	Super::BeginPlay();
-
-	MoveUp();
 
 }
 
@@ -80,4 +93,18 @@ void ABarGate::MoveDown()
 	isUp = false;
 	movingDown = true;
 	movingUp = false;
+}
+
+void ABarGate::OnOverlapBegin(UPrimitiveComponent* OverlapComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	if (OtherActor->IsA(AWarhouseForklift::StaticClass())) {
+		MoveUp();
+	}
+}
+
+void ABarGate::OnOverlapEnd(UPrimitiveComponent* OverlapComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
+{
+	if (OtherActor->IsA(AWarhouseForklift::StaticClass())) {
+		MoveDown();
+	}
 }

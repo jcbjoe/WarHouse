@@ -19,7 +19,7 @@ APlayerSpawnPoint::APlayerSpawnPoint()
 	ship = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ShipMesh"));
 	ship->SetStaticMesh(ShipMesh.Object);
 
-	ship->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);
+	ship->SetupAttachment(RootComponent);
 	ship->SetMaterial(0, TransparentMat.Object);
 }
 

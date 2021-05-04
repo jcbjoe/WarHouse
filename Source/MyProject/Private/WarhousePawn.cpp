@@ -83,7 +83,7 @@ AWarhousePawn::AWarhousePawn()
 	//--- Physics handle setup
 	PhysicsHandle = CreateDefaultSubobject<UPhysicsHandleComponent>(TEXT("PhysicsHandle"));
 	HeldLocation = CreateDefaultSubobject<USceneComponent>(FName("HoldLocation"));
-	HeldLocation->AttachToComponent(ShipMeshComponent, FAttachmentTransformRules::KeepRelativeTransform);
+	HeldLocation->SetupAttachment(ShipMeshComponent);
 	HeldLocation->SetRelativeLocation({ 150,0,0, });
 
 	//--- Beam emitter setup
@@ -91,7 +91,7 @@ AWarhousePawn::AWarhousePawn()
 
 	beamEmitter = CreateDefaultSubobject<UNiagaraComponent>(TEXT("Beam"));
 	beamEmitter->SetAsset(nEmitter.Object);
-	beamEmitter->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);
+	beamEmitter->SetupAttachment(RootComponent);
 
 	//--- Sparks emitter setup
 	ConstructorHelpers::FObjectFinder<UNiagaraSystem> sparksEmitterSystem(TEXT("/Game/Assets/JoeAssets/Sparks/Sparks_System.Sparks_System"));

@@ -11,7 +11,7 @@ AWarhouseConveyorBeltTrigger::AWarhouseConveyorBeltTrigger()
 	//set up box collision
 	boxComponent = CreateDefaultSubobject<UBoxComponent>(FName("Collision Mesh"));
 	boxComponent->SetWorldLocation(GetActorLocation());
-	boxComponent->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);
+	boxComponent->SetupAttachment(RootComponent);
 	boxComponent->OnComponentBeginOverlap.AddDynamic(this, &AWarhouseConveyorBeltTrigger::OnOverlapBegin);
 	//boxComponent->OnComponentEndOverlap.AddDynamic(this, &AWarhouseConveyorBeltTrigger::OnOverlapEnd);
 	boxComponent->SetBoxExtent(FVector(120, 100, 60));

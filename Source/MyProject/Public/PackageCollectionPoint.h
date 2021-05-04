@@ -30,11 +30,12 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-	UPROPERTY(Category = Gameplay, EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(EditDefaultsOnly)
 		UBoxComponent* boxComponent;
 
-	UPROPERTY(Category = Gameplay, EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(EditDefaultsOnly)
 		UStaticMeshComponent* base;
+	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Bonus Multiplier")
 		float PackageBonus = 1.0f;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Bonus Multiplier")
