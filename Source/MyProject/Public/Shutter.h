@@ -52,6 +52,11 @@ private:
 	UMaterial* yellow;
 	UMaterial* white;
 
+	UMaterial* glasses;
+	UMaterial* ironMan;
+	UMaterial* smiley;
+	UMaterial* tux;
+
 	bool opening = false;
 	bool closing = false;
 

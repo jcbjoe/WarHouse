@@ -14,11 +14,21 @@ AShutter::AShutter()
 	static ConstructorHelpers::FObjectFinder<UMaterial> yellowMat(TEXT("/Game/Assets/ConorAssets/Player/PlayerYellow.PlayerYellow"));
 	static ConstructorHelpers::FObjectFinder<UMaterial> whiteMat(TEXT("/Game/Assets/ConorAssets/Player/PlayerWhite.PlayerWhite"));
 
+	static ConstructorHelpers::FObjectFinder<UMaterial> glassesMat(TEXT("/Game/Assets/ConorAssets/Player/Glasses/GlassesColour.GlassesColour"));
+	static ConstructorHelpers::FObjectFinder<UMaterial> ironManMat(TEXT("/Game/Assets/ConorAssets/Player/IronMan/IronManColour.IronManColour"));
+	static ConstructorHelpers::FObjectFinder<UMaterial> smileyMat(TEXT("/Game/Assets/ConorAssets/Player/Smiley/SmileyColour.SmileyColour"));
+	static ConstructorHelpers::FObjectFinder<UMaterial> tuxMat(TEXT("/Game/Assets/ConorAssets/Player/Tux/TuxColour.TuxColour"));
+
 	red = redMat.Object;
 	blue = blueMat.Object;
 	yellow = yellowMat.Object;
 	white = whiteMat.Object;
 
+	glasses = glassesMat.Object;
+	ironMan = ironManMat.Object;
+	smiley = smileyMat.Object;
+	tux = tuxMat.Object;
+	
 	static ConstructorHelpers::FObjectFinder<UStaticMesh> shutterMesh(TEXT("/Game/Assets/ConorAssets/Shutters/ShutterDoor_1.ShutterDoor_1"));
 
 	mesh = CreateDefaultSubobject<UStaticMeshComponent>(FName("Mesh"));
@@ -113,16 +123,16 @@ void AShutter::SetColour(EPlayerColours colour)
 		mesh->SetMaterial(0, yellow);
 		break;
 	case EPlayerColours::smiley:
-		mesh->SetMaterial(0, yellow);
+		mesh->SetMaterial(0, smiley);
 		break;
 	case EPlayerColours::tux:
-		mesh->SetMaterial(0, yellow);
+		mesh->SetMaterial(0, tux);
 		break;
 	case EPlayerColours::glasses:
-		mesh->SetMaterial(0, yellow);
+		mesh->SetMaterial(0, glasses);
 		break;
 	case EPlayerColours::ironman:
-		mesh->SetMaterial(0, yellow);
+		mesh->SetMaterial(0, ironMan);
 		break;
 	}
 }
