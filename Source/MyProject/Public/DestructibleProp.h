@@ -9,6 +9,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "DestructibleComponent.h"
 #include "GameFramework/DamageType.h"
+#include "PhysicsEngine/RadialForceComponent.h"
 #include "DestructibleProp.generated.h"
 
 UCLASS()
@@ -20,16 +21,22 @@ public:
 	// Sets default values for this actor's properties
 	ADestructibleProp();
 
-	void CanHit();
+	//void CanHit();
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 	//properties
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Mesh")
 		UDestructibleComponent* PropMesh;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Radial Force")
+		URadialForceComponent* Force;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Radial Force")
+		float ImpulseForce = 100000.0f;
 public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 	UFUNCTION()
 		void DestroyProp();
+	UFUNCTION()
+		void FireRadialImpulse();
 };

@@ -57,8 +57,9 @@ protected:
 	bool isPropDead = false;
 	//for checking who is hit by the radial force
 	TArray<FHitResult> HitActors;
-	FTimerHandle timer;
-
+	FTimerHandle Timer;
+	FTimerHandle DestroySelfTimer;
+	float SelfDestroyTime = 1.0f;
 	bool canRegisterHit = true;
 
 	void AllowHit();
@@ -82,4 +83,6 @@ public:
 		void OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
 	UFUNCTION()
 		void Explode();
+	UFUNCTION()
+		void DestroySelf();
 };
