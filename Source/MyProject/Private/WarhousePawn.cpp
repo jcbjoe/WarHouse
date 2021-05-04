@@ -399,21 +399,27 @@ void AWarhousePawn::Tick(float DeltaSeconds)
 		{
 			AActor* heldActor = PhysicsHandle->GetGrabbedComponent()->GetOwner();
 
+			//--- A item is being held - Calculate and show the floor decal
+			FVector floorDecalPos = PhysicsHandle->GetGrabbedComponent()->GetComponentLocation();
+
+			floorDecalPos.Z = 0;
+			floorDecal->SetWorldLocation(floorDecalPos);
+
+			floorDecal->SetVisibility(true);
+
+			if (Cast<AMyPlayerController>(GetController())->IsInputKeyDown(EKeys::Gamepad_LeftShoulder))
+			{
+				DropHeldItem();
+			}
+
+			//--- If the distance is 350 away stop holding the package
+			float distance = FVector::Dist(GetActorLocation(), heldActor->GetActorLocation());
+			if (distance > 350) {
+				DropHeldItem();
+			}
+			
 			if (heldActor->IsA(APackageBase::StaticClass()))
 			{
-				//--- A item is being held - Calculate and show the floor decal
-				FVector floorDecalPos = PhysicsHandle->GetGrabbedComponent()->GetComponentLocation();
-
-				floorDecalPos.Z = 0;
-				floorDecal->SetWorldLocation(floorDecalPos);
-
-				floorDecal->SetVisibility(true);
-
-				if (Cast<AMyPlayerController>(GetController())->IsInputKeyDown(EKeys::Gamepad_LeftShoulder))
-				{
-					DropHeldItem();
-				}
-
 				APackageBase* package = Cast<APackageBase>(heldActor);
 
 				//--- Decrement the battery depending on how many people are holding the same package
@@ -428,14 +434,7 @@ void AWarhousePawn::Tick(float DeltaSeconds)
 				//--- Set movement speed based on weight
 				float weight = package->GetPackageWeight();
 				MoveSpeed = DefaultMoveSpeed - (weight * 10);
-
-				//--- If the distance is 350 away stop holding the package
-				float distance = FVector::Dist(GetActorLocation(), package->GetActorLocation());
-				if (distance > 350) {
-					DropHeldItem();
-				}
 			}
-
 		}
 		else {
 			MoveSpeed = DefaultMoveSpeed;
