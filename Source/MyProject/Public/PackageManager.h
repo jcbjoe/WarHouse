@@ -20,9 +20,7 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data")
-		int TotalPackagesAmount = 10;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data")
-		int PackageThreshold;
+		int TotalPackagesAmount = 25;
 
 	FString GetPackageDetails();
 	UFUNCTION()
