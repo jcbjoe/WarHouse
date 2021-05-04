@@ -103,8 +103,6 @@ void APackageManager::NewPackages()
 void APackageManager::BeginPlay()
 {
 	Super::BeginPlay();
-	//set package threshhold for spawning new packages
-	PackageThreshold = TotalPackagesAmount * 0.5;
 
 	//get json data
 	FString Result = GetPackageDetails();
