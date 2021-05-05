@@ -19,7 +19,7 @@ AWarhouseConveyorBelt::AWarhouseConveyorBelt()
 	//box component
 	boxComponent = CreateDefaultSubobject<UBoxComponent>(FName("Collision Mesh"));
 	boxComponent->SetWorldLocation(GetActorLocation());
-	boxComponent->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);
+	boxComponent->SetupAttachment(RootComponent);
 	boxComponent->OnComponentBeginOverlap.AddDynamic(this, &AWarhouseConveyorBelt::OnOverlapBegin);
 	boxComponent->OnComponentEndOverlap.AddDynamic(this, &AWarhouseConveyorBelt::OnOverlapEnd);
 	boxComponent->SetBoxExtent(FVector(2025, 85, 40));

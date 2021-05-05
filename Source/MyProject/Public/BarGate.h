@@ -3,6 +3,8 @@
 #pragma once
 
 #include "CoreMinimal.h"
+
+#include "Components/BoxComponent.h"
 #include "GameFramework/Actor.h"
 #include "BarGate.generated.h"
 
@@ -25,13 +27,23 @@ protected:
 	UPROPERTY(EditDefaultsOnly)
 		UStaticMeshComponent* Bar;
 
+	UPROPERTY(EditDefaultsOnly)
+		UBoxComponent* boxComponent;
+
+	UFUNCTION()
+		void OnOverlapBegin(class UPrimitiveComponent* OverlapComponent, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+
+	UFUNCTION()
+		void OnOverlapEnd(UPrimitiveComponent* OverlapComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
+
+	
 private:
 	bool movingUp = false;
 	bool movingDown = false;
 
 	bool isUp = false;
 	bool isDown = true;
-	
+
 public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;

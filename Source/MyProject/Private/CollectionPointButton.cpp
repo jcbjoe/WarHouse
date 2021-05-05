@@ -27,7 +27,7 @@ ACollectionPointButton::ACollectionPointButton()
 
 	boxComponent->SetWorldLocation(GetActorLocation());
 
-	boxComponent->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);
+	boxComponent->SetupAttachment(RootComponent);
 
 	boxComponent->OnComponentBeginOverlap.AddDynamic(this, &ACollectionPointButton::OnOverlapBegin);
 

@@ -28,7 +28,7 @@ APackageCollectionPoint::APackageCollectionPoint()
 
 	boxComponent->SetWorldLocation(GetActorLocation());
 
-	boxComponent->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);
+	boxComponent->SetupAttachment(RootComponent);
 
 	boxComponent->OnComponentBeginOverlap.AddDynamic(this, &APackageCollectionPoint::OnOverlapBegin);
 
