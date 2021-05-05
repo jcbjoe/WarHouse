@@ -50,7 +50,6 @@ void APhysicsProp::BeginPlay()
 void APhysicsProp::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
 }
 
 bool APhysicsProp::GetCanPickUp()
