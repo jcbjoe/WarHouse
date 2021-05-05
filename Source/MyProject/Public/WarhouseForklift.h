@@ -23,7 +23,7 @@ class MYPROJECT_API AWarhouseForklift : public AActor
 public:
 	// Sets default values for this actor's properties
 	AWarhouseForklift();
-
+	//UFunctions
 	UFUNCTION()
 		void DeliverPackages();
 	UFUNCTION()
@@ -36,50 +36,42 @@ public:
 		void OnOverlapBegin(class UPrimitiveComponent* OverlapComponent, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 	UFUNCTION()
 		void OnOverlapEnd(UPrimitiveComponent* OverlapComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
-
+	//normal functions
+	virtual void Tick(float DeltaTime) override;
+	void Stop();
+	void PrepareForkliftForAnotherDelivery();
+	void AddPackageToArray(APackageBase* package);
+	void RemoveAndDestroyPackages();
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Mesh")
+	UPROPERTY(EditDefaultsOnly)
 		UStaticMeshComponent* BaseMesh;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Mesh")
+	UPROPERTY(EditDefaultsOnly)
 		UStaticMeshComponent* FrontWheels;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Mesh")
+	UPROPERTY(EditDefaultsOnly)
 		UStaticMeshComponent* BackWheels;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Mesh")
+	UPROPERTY(EditDefaultsOnly)
 		UStaticMeshComponent* Blades;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Mesh")
+	UPROPERTY(EditDefaultsOnly)
 		UStaticMeshComponent* LiftBit;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Mesh")
+	UPROPERTY(EditDefaultsOnly)
 		UStaticMeshComponent* Pallet;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Forklift Data")
+	UPROPERTY(EditAnywhere)
 		float ForkliftWaitSeconds = 5.0f;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Forklift Data")
+	UPROPERTY(EditAnywhere)
 		bool isMoving;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Forklift Data")
+	UPROPERTY(EditAnywhere)
 		float Speed = 500.0f;
 	UPROPERTY(Category = Gameplay, EditAnywhere, BlueprintReadWrite)
 		UBoxComponent* boxComponent;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Package Spawn Points")
+	UPROPERTY(EditDefaultsOnly)
 		USceneComponent* PackageSpawn1;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Package Spawn Points")
+	UPROPERTY(EditDefaultsOnly)
 		USceneComponent* PackageSpawn2;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sound")
+	UPROPERTY(EditDefaultsOnly)
 		UAudioComponent* AudioComponent;
-
-	float DefaultSpeed = 500.0f;
-
-	float WheelRotation = 0;
-
-	float volumeMultiplier = 0.0f;
-	
-	const float engineSoundVolume = 0.5f;
-
-	FTimerHandle ForkliftTimerHandle;
-	//anim stuff
-	FTimeline CurveTimeline;
-
-	UPROPERTY(EditAnywhere, Category = "Timeline")
+	UPROPERTY(EditDefaultsOnly, Category = "Timeline")
 		UCurveFloat* CurveFloat;
 	UPROPERTY()
 		FVector StartLocation = FVector(-200.0f, -4174.0f, 0);
@@ -91,17 +83,22 @@ protected:
 		float ZOffset;
 	UPROPERTY(EditAnywhere, Category = "Data")
 		FRotator TurnAround;
-	UPROPERTY(EditAnywhere, Category = "Data")
-		TArray<APackageBase*> PackagesToRemove;
 
+	//member variables
+	float DefaultSpeed = 500.0f;
+	float WheelRotation = 0;
+	float volumeMultiplier = 0.0f;
+	const float engineSoundVolume = 0.5f;
+	//array to hold all packages on the forklift
+	TArray<APackageBase*> PackagesToRemove;
+	//timer handle
+	FTimerHandle ForkliftTimerHandle;
+	//anim stuff
+	FTimeline CurveTimeline;
+	//movement functions
 	void RotateWheels();
 	void MoveForklift(float DeltaTime);
 	void RotateForklift();
 public:
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
-	void Stop();
-	void PrepareForkliftForAnotherDelivery();
-	void AddPackageToArray(APackageBase* package);
-	void RemoveAndDestroyPackages();
+
 };

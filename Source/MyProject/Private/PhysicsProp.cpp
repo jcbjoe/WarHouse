@@ -10,8 +10,8 @@
 // Sets default values
 APhysicsProp::APhysicsProp()
 {
-	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = true;
+	//Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
+	PrimaryActorTick.bCanEverTick = false;
 	//set up mesh
 	PropMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("packageMesh"));
 	PropMeshComponent->SetNotifyRigidBodyCollision(true);
@@ -37,7 +37,9 @@ APhysicsProp::APhysicsProp()
 void APhysicsProp::BeginPlay()
 {
 	Super::BeginPlay();
+	//stop particles playing
 	ParticleSystemComponent->DeactivateSystem();
+	//add collision function for when a hit is detected
 	PropMeshComponent->OnComponentHit.AddDynamic(this, &APhysicsProp::OnHit);
 	//check properties to see what behaviour should be allowed
 	if (IsFragile)
@@ -84,11 +86,10 @@ bool APhysicsProp::GetCanExplode()
 
 void APhysicsProp::ActivateParticles()
 {
-	//ParticleSystemComponent->Activate();
-
+	//turn on visibilty and activate the system
 	ParticleSystemComponent->SetVisibility(true);
 	ParticleSystemComponent->ActivateSystem();
-	//set timer to deactivate particle system
+	//set timer to auto deactivate particle system
 	GetWorld()->GetTimerManager().SetTimer(ParticlesTimerHandle, this, &APhysicsProp::DeactivateParticles, ParticleLife, false);
 }
 
@@ -107,20 +108,21 @@ void APhysicsProp::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, 
 {
 	if ((OtherActor != NULL) && (OtherActor != this) && (OtherComp != NULL))
 	{
+		//get the velocity of this prop
 		auto velocity = this->GetVelocity().Size();
-
+		//if velocity is fast enough to register movement, deduct health from it
 		if (velocity > 105 && !isPropDead && canRegisterHit)
 		{
 			PropHealth -= 5.0f;
 		}
-
+		//if this prop is using a particle system to be activated on death, activate it
 		if (GetUseParticleEmitter() && PropHealth < 0.0f)
 		{
 			PropHealth = 0.0f;
 			isPropDead = true;
 			ActivateParticles();
 		}
-
+		//or if it can explode on death, call Explode()
 		if (GetCanExplode() && PropHealth < 0.0f)
 		{
 			PropHealth = 0.0f;
@@ -129,24 +131,26 @@ void APhysicsProp::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, 
 				ActivateParticles();
 			Explode();
 		}
-
-		GetWorld()->GetTimerManager().SetTimer(Timer, this, &APhysicsProp::AllowHit, 0.5f, false);
+		//reset timer to allow prop to be hit again, this will prevent multiple hits in a frame
+		GetWorld()->GetTimerManager().SetTimer(AllowHitTimer, this, &APhysicsProp::AllowHit, 0.5f, false);
 	}
 }
 
 void APhysicsProp::Explode()
 {
 	//play sound
-	UGameplayStatics::PlaySoundAtLocation(GetWorld(), soundBase, this->GetActorLocation(), 0.5f * volumeMultiplier);
+	UGameplayStatics::PlaySoundAtLocation(GetWorld(), soundBase, this->GetActorLocation(), 0.5f);
 	//activate particles
 	ActivateParticles();
-	//radial impulse
+	//get this props location
 	FVector Location = this->GetActorLocation();
+	//create a sphere collider to be used in the collision check
 	FCollisionShape SphereCol = FCollisionShape::MakeSphere(ImpactRadius);
-	//DrawDebugSphere(GetWorld(), this->GetActorLocation(), SphereCol.GetSphereRadius(), 50, FColor::Emerald, true);
+	//sweep for multiple actors at this location using the sphere collider and store hit actors into a TArray
 	bool SweepHit = GetWorld()->SweepMultiByChannel(HitActors, Location, Location, FQuat::Identity, ECC_WorldStatic, SphereCol);
 	if (SweepHit)
 	{
+		//loop through the array of hit actors
 		for (auto& hit : HitActors)
 		{
 			//check if its a player and kill them
@@ -155,11 +159,11 @@ void APhysicsProp::Explode()
 				AWarhousePawn* player = Cast<AWarhousePawn>(hit.GetActor());
 				player->KillPlayer();
 			}
-			//get the mesh and apply force
+			//get the mesh and apply an impulse to it
 			UStaticMeshComponent* mesh = Cast<UStaticMeshComponent>((hit.GetActor()->GetRootComponent()));
 			if (mesh)
 				mesh->AddRadialImpulse(Location, ImpactRadius, RadialImpactForce, ERadialImpulseFalloff::RIF_Constant, true);
-			//get destructible and apply force
+			//if the actor is destructible, activate that props radial force component
 			ADestructibleProp* destructible = Cast<ADestructibleProp>(hit.GetActor());
 			if (destructible)
 			{
@@ -167,6 +171,7 @@ void APhysicsProp::Explode()
 			}
 		}
 	}
+	//destroy self after time has elapsed
 	GetWorld()->GetTimerManager().SetTimer(DestroySelfTimer, this, &APhysicsProp::DestroySelf, SelfDestroyTime, false);
 }
 

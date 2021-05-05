@@ -16,8 +16,6 @@ class MYPROJECT_API APackageSpawnActor : public AActor
 public:
 	// Sets default values for this actor's properties
 	APackageSpawnActor();
-
-
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 

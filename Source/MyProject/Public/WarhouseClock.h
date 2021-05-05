@@ -17,21 +17,19 @@ class MYPROJECT_API AWarhouseClock : public AActor
 public:
 	// Sets default values for this actor's properties
 	AWarhouseClock();
-
-protected:
-	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
-	//properties
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Clock Mesh")
-		UStaticMeshComponent* ClockMesh;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Display")
-		UTextRenderComponent* TimeText;
-	UPROPERTY(Category = Gameplay, EditAnywhere, BlueprintReadWrite)
-		USceneComponent* base;
-public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
 	void SetTime(int time);
 
+protected:
+	// Called when the game starts or when spawned
+	virtual void BeginPlay() override;
+	//properties
+	UPROPERTY(EditDefaultsOnly)
+		UStaticMeshComponent* ClockMesh;
+	UPROPERTY(EditDefaultsOnly)
+		UTextRenderComponent* TimeText;
+	UPROPERTY(EditDefaultsOnly)
+		USceneComponent* base;
 };

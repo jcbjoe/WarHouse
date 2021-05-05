@@ -18,41 +18,41 @@ AWarhouseForklift::AWarhouseForklift()
 	BaseMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("BaseMesh"));
 	BaseMesh->SetStaticMesh(forkliftBase.Object);
 	RootComponent = BaseMesh;
-
+	//Wheels
 	static ConstructorHelpers::FObjectFinder<UStaticMesh> forkliftWheels(TEXT("/Game/Assets/ConorAssets/Forklift/ForkliftWheels.ForkliftWheels"));
 
 	FrontWheels = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("FrontWheels"));
 	FrontWheels->SetStaticMesh(forkliftWheels.Object);
-	FrontWheels->SetRelativeLocation({103,0,25});
+	FrontWheels->SetRelativeLocation({ 103,0,25 });
 	FrontWheels->SetupAttachment(RootComponent);
 	FrontWheels->SetGenerateOverlapEvents(false);
-	
+
 	BackWheels = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("BackWheels"));
 	BackWheels->SetStaticMesh(forkliftWheels.Object);
 	BackWheels->SetRelativeLocation({ -111,0,25 });
 	BackWheels->SetupAttachment(RootComponent);
 	BackWheels->SetGenerateOverlapEvents(false);
-
+	//lift bit
 	static ConstructorHelpers::FObjectFinder<UStaticMesh> forkliftLift(TEXT("/Game/Assets/ConorAssets/Forklift/ForkliftBody_polySurface82.ForkliftBody_polySurface82"));
 	LiftBit = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("LiftBit"));
 	LiftBit->SetStaticMesh(forkliftLift.Object);
 	LiftBit->SetupAttachment(RootComponent);
 	LiftBit->SetGenerateOverlapEvents(false);
-
+	//blades
 	static ConstructorHelpers::FObjectFinder<UStaticMesh> forkliftForks(TEXT("/Game/Assets/ConorAssets/Forklift/ForkliftBody_polySurface81.ForkliftBody_polySurface81"));
 	Blades = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Blades"));
 	Blades->SetStaticMesh(forkliftForks.Object);
 	Blades->SetupAttachment(RootComponent);
 	Blades->SetGenerateOverlapEvents(false);
-
+	//pallet
 	static ConstructorHelpers::FObjectFinder<UStaticMesh> palletObj(TEXT("/Game/Assets/ConorAssets/Pallet/pallet.pallet"));
 	Pallet = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Pallet"));
 	Pallet->SetStaticMesh(palletObj.Object);
 	Pallet->SetRelativeLocation({ 360,0.3,9 });
-	Pallet->SetRelativeRotation(FRotator::MakeFromEuler({0,0,-90}));
+	Pallet->SetRelativeRotation(FRotator::MakeFromEuler({ 0,0,-90 }));
 	Pallet->SetupAttachment(RootComponent);
 	Pallet->SetGenerateOverlapEvents(false);
-
+	//box component
 	boxComponent = CreateDefaultSubobject<UBoxComponent>(FName("Collision Mesh"));
 	boxComponent->SetWorldLocation(GetActorLocation());
 	boxComponent->SetupAttachment(RootComponent);
@@ -60,14 +60,12 @@ AWarhouseForklift::AWarhouseForklift()
 	boxComponent->OnComponentEndOverlap.AddDynamic(this, &AWarhouseForklift::OnOverlapEnd);
 	boxComponent->SetBoxExtent(FVector(120, 100, 60));
 	boxComponent->SetRelativeLocation(FVector(380, 0, 70));
-
+	//components to spawn packages at their location
 	PackageSpawn1 = CreateDefaultSubobject<USceneComponent>(TEXT("Spawn1"));
-	//PackageSpawn1->SetChildActorClass(ASpecialPackageSpawnActor::StaticClass());
 	PackageSpawn1->SetRelativeLocation({ 335,-45,200 });
 	PackageSpawn1->SetupAttachment(RootComponent);
-	
+
 	PackageSpawn2 = CreateDefaultSubobject<USceneComponent>(TEXT("Spawn2"));
-	//PackageSpawn2->SetChildActorClass(ASpecialPackageSpawnActor::StaticClass());
 	PackageSpawn2->SetRelativeLocation({ 435,45,200 });
 	PackageSpawn2->SetupAttachment(RootComponent);
 	//set up audio
@@ -86,10 +84,8 @@ void AWarhouseForklift::DeliverPackages()
 
 void AWarhouseForklift::ResumeMovement()
 {
-
 	isMoving = true;
 	Speed = DefaultSpeed;
-
 }
 
 void AWarhouseForklift::GetReadyToDeliver()
@@ -129,7 +125,7 @@ void AWarhouseForklift::OnOverlapEnd(UPrimitiveComponent* OverlapComponent, AAct
 void AWarhouseForklift::BeginPlay()
 {
 	Super::BeginPlay();
-
+	//for bobbing the forkilft up and down
 	if (CurveFloat)
 	{
 		FOnTimelineFloat TimelineProgress;
@@ -140,20 +136,20 @@ void AWarhouseForklift::BeginPlay()
 		EndLocation.Z = ZOffset;
 		CurveTimeline.PlayFromStart();
 	}
-
+	//prevent forklift from moving before its needed
 	Speed = 0.0f;
-	
+	//activate overlap events on collision box
 	boxComponent->SetGenerateOverlapEvents(true);
-
+	//apply user settings
 	if (USettingsSave* LoadedGame = Cast<USettingsSave>(UGameplayStatics::LoadGameFromSlot("SettingsSlot", 0)))
 	{
 		volumeMultiplier = LoadedGame->SFXVolume;
 	}
-
+	//get refernce to PAckageManager
 	auto packageManager = WarhouseHelpers::GetPackageManager(GetWorld());
-
+	//play the audio
 	AudioComponent->Play();
-	
+	//spawn two special packages on the pallet
 	packageManager->SpawnSpecialPackage(packageManager->GetConfig(), PackageSpawn1->GetComponentLocation());
 	packageManager->SpawnSpecialPackage(packageManager->GetConfig(), PackageSpawn2->GetComponentLocation());
 }
@@ -178,7 +174,6 @@ void AWarhouseForklift::Stop()
 	Speed = 0.0f;
 	GetWorld()->GetTimerManager().SetTimer(ForkliftTimerHandle, this, &AWarhouseForklift::ResumeMovement, ForkliftWaitSeconds, false);
 	AudioComponent->Stop();
-	//boxComponent->SetGenerateOverlapEvents(true);
 }
 
 void AWarhouseForklift::RotateWheels()
@@ -197,7 +192,8 @@ void AWarhouseForklift::Tick(float DeltaTime)
 		MoveForklift(DeltaTime);
 		RotateWheels();
 		AudioComponent->SetVolumeMultiplier(engineSoundVolume * volumeMultiplier);
-	} else
+	}
+	else
 	{
 		AudioComponent->SetVolumeMultiplier(0.0f);
 	}

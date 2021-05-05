@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 #pragma once
 
@@ -11,45 +11,34 @@ UCLASS()
 class MYPROJECT_API ATruckPackageManager : public AActor
 {
 	GENERATED_BODY()
-	
-public:	
+
+public:
 	// Sets default values for this actor's properties
 	ATruckPackageManager();
-
 	void IncrementTruckStage(int truckNumber);
-
 	void UpdateTrucks();
-
 	void SetPackagesHidden();
-
 	void CheckIfFull();
-
 	void EmptyTruck(int truckNumber);
-
 	void RemovePackagesFromTruck1();
-
 	void RemovePackagesFromTruck2();
-
 	void RemovePackagesFromTruck3();
-
 	void RemovePackagesFromTruck4();
+	// Called every frame
+	virtual void Tick(float DeltaTime) override;
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	TArray<AStaticMeshActor*> Truck1PackageStages;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(EditDefaultsOnly)
+		TArray<AStaticMeshActor*> Truck1PackageStages;
+	UPROPERTY(EditDefaultsOnly)
 		TArray<AStaticMeshActor*> Truck2PackageStages;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(EditDefaultsOnly)
 		TArray<AStaticMeshActor*> Truck3PackageStages;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(EditDefaultsOnly)
 		TArray<AStaticMeshActor*> Truck4PackageStages;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(EditDefaultsOnly)
 		int secondsTillShutterOpens = 6;
 
 private:
@@ -58,14 +47,12 @@ private:
 	int truck3Stage = 0;
 	int truck4Stage = 0;
 
-	
+
 	FTimerHandle truck1Handle;
 	FTimerHandle truck2Handle;
 	FTimerHandle truck3Handle;
 	FTimerHandle truck4Handle;
-	
-public:	
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
+
+public:
 
 };

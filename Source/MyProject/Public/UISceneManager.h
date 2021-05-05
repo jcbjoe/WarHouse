@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 #pragma once
 
@@ -15,14 +15,12 @@ class MYPROJECT_API AUISceneManager : public AActor
 public:
 	// Sets default values for this actor's properties
 	AUISceneManager();
-
-	void SetupPlayerControllersForUI();
-
+	// Called every frame
+	virtual void Tick(float DeltaTime) override;
 	void UnloadCurrentWidget();
 
 	UFUNCTION(BlueprintCallable)
 		void ChangeActiveWidget(FName widgetName);
-
 protected:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
@@ -33,6 +31,6 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		TMap<FName, TSubclassOf<UUserWidget>> widgets;
 private:
-
+	void SetupPlayerControllersForUI();
 	UUserWidget* currentWidget = nullptr;
 };
