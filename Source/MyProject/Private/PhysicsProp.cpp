@@ -137,7 +137,7 @@ void APhysicsProp::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, 
 void APhysicsProp::Explode()
 {
 	//play sound
-	UGameplayStatics::PlaySoundAtLocation(GetWorld(), soundBase, this->GetActorLocation(), 0.5f * volumeMultiplier);
+	UGameplayStatics::PlaySoundAtLocation(GetWorld(), soundBase, this->GetActorLocation(), 0.5f);
 	//activate particles
 	ActivateParticles();
 	//radial impulse
