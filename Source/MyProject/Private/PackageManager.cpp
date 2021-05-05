@@ -49,7 +49,7 @@ void APackageManager::SpawnPackage(FConfig config)
 	Packages.Add(package);
 }
 
-void APackageManager::SpawnSpecialPackage(FConfig config)
+void APackageManager::SpawnSpecialPackages(FConfig config)
 {
 	for (int i = 0; i < SpecialPackageLocations.Num(); i++)
 	{
@@ -70,6 +70,25 @@ void APackageManager::SpawnSpecialPackage(FConfig config)
 		//add to list of packages
 		Packages.Add(package);
 	}
+}
+
+
+void APackageManager::SpawnSpecialPackage(FConfig config, FVector location)
+{
+	// Get Random package type
+	auto jsonLength = config.packages.Num();
+	auto randomNumber2 = FMath::RandRange(0, jsonLength - 1);
+	auto packageType = config.packages[randomNumber2];
+	FRotator Rotation(0.0f, 0.0f, 0.0f); //we may need to change this later to an actual rotation
+	FActorSpawnParameters SpawnInfo;
+	SpawnInfo.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+	//spawn package
+	APackageBase* package = GetWorld()->SpawnActor<APackageBase>(location, Rotation, SpawnInfo);
+	package->InitialisePackage(packageType);
+	//make special
+	package->SetPackageSpecial();
+	//add to list of packages
+	Packages.Add(package);
 }
 
 void APackageManager::RemovePackage(APackageBase* package)
@@ -119,7 +138,7 @@ void APackageManager::BeginPlay()
 		SpawnPackage(Config);
 	}
 
-	SpawnSpecialPackage(Config);
+	SpawnSpecialPackages(Config);
 }
 
 // Called every frame

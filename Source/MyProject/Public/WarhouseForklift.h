@@ -61,9 +61,9 @@ protected:
 	UPROPERTY(Category = Gameplay, EditAnywhere, BlueprintReadWrite)
 		UBoxComponent* boxComponent;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Package Spawn Points")
-		UChildActorComponent* PackageSpawn1;
+		USceneComponent* PackageSpawn1;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Package Spawn Points")
-		UChildActorComponent* PackageSpawn2;
+		USceneComponent* PackageSpawn2;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Package Manager")
 		APackageManager* PackageManager;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sound")
@@ -72,6 +72,10 @@ protected:
 	float DefaultSpeed = 500.0f;
 
 	float WheelRotation = 0;
+
+	float volumeMultiplier = 0.0f;
+	
+	const float engineSoundVolume = 0.2f;
 
 	FTimerHandle ForkliftTimerHandle;
 	//anim stuff

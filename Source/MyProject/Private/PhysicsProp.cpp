@@ -6,6 +6,7 @@
 #include "WarhousePawn.h"
 #include "DestructibleComponent.h"
 #include "DestructibleProp.h"
+#include "SettingsSave.h"
 // Sets default values
 APhysicsProp::APhysicsProp()
 {
@@ -43,6 +44,11 @@ void APhysicsProp::BeginPlay()
 	if (IsFragile)
 	{
 		PropHealth = 1.0f;
+	}
+
+	if (USettingsSave* LoadedGame = Cast<USettingsSave>(UGameplayStatics::LoadGameFromSlot("SettingsSlot", 0)))
+	{
+		volumeMultiplier = LoadedGame->SFXVolume;
 	}
 }
 
@@ -134,7 +140,7 @@ void APhysicsProp::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, 
 void APhysicsProp::Explode()
 {
 	//play sound
-	UGameplayStatics::PlaySoundAtLocation(GetWorld(), soundBase, this->GetActorLocation(), 1.0f);
+	UGameplayStatics::PlaySoundAtLocation(GetWorld(), soundBase, this->GetActorLocation(), 0.5f * volumeMultiplier);
 	//activate particles
 	ActivateParticles();
 	//radial impulse

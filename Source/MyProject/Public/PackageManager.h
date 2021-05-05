@@ -26,7 +26,11 @@ public:
 	UFUNCTION()
 		void SpawnPackage(FConfig config);
 	UFUNCTION()
-		void SpawnSpecialPackage(FConfig config);
+		void SpawnSpecialPackages(FConfig config);
+
+	UFUNCTION()
+		void SpawnSpecialPackage(FConfig config, FVector location);
+	
 	void RemovePackage(APackageBase* package);
 	int GetPackagesLength();
 	void ActivatePackageTimer();
