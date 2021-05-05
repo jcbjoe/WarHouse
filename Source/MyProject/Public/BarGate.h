@@ -31,7 +31,6 @@ protected:
 		UBoxComponent* boxComponent;
 
 	const float movementSpeed = 100;
-	
 	FRotator RotationSpeedUp = FRotator(-1.25f, 0.0f, 0.0f);
 	FRotator RotationSpeedDown = FRotator(1.25f, 0.0f, 0.0f);
 
