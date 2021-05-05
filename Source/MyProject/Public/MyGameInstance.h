@@ -19,20 +19,21 @@ struct FPlayerInfo
 	float packageDamages = 0.0;
 };
 
-/**
- *
- */
+
 UCLASS()
 class MYPROJECT_API UMyGameInstance : public UGameInstance
 {
 	GENERATED_BODY()
+	
 public:
-	TArray<FPlayerInfo> playerInfo;
+	TArray<FPlayerInfo> GetPlayerInfo();
+	bool HasSplashRan();
+	void SetSplashRan();
 
 	void AddPlayerScore(int32 controllerId, float value, float damage);
 
 	UFUNCTION(BlueprintPure)
-	bool IsPlayerConnected(int32 controllerId);
+		bool IsPlayerConnected(int32 controllerId);
 
 	UFUNCTION(BlueprintCallable)
 		void addPlayer(int32 controllerId, EPlayerColours colour);
@@ -56,7 +57,9 @@ public:
 		EPlayerColours GetPlayerColour(int32 controllerId);
 
 	UFUNCTION(BlueprintCallable)
-	void WipePlayerList();
-	
-	bool hasSplashRan = false;
+		void WipePlayerList();
+
+private:
+	bool splashRan = false;
+	TArray<FPlayerInfo> playerInfo;
 };

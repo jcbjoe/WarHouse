@@ -17,14 +17,11 @@ public:
 	// Sets default values for this actor's properties
 	APackageManager();
 
-	virtual void Tick(float DeltaTime) override;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data")
-		int TotalPackagesAmount = 25;
-
 	FString GetPackageDetails();
+	
 	UFUNCTION()
 		void SpawnPackage(FConfig config);
+	
 	UFUNCTION()
 		void SpawnSpecialPackages(FConfig config);
 
@@ -32,28 +29,40 @@ public:
 		void SpawnSpecialPackage(FConfig config, FVector location);
 	
 	void RemovePackage(APackageBase* package);
+	
 	int GetPackagesLength();
+	
 	void ActivatePackageTimer();
+	
 	void NewPackages();
 
 	FVector GetSpawnPosition();
 	FConfig GetConfig();
+	
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
+	virtual void Tick(float DeltaTime) override;
+
 	FConfigPackage PackageInfo;
 	FConfig Config;
 
-	TArray<AActor*> SpawnPackageLocations;
-	TArray<AActor*> SpecialPackageLocations;
+	UPROPERTY(EditAnywhere, Category = "Data")
+		int TotalPackagesAmount = 25;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data")
-		TArray<APackageBase*> Packages;
 	UPROPERTY(EditAnywhere)
 		float PackageTimer;
+
+private:
+	TArray<APackageBase*> Packages;
+
 	//Handle to manage the package timer
 	FTimerHandle PackageTimerHandle;
 	//Delegate for passing parametrs to function called by timer
 	FTimerDelegate PackageTimerDelegate;
+
+	TArray<AActor*> SpawnPackageLocations;
+
+	TArray<AActor*> SpecialPackageLocations;
 };

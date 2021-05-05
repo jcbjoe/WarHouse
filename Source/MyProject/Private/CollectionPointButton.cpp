@@ -15,46 +15,38 @@ ACollectionPointButton::ACollectionPointButton()
 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
-	base = CreateDefaultSubobject<UStaticMeshComponent>(FName("Platform"));
-
+	//--- Setting up imports
 	static ConstructorHelpers::FObjectFinder<UStaticMesh> buttonMesh(TEXT("/Game/Assets/ConorAssets/DeliveryLift/LiftButton/LiftButton.LiftButton"));
+	static ConstructorHelpers::FObjectFinder<UTexture2D> aButtonTex(TEXT("/Game/Assets/JoeAssets/XboxButtons/XboxOne_A.XboxOne_A"));
+	static ConstructorHelpers::FObjectFinder<USoundWave> buttonPressSound(TEXT("/Game/Sounds/Robotic_scifi_SFX/Guns/wav/special_gun__2_.special_gun__2_"));
 
+	//--- Setting up base mesh
+	base = CreateDefaultSubobject<UStaticMeshComponent>(FName("Platform"));
 	base->SetStaticMesh(buttonMesh.Object);
 
 	RootComponent = base;
 
+	//--- Setting up box component
 	boxComponent = CreateDefaultSubobject<UBoxComponent>(FName("Collision Mesh"));
-
 	boxComponent->SetWorldLocation(GetActorLocation());
-
 	boxComponent->SetupAttachment(RootComponent);
-
-	boxComponent->OnComponentBeginOverlap.AddDynamic(this, &ACollectionPointButton::OnOverlapBegin);
-
-	boxComponent->OnComponentEndOverlap.AddDynamic(this, &ACollectionPointButton::OnOverlapEnd);
-
 	boxComponent->SetBoxExtent(FVector(120, 120, 120));
 	boxComponent->SetRelativeLocation(FVector(0, 0, 120));
-
-	BillboardComponent = CreateDefaultSubobject<UBillboardComponent>(TEXT("Billboard Comp"));
-
-	static ConstructorHelpers::FObjectFinder<UTexture2D> aButtonTex(TEXT("/Game/Assets/JoeAssets/XboxButtons/XboxOne_A.XboxOne_A"));
-
-	BillboardComponent->Sprite = aButtonTex.Object;
-
-	BillboardComponent->SetRelativeLocation({ 0,0,160 });
-
-	BillboardComponent->SetHiddenInGame(true);
 	
+	boxComponent->OnComponentBeginOverlap.AddDynamic(this, &ACollectionPointButton::OnOverlapBegin);
+	boxComponent->OnComponentEndOverlap.AddDynamic(this, &ACollectionPointButton::OnOverlapEnd);
+
+	//--- Setting up billboard
+	BillboardComponent = CreateDefaultSubobject<UBillboardComponent>(TEXT("Billboard Comp"));
+	BillboardComponent->Sprite = aButtonTex.Object;
+	BillboardComponent->SetRelativeLocation({ 0,0,160 });
+	BillboardComponent->SetHiddenInGame(true);
 	BillboardComponent->SetupAttachment(RootComponent);
 
 
-	static ConstructorHelpers::FObjectFinder<USoundWave> buttonPressSound(TEXT("/Game/Sounds/Robotic_scifi_SFX/Guns/wav/special_gun__2_.special_gun__2_"));
-
+	//--- Setting up audio component
 	audioComp = CreateDefaultSubobject<UAudioComponent>(FName("ButtonAudio"));
-
 	audioComp->SetVolumeMultiplier(0.0f);
-	
 	audioComp->SetSound(buttonPressSound.Object);
 }
 
@@ -63,6 +55,7 @@ void ACollectionPointButton::BeginPlay()
 {
 	Super::BeginPlay();
 
+	//--- Grabbing volume multipler from options
 	if (USettingsSave* LoadedGame = Cast<USettingsSave>(UGameplayStatics::LoadGameFromSlot("SettingsSlot", 0)))
 	{
 		volumeMultiplier = LoadedGame->SFXVolume;
@@ -95,16 +88,17 @@ void ACollectionPointButton::Tick(float DeltaTime)
 void ACollectionPointButton::OnOverlapBegin(UPrimitiveComponent* OverlapComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	if (OtherActor->IsA(AWarhousePawn::StaticClass())) {
-		auto player = Cast<AWarhousePawn>(OtherActor);
+		AWarhousePawn* player = Cast<AWarhousePawn>(OtherActor);
 		if (CollidingPlayers.Contains(player)) return;
 		CollidingPlayers.Add(player);
+		
 		player->InputComponent->BindAction("AButtonPressed", IE_Pressed, this, &ACollectionPointButton::AButtonPressed);
 	}
 }
 
 void ACollectionPointButton::OnOverlapEnd(UPrimitiveComponent* OverlapComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex) {
 	if (OtherActor->IsA(AWarhousePawn::StaticClass())) {
-		auto player = Cast<AWarhousePawn>(OtherActor);
+		AWarhousePawn* player = Cast<AWarhousePawn>(OtherActor);
 		if (!CollidingPlayers.Contains(player)) return;
 		CollidingPlayers.Remove(player);
 		

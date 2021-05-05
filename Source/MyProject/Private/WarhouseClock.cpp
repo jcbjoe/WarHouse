@@ -38,7 +38,8 @@ void AWarhouseClock::SetTime(int time)
 	else
 		TimeRemaining = FString::FromInt(mins) + ":" + FString::FromInt(secs);
 
-	TimeText->SetText(TimeRemaining);
+	TimeText->SetText(FText::FromString(TimeRemaining));
+	
 }
 
 // Called every frame

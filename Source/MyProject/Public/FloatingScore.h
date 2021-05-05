@@ -17,20 +17,18 @@ public:
 	// Sets default values for this actor's properties
 	AFloatingScore();
 
+	// Called every frame
+	virtual void Tick(float DeltaTime) override;
+
+	void SetText(FText textToSet);
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-public:	
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
-
-	UPROPERTY(Category = Gameplay, EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(EditDefaultsOnly)
 		USceneComponent* base;
 
-	UPROPERTY(Category = Gameplay, EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(EditDefaultsOnly)
 		UTextRenderComponent* text;
-
-	void SetText(FText textToSet);
-
 };

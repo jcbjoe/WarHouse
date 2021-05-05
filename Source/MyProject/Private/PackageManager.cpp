@@ -16,6 +16,29 @@ APackageManager::APackageManager()
 
 }
 
+// Called when the game starts or when spawned
+void APackageManager::BeginPlay()
+{
+	Super::BeginPlay();
+
+	//get json data
+	FString Result = GetPackageDetails();
+
+	//pass package data into the config struct
+	Config = FConfig(Result);
+
+	//find all spawn locations and store into a TArray
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), APackageSpawnActor::StaticClass(), SpawnPackageLocations);
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ASpecialPackageSpawnActor::StaticClass(), SpecialPackageLocations);
+
+	for (int i = 0; i < TotalPackagesAmount; ++i)
+	{
+		SpawnPackage(Config);
+	}
+
+	SpawnSpecialPackages(Config);
+}
+
 FString APackageManager::GetPackageDetails()
 {
 	//set json file name
@@ -116,29 +139,6 @@ void APackageManager::NewPackages()
 	{
 		SpawnPackage(Config);
 	}
-}
-
-// Called when the game starts or when spawned
-void APackageManager::BeginPlay()
-{
-	Super::BeginPlay();
-
-	//get json data
-	FString Result = GetPackageDetails();
-
-	//pass package data into the config struct
-	Config = FConfig(Result);
-
-	//find all spawn locations and store into a TArray
-	UGameplayStatics::GetAllActorsOfClass(GetWorld(), APackageSpawnActor::StaticClass(), SpawnPackageLocations);
-	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ASpecialPackageSpawnActor::StaticClass(), SpecialPackageLocations);
-
-	for (int i = 0; i < TotalPackagesAmount; ++i)
-	{
-		SpawnPackage(Config);
-	}
-
-	SpawnSpecialPackages(Config);
 }
 
 // Called every frame

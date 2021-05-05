@@ -10,16 +10,13 @@ AFloatingScore::AFloatingScore()
 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
+	//--- Setting up Root component
 	base = CreateDefaultSubobject<USceneComponent>(FName("Root"));
-
 	RootComponent = base;
-
+	
+	//--- Setting up text component
 	text = CreateDefaultSubobject<UTextRenderComponent>(FName("Text"));
-
 	text->SetupAttachment(RootComponent);
-
-
-	//text->SetText(FText::FromString(FString::FromInt(0)));
 	FString LocalCurrencyCode = UKismetSystemLibrary::GetLocalCurrencyCode();
 	text->SetText(FText::AsCurrencyBase(0.00, LocalCurrencyCode));
 }
@@ -34,7 +31,6 @@ void AFloatingScore::BeginPlay()
 void AFloatingScore::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
 }
 
 void AFloatingScore::SetText(FText textToSet)

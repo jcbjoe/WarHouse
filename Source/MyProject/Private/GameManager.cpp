@@ -5,7 +5,6 @@
 
 #include "MovieSceneSequencePlayer.h"
 #include "WarhouseHelpers.h"
-#include "PackageSpawnActor.h"
 #include "SettingsSave.h"
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetSystemLibrary.h"
@@ -16,20 +15,22 @@ AGameManager::AGameManager()
 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
+	//--- Setting up imports
+	static ConstructorHelpers::FClassFinder<UUserWidget> winScreenWidgetObj(TEXT("/Game/UI/Menus/WinScreen/WinScreenWidget"));
+	
+	//--- Setting up root scene component
 	base = CreateDefaultSubobject<USceneComponent>(FName("Root"));
-
 	RootComponent = base;
 
+	//--- Setting up winscreen widget
 	winScreen = CreateDefaultSubobject<UWidgetComponent>(FName("WinScreen"));
 	winScreen->SetupAttachment(RootComponent);
 	winScreen->SetWidgetSpace(EWidgetSpace::World);
-	static ConstructorHelpers::FClassFinder<UUserWidget> winScreenWidgetObj(TEXT("/Game/UI/Menus/WinScreen/WinScreenWidget"));
 	winscreenWidget = winScreenWidgetObj.Class;
 
+	//--- Setting up background music
 	backgroundMusic = CreateDefaultSubobject<UAudioComponent >(FName("BackgroundMusic"));
-
 	backgroundMusic->SetAutoActivate(false);
-	
 	backgroundMusic->SetupAttachment(RootComponent);
 }
 
@@ -44,6 +45,7 @@ void AGameManager::BeginPlay()
 	check(shutters.Num() != 0);
 	check(Forklift != nullptr);
 	check(ClockTimerText != nullptr);
+	check(backgroundMusicTrack != nullptr);
 
 	float soundVol = 0.1;
 	
@@ -197,7 +199,7 @@ void AGameManager::InitGame()
 		PackageCollectionPoint->SetActorHiddenInGame(true);
 	}
 
-	if (instance->playerInfo.Num() == 0)
+	if (instance->GetPlayerInfo().Num() == 0)
 	{
 		//add player scores to array
 		playerScores.Add(player0Score);
@@ -222,9 +224,9 @@ void AGameManager::InitGame()
 	}
 	else {
 
-		for (int i = 0; i < instance->playerInfo.Num(); ++i)
+		for (int i = 0; i < instance->GetPlayerInfo().Num(); ++i)
 		{
-			const int controllerId = instance->playerInfo[i].controllerId;
+			const int controllerId = instance->GetPlayerInfo()[i].controllerId;
 
 			switch (controllerId)
 			{
@@ -248,11 +250,10 @@ void AGameManager::InitGame()
 
 			packageCollectionPoints[controllerId]->SetActorHiddenInGame(false);
 			floatingScores[controllerId]->SetActorHiddenInGame(false);
-			shutters[controllerId]->SetColour(instance->playerInfo[i].colour);
+			shutters[controllerId]->SetColour(instance->GetPlayerInfo()[i].colour);
 		}
 	}
-
-	////call intro function
+	
 	PlayIntro();
 
 	initialised = true;
@@ -270,7 +271,6 @@ void AGameManager::OnGameEnd()
 
 	WarhouseHelpers::GetCameraManager(GetWorld())->SetMainCameraFollowingPlayers(false);
 	WarhouseHelpers::GetCameraManager(GetWorld())->SwitchCamera(WarhouseHelpers::GetCameraManager(GetWorld())->GetWinScreenCamera(), 3);
-	//UGameplayStatics::OpenLevel(GetWorld(), FName(TEXT("WinScene")));
 }
 
 void AGameManager::ReturnToMainMenu()
@@ -286,7 +286,7 @@ void AGameManager::ActivateForklift()
 void AGameManager::PlayIntro()
 {
 
-	for (auto player : WarhouseHelpers::GetGameInstance(GetWorld())->playerInfo)
+	for (auto player : WarhouseHelpers::GetGameInstance(GetWorld())->GetPlayerInfo())
 	{
 		playerIdsToIntro.Add(player.controllerId);
 	}
@@ -310,4 +310,9 @@ void AGameManager::GameStart()
 void AGameManager::InitSpawnPlayers()
 {
 	WarhouseHelpers::GetPlayerManager(GetWorld())->SpawnPlayers();
+}
+
+TArray<AShutter*> AGameManager::GetShutters()
+{
+	return shutters;
 }

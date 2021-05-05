@@ -16,12 +16,14 @@ public:
 	// Sets default values for this actor's properties
 	AUISceneManager();
 	// Called every frame
-	virtual void Tick(float DeltaTime) override;
 	void UnloadCurrentWidget();
 
 	UFUNCTION(BlueprintCallable)
 		void ChangeActiveWidget(FName widgetName);
 protected:
+	// Called every frame
+	virtual void Tick(float DeltaTime) override;
+
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 

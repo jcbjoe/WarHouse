@@ -16,22 +16,20 @@ public:
 	// Sets default values for this actor's properties
 	AChargingActor();
 
+	// Called every frame
+	virtual void Tick(float DeltaTime) override;
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-	UPROPERTY(Category = Gameplay, EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(EditDefaultsOnly)
 		UStaticMeshComponent* pad;
 
-
-	UPROPERTY(EditDefaultsOnly, Category = "Components")
+	UPROPERTY(EditDefaultsOnly)
 		UParticleSystemComponent* beamEmitter;
 
-	UPROPERTY(EditDefaultsOnly, Category = "Components")
+	UPROPERTY(EditDefaultsOnly)
 		UBoxComponent* boxComponent;
-
-	UMaterial* idleMat;
-	UMaterial* chargingMat;
 
 	UFUNCTION()
 		void OnOverlapBegin(class UPrimitiveComponent* OverlapComponent, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
@@ -39,10 +37,9 @@ protected:
 	UFUNCTION()
 		void OnOverlapEnd(UPrimitiveComponent* OverlapComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 
+private:
+	UMaterial* idleMat;
+	UMaterial* chargingMat;
+
 	TArray<AActor*> actorsOnPad;
-
-public:
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
-
 };

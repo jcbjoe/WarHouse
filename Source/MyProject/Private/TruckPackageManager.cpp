@@ -121,7 +121,7 @@ void ATruckPackageManager::CheckIfFull()
 
 void ATruckPackageManager::EmptyTruck(int truckNumber)
 {
-	WarhouseHelpers::GetGameManager(GetWorld())->shutters[truckNumber - 1]->Close();
+	WarhouseHelpers::GetGameManager(GetWorld())->GetShutters()[truckNumber - 1]->Close();
 	switch (truckNumber)
 	{
 	case 1:
@@ -144,26 +144,26 @@ void ATruckPackageManager::RemovePackagesFromTruck1()
 {
 	truck1Stage = 0;
 	UpdateTrucks();
-	WarhouseHelpers::GetGameManager(GetWorld())->shutters[0]->Open();
+	WarhouseHelpers::GetGameManager(GetWorld())->GetShutters()[0]->Open();
 }
 
 void ATruckPackageManager::RemovePackagesFromTruck2()
 {
 	truck2Stage = 0;
 	UpdateTrucks();
-	WarhouseHelpers::GetGameManager(GetWorld())->shutters[1]->Open();
+	WarhouseHelpers::GetGameManager(GetWorld())->GetShutters()[1]->Open();
 }
 
 void ATruckPackageManager::RemovePackagesFromTruck3()
 {
 	truck3Stage = 0;
 	UpdateTrucks();
-	WarhouseHelpers::GetGameManager(GetWorld())->shutters[2]->Open();
+	WarhouseHelpers::GetGameManager(GetWorld())->GetShutters()[2]->Open();
 }
 
 void ATruckPackageManager::RemovePackagesFromTruck4()
 {
 	truck4Stage = 0;
 	UpdateTrucks();
-	WarhouseHelpers::GetGameManager(GetWorld())->shutters[3]->Open();
+	WarhouseHelpers::GetGameManager(GetWorld())->GetShutters()[3]->Open();
 }
