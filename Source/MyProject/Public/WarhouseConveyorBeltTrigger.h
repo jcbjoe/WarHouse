@@ -17,17 +17,6 @@ class MYPROJECT_API AWarhouseConveyorBeltTrigger : public AActor
 public:
 	// Sets default values for this actor's properties
 	AWarhouseConveyorBeltTrigger();
-
-protected:
-	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Package")
-		APackageBase* Package;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawn Actor")
-		ASpecialPackageSpawnActor* SpawnActor;
-	UPROPERTY(Category = Gameplay, EditAnywhere, BlueprintReadWrite)
-		UBoxComponent* boxComponent;
-public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 	UFUNCTION()
@@ -36,4 +25,13 @@ public:
 		void OnOverlapEnd(UPrimitiveComponent* OverlapComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);*/
 	UFUNCTION()
 		void ResetPackagePosition();
+protected:
+	// Called when the game starts or when spawned
+	virtual void BeginPlay() override;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Package")
+		APackageBase* Package;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawn Actor")
+		ASpecialPackageSpawnActor* SpawnActor;
+	UPROPERTY(EditDefaultsOnly)
+		UBoxComponent* boxComponent;
 };

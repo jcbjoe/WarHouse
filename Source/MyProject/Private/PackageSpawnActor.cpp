@@ -8,10 +8,9 @@
 APackageSpawnActor::APackageSpawnActor()
 {
 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = true;
+	PrimaryActorTick.bCanEverTick = false;
 	const auto subObject = CreateDefaultSubobject<USceneComponent>(TEXT("PackageSpawnPoint"));
 	RootComponent = subObject;
-
 	////add billboard for editor visibility
 	BillboardComponent = CreateDefaultSubobject<UBillboardComponent>(TEXT("Billboard Comp"));
 	BillboardComponent->SetupAttachment(RootComponent);

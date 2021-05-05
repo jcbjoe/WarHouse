@@ -26,8 +26,3 @@ void AWarhouseGameManager::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 }
-
-void AWarhouseGameManager::SpawnPackage()
-{
-
-}

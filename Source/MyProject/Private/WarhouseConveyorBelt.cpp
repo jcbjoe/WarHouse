@@ -24,7 +24,7 @@ AWarhouseConveyorBelt::AWarhouseConveyorBelt()
 	boxComponent->OnComponentEndOverlap.AddDynamic(this, &AWarhouseConveyorBelt::OnOverlapEnd);
 	boxComponent->SetBoxExtent(FVector(1800, 85, 40));
 	boxComponent->SetRelativeLocation(FVector(0, 0, 7.3));
-	//set speed
+	//set belt movement speed
 	BeltSpeed = 40.0f;
 }
 
@@ -45,7 +45,7 @@ void AWarhouseConveyorBelt::MoveObjectOnBelt(float DeltaTime)
 {
 	float Speed = BeltSpeed * DeltaTime;
 	FVector Direction = (BaseMesh->GetForwardVector()) * Speed;
-	//get all overlapping actors then loop through them, moving each one
+	//get all overlapping actors then loop through them, moving each one along the belt
 	boxComponent->GetOverlappingActors(OverlappingActors);
 	for (AActor* actor : OverlappingActors)
 	{
@@ -55,10 +55,10 @@ void AWarhouseConveyorBelt::MoveObjectOnBelt(float DeltaTime)
 
 void AWarhouseConveyorBelt::OnOverlapBegin(UPrimitiveComponent* OverlapComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-
+	//although empty we still need this function for the overlaps to be registered for GetOverlappingActors() 
 }
 
 void AWarhouseConveyorBelt::OnOverlapEnd(UPrimitiveComponent* OverlapComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
-
+	//although empty we still need this function for the overlaps to be registered for GetOverlappingActors() 
 }

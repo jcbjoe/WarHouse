@@ -18,17 +18,11 @@ class AWarhousePawn : public APawn
 
 public:
 	AWarhousePawn();
-
 	void SetIsOnCharger(bool isOnCharger);
-
-	bool IsDead();
-
 	void SetColour(EPlayerColours colour);
-
 	void DropHeldItem();
-
 	void KillPlayer();
-
+	bool IsDead();
 protected:
 	//--- Unreal overrides
 	virtual void BeginPlay() override;
@@ -38,38 +32,25 @@ protected:
 	//--- Unreal Visable components
 	UPROPERTY(EditDefaultsOnly)
 		UStaticMeshComponent* ShipMeshComponent;
-
 	UPROPERTY(EditDefaultsOnly)
 		UStaticMeshComponent* BeamMeshComponent;
-
 	UPROPERTY(EditDefaultsOnly)
 		UPhysicsHandleComponent* PhysicsHandle;
-
 	UPROPERTY(EditDefaultsOnly)
 		USceneComponent* HeldLocation;
-
 	UPROPERTY(EditDefaultsOnly)
 		UNiagaraComponent* beamEmitter;
-
-
 	UPROPERTY(EditDefaultsOnly)
 		UWidgetComponent* progressBar;
-
 	UPROPERTY(EditDefaultsOnly)
 		UDecalComponent* floorDecal;
-
-
-
 	UPROPERTY(EditDefaultsOnly)
 		USceneComponent* beamSource;
-
 	UPROPERTY(EditDefaultsOnly)
 		USceneComponent* beamTarget;
 
 	UFUNCTION()
 		void OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
-
-
 private:
 
 	//--- Game Variables

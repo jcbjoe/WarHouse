@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+﻿// Fill out your copyright notice in the Description page of Project Settings.
 #include "UISceneManager.h"
 
 #include "UserInterfaceBase.h"
@@ -9,7 +9,7 @@
 AUISceneManager::AUISceneManager()
 {
 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = true;
+	PrimaryActorTick.bCanEverTick = false;
 
 }
 
@@ -41,7 +41,7 @@ void AUISceneManager::Tick(float DeltaTime)
 
 void AUISceneManager::UnloadCurrentWidget()
 {
-	if(currentWidget != nullptr)
+	if (currentWidget != nullptr)
 	{
 		Cast<UUserInterfaceBase>(currentWidget)->canRecieveInput = false;
 		currentWidget->SetVisibility(ESlateVisibility::Hidden);
@@ -52,7 +52,9 @@ void AUISceneManager::UnloadCurrentWidget()
 
 void AUISceneManager::SetupPlayerControllersForUI()
 {
+	//create an array to hold all player controllers
 	TArray<AActor*> controllers;
+	//get all player controllers and store them in the array
 	UGameplayStatics::GetAllActorsOfClass(GetWorld(), APlayerController::StaticClass(), controllers);
 
 	for (AActor* controller : controllers)
@@ -72,7 +74,7 @@ void AUISceneManager::ChangeActiveWidget(FName widgetName) {
 	UnloadCurrentWidget();
 
 	check(widgets.Contains(widgetName));
-	
+
 	auto widget = widgets[widgetName];
 	auto playerController = UGameplayStatics::GetPlayerController(GetWorld(), 0);
 	auto newWidget = UUserWidget::CreateWidgetInstance(*playerController, widget, FName(widget->GetName()));
@@ -81,5 +83,5 @@ void AUISceneManager::ChangeActiveWidget(FName widgetName) {
 
 	currentWidget = newWidget;
 
-	newWidget->AddToViewport();	
+	newWidget->AddToViewport();
 }

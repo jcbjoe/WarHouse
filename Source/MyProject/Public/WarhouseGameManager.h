@@ -15,10 +15,16 @@ class MYPROJECT_API AWarhouseGameManager : public AActor
 public:
 	// Sets default values for this actor's properties
 	AWarhouseGameManager();
+	//reference to the package manager class
+	UPROPERTY(EditDefaultsOnly)
+		class APackageManager* PackageManager;
+	// Called every frame
+	virtual void Tick(float DeltaTime) override;
 
-	UPROPERTY(EditAnywhere)
-		class APackageManager* PackageManager; //reference to the package manager class
-
+	UPROPERTY(VisibleAnywhere)
+		float GameTimer;
+	UPROPERTY(VisibleAnywhere)
+		float PackageTimer;
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -27,16 +33,4 @@ protected:
 		UBillboardComponent* BillboardComponent;
 	//Sprite for the Billboard Component
 	UTexture2D* SpriteTexture;
-
-public:
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
-
-	UPROPERTY(VisibleAnywhere)
-		float GameTimer;
-	UPROPERTY(VisibleAnywhere)
-		float PackageTimer;
-
-	void SpawnPackage();
-
 };
