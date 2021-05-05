@@ -31,7 +31,7 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Radial Force")
 		URadialForceComponent* Force;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Radial Force")
-		float ImpulseForce = 100000.0f;
+		float ImpulseForce = 10000.0f;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Base")
 		USceneComponent* Base;
 public:

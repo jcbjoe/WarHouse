@@ -26,7 +26,7 @@ APhysicsProp::APhysicsProp()
 	ParticleSystemComponent->SetVisibility(false);
 	//set radial impact data
 	ImpactRadius = 500.0f;
-	RadialImpactForce = 5000.0f;
+	RadialImpactForce = 2000.0f;
 	//set up audio
 	static ConstructorHelpers::FObjectFinder<USoundBase> sound(TEXT("/Game/Extras/Audio/Explosion_Cue.Explosion_Cue"));
 	soundBase = sound.Object;
