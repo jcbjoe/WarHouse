@@ -8,26 +8,30 @@ ADestructibleProp::ADestructibleProp()
 {
 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
+	//set base
+	Base = CreateDefaultSubobject<USceneComponent>(TEXT("Base"));
+	RootComponent = Base;
 	//set up mesh
 	PropMesh = CreateDefaultSubobject<UDestructibleComponent>(TEXT("propMesh"));
 	PropMesh->SetNotifyRigidBodyCollision(true);
-	RootComponent = PropMesh;
+	PropMesh->SetupAttachment(RootComponent);
 	PropMesh->SetSimulatePhysics(true);
 	//set up radial force
 	Force = CreateDefaultSubobject<URadialForceComponent>(TEXT("RadialForce")); // minor force component to add some impulse on break
-	Force->SetMobility(EComponentMobility::Static);
-	Force->SetupAttachment(RootComponent);
+	Force->SetMobility(EComponentMobility::Movable);
+	Force->SetupAttachment(GetRootComponent());
 	Force->Radius = 100.0f;
 	Force->ImpulseStrength = ImpulseForce;
 	Force->bImpulseVelChange = true;
 	Force->AddCollisionChannelToAffect(ECC_WorldDynamic);
+	Force->SetRelativeLocation(FVector(0, 0, 0));
+	Force->SetAutoActivate(false);
 }
 
 // Called when the game starts or when spawned
 void ADestructibleProp::BeginPlay()
 {
 	Super::BeginPlay();
-
 }
 
 // Called every frame
