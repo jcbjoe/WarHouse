@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 
 #include "BarGate.h"
@@ -56,7 +56,8 @@ void ABarGate::Tick(float DeltaTime)
 
 	if (movingUp)
 	{
-		Bar->AddLocalRotation({ -0.75,0,0 });
+		//Bar->AddLocalRotation({ -0.75,0,0 });
+		Bar->AddLocalRotation({ -1.25,0,0 });
 		FRotator rot = Bar->GetRelativeRotation();
 		if (rot.Pitch <= -90)
 		{
@@ -67,7 +68,8 @@ void ABarGate::Tick(float DeltaTime)
 
 	if (movingDown)
 	{
-		Bar->AddLocalRotation({ 0.75,0,0 });
+		//Bar->AddLocalRotation({ 0.75,0,0 });
+		Bar->AddLocalRotation({ 1.25,0,0 });
 		FRotator rot = Bar->GetRelativeRotation();
 		if (rot.Pitch >= 0)
 		{
