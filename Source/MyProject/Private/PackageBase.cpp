@@ -201,7 +201,7 @@ void APackageBase::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, 
 {
 	if (!canRegisterHit) return;
 	canRegisterHit = false;
-	if ((OtherActor != NULL) && (OtherActor != this) && (OtherComp != NULL))
+	if ((OtherActor != NULL) && (OtherActor != this) && (OtherComp != NULL) && !OtherActor->IsA(AWarhouseForklift::StaticClass()))
 	{
 		auto velocity = this->GetVelocity().Size();
 

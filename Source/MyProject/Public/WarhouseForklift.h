@@ -64,8 +64,6 @@ protected:
 		USceneComponent* PackageSpawn1;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Package Spawn Points")
 		USceneComponent* PackageSpawn2;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Package Manager")
-		APackageManager* PackageManager;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sound")
 		UAudioComponent* AudioComponent;
 
@@ -75,7 +73,7 @@ protected:
 
 	float volumeMultiplier = 0.0f;
 	
-	const float engineSoundVolume = 0.2f;
+	const float engineSoundVolume = 0.5f;
 
 	FTimerHandle ForkliftTimerHandle;
 	//anim stuff

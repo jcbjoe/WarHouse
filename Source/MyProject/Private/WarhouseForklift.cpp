@@ -6,6 +6,7 @@
 #include "SettingsSave.h"
 #include "WarhousePawn.h"
 #include "SpecialPackageSpawnActor.h"
+#include "WarhouseHelpers.h"
 
 // Sets default values
 AWarhouseForklift::AWarhouseForklift()
@@ -24,21 +25,25 @@ AWarhouseForklift::AWarhouseForklift()
 	FrontWheels->SetStaticMesh(forkliftWheels.Object);
 	FrontWheels->SetRelativeLocation({103,0,25});
 	FrontWheels->SetupAttachment(RootComponent);
+	FrontWheels->SetGenerateOverlapEvents(false);
 	
 	BackWheels = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("BackWheels"));
 	BackWheels->SetStaticMesh(forkliftWheels.Object);
 	BackWheels->SetRelativeLocation({ -111,0,25 });
 	BackWheels->SetupAttachment(RootComponent);
+	BackWheels->SetGenerateOverlapEvents(false);
 
 	static ConstructorHelpers::FObjectFinder<UStaticMesh> forkliftLift(TEXT("/Game/Assets/ConorAssets/Forklift/ForkliftBody_polySurface82.ForkliftBody_polySurface82"));
 	LiftBit = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("LiftBit"));
 	LiftBit->SetStaticMesh(forkliftLift.Object);
 	LiftBit->SetupAttachment(RootComponent);
+	LiftBit->SetGenerateOverlapEvents(false);
 
 	static ConstructorHelpers::FObjectFinder<UStaticMesh> forkliftForks(TEXT("/Game/Assets/ConorAssets/Forklift/ForkliftBody_polySurface81.ForkliftBody_polySurface81"));
 	Blades = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Blades"));
 	Blades->SetStaticMesh(forkliftForks.Object);
 	Blades->SetupAttachment(RootComponent);
+	Blades->SetGenerateOverlapEvents(false);
 
 	static ConstructorHelpers::FObjectFinder<UStaticMesh> palletObj(TEXT("/Game/Assets/ConorAssets/Pallet/pallet.pallet"));
 	Pallet = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Pallet"));
@@ -46,6 +51,7 @@ AWarhouseForklift::AWarhouseForklift()
 	Pallet->SetRelativeLocation({ 360,0.3,9 });
 	Pallet->SetRelativeRotation(FRotator::MakeFromEuler({0,0,-90}));
 	Pallet->SetupAttachment(RootComponent);
+	Pallet->SetGenerateOverlapEvents(false);
 
 	boxComponent = CreateDefaultSubobject<UBoxComponent>(FName("Collision Mesh"));
 	boxComponent->SetWorldLocation(GetActorLocation());
@@ -65,7 +71,7 @@ AWarhouseForklift::AWarhouseForklift()
 	PackageSpawn2->SetRelativeLocation({ 435,45,200 });
 	PackageSpawn2->SetupAttachment(RootComponent);
 	//set up audio
-	static ConstructorHelpers::FObjectFinder<USoundWave> engineSound(TEXT("/Game/Assets/ConorAssets/Forklift/forklift-Engine-sound.forklift-Engine-sound"));
+	static ConstructorHelpers::FObjectFinder<USoundWave> engineSound(TEXT("/Game/Sounds/forklift-engine.forklift-engine"));
 
 	AudioComponent = CreateDefaultSubobject<UAudioComponent>(FName("Audio"));
 	AudioComponent->SetSound(engineSound.Object);
@@ -80,8 +86,10 @@ void AWarhouseForklift::DeliverPackages()
 
 void AWarhouseForklift::ResumeMovement()
 {
+
 	isMoving = true;
 	Speed = DefaultSpeed;
+
 }
 
 void AWarhouseForklift::GetReadyToDeliver()
@@ -134,13 +142,20 @@ void AWarhouseForklift::BeginPlay()
 	}
 
 	Speed = 0.0f;
-	//boxComponent->SetGenerateOverlapEvents(false);
+	
 	boxComponent->SetGenerateOverlapEvents(true);
 
 	if (USettingsSave* LoadedGame = Cast<USettingsSave>(UGameplayStatics::LoadGameFromSlot("SettingsSlot", 0)))
 	{
 		volumeMultiplier = LoadedGame->SFXVolume;
 	}
+
+	auto packageManager = WarhouseHelpers::GetPackageManager(GetWorld());
+
+	AudioComponent->Play();
+	
+	packageManager->SpawnSpecialPackage(packageManager->GetConfig(), PackageSpawn1->GetComponentLocation());
+	packageManager->SpawnSpecialPackage(packageManager->GetConfig(), PackageSpawn2->GetComponentLocation());
 }
 
 void AWarhouseForklift::MoveForklift(float deltaTime)
@@ -150,7 +165,6 @@ void AWarhouseForklift::MoveForklift(float deltaTime)
 	FVector Direction = GetActorForwardVector();
 	Location += Direction * Speed * deltaTime;
 	SetActorLocation(Location);
-	AudioComponent->Play();
 }
 
 void AWarhouseForklift::RotateForklift()
@@ -196,8 +210,9 @@ void AWarhouseForklift::PrepareForkliftForAnotherDelivery()
 	RemoveAndDestroyPackages();
 	RotateForklift();
 	//spawn special packages on forklift + conveyor
-	PackageManager->SpawnSpecialPackage(PackageManager->GetConfig(), PackageSpawn1->GetComponentLocation());
-	PackageManager->SpawnSpecialPackage(PackageManager->GetConfig(), PackageSpawn2->GetComponentLocation());
+	auto packageManager = WarhouseHelpers::GetPackageManager(GetWorld());
+	packageManager->SpawnSpecialPackage(packageManager->GetConfig(), PackageSpawn1->GetComponentLocation());
+	packageManager->SpawnSpecialPackage(packageManager->GetConfig(), PackageSpawn2->GetComponentLocation());
 
 }
 
@@ -209,11 +224,12 @@ void AWarhouseForklift::AddPackageToArray(APackageBase* package)
 void AWarhouseForklift::RemoveAndDestroyPackages()
 {
 	//loop through PackagesToRemove
+	auto packageManager = WarhouseHelpers::GetPackageManager(GetWorld());
 	for (int i = 0; i < PackagesToRemove.Num(); i++)
 	{
 		APackageBase* package = PackagesToRemove[i];
 		//remove this package from array in package manager
-		PackageManager->RemovePackage(package);
+		packageManager->RemovePackage(package);
 		//remove from packages to remove
 		PackagesToRemove.RemoveSingle(package);
 		//destroy this package

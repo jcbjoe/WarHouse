@@ -36,14 +36,19 @@ void AWarhouseForkliftTrigger::OnOverlapBegin(UPrimitiveComponent* OverlapCompon
 {
 	if (OtherActor != nullptr && OtherActor != this && OtherComp != nullptr)
 	{
+		auto otherComponentName = OtherComp->GetName();
 		if (OtherActor->IsA(AWarhouseForklift::StaticClass()) && IsStopping)
 		{
-			StopForklift();
+			if (otherComponentName == "BaseMesh") {
+				StopForklift();
+			}
 		}
 
 		if (OtherActor->IsA(AWarhouseForklift::StaticClass()) && IsTurningAround)
 		{
-			Forklift->PrepareForkliftForAnotherDelivery();
+			if (otherComponentName == "BaseMesh") {
+				Forklift->PrepareForkliftForAnotherDelivery();
+			}
 		}
 	}
 }
