@@ -16,20 +16,14 @@ public:
 	// Sets default values for this actor's properties
 	AWarhouseConveyorBelt();
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Mesh")
+	UPROPERTY(EditDefaultsOnly)
 		UStaticMeshComponent* BaseMesh;
-	UPROPERTY(Category = Gameplay, EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(EditDefaultsOnly)
 		UBoxComponent* boxComponent;
-	UPROPERTY(Category = Gameplay, EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(EditDefaultsOnly)
 		TArray<AActor*> OverlappingActors;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data")
 		float BeltSpeed;
-
-protected:
-	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
-
-public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 	UFUNCTION()
@@ -39,4 +33,7 @@ public:
 	UFUNCTION()
 		void OnOverlapEnd(UPrimitiveComponent* OverlapComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 
+protected:
+	// Called when the game starts or when spawned
+	virtual void BeginPlay() override;
 };
