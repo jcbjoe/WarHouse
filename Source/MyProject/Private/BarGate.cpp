@@ -56,12 +56,12 @@ void ABarGate::Tick(float DeltaTime)
 
 	if (movingUp)
 	{
-		Bar->AddLocalRotation({ -(movementSpeed * DeltaTime), 0,0 });
-		FRotator rot = Bar->GetRelativeRotation();
-		if (rot.Pitch <= -90)
+		rotationAmount -= movementSpeed * DeltaTime;
+		Bar->SetRelativeRotation(FRotator::MakeFromEuler({ 0,rotationAmount,0 }));
+		if (rotationAmount <= -90)
 		{
-			rot.Pitch = -90;
-			Bar->SetRelativeRotation(rot);
+			rotationAmount = -90;
+			Bar->SetRelativeRotation(FRotator::MakeFromEuler({ 0,rotationAmount,0 }));
 			movingUp = false;
 			isUp = true;
 		}
@@ -69,12 +69,12 @@ void ABarGate::Tick(float DeltaTime)
 
 	if (movingDown)
 	{
-		Bar->AddLocalRotation({ movementSpeed * DeltaTime, 0,0 });
-		FRotator rot = Bar->GetRelativeRotation();
-		if (rot.Pitch >= 0)
+		rotationAmount += movementSpeed * DeltaTime;
+		Bar->SetRelativeRotation(FRotator::MakeFromEuler({ 0,rotationAmount,0 }));
+		if (rotationAmount >= 0)
 		{
-			rot.Pitch = 0;
-			Bar->SetRelativeRotation(rot);
+			rotationAmount = 0;
+			Bar->SetRelativeRotation(FRotator::MakeFromEuler({ 0,rotationAmount,0 }));
 			movingDown = false;
 			isDown = true;
 		}

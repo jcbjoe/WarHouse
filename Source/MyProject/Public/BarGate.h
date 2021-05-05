@@ -48,6 +48,8 @@ private:
 	bool isUp = false;
 	bool isDown = true;
 
+	float rotationAmount = 0;
+
 public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
