@@ -14,7 +14,7 @@ AWarhouseConveyorBeltTrigger::AWarhouseConveyorBeltTrigger()
 	boxComponent->SetupAttachment(RootComponent);
 	boxComponent->OnComponentBeginOverlap.AddDynamic(this, &AWarhouseConveyorBeltTrigger::OnOverlapBegin);
 	//boxComponent->OnComponentEndOverlap.AddDynamic(this, &AWarhouseConveyorBeltTrigger::OnOverlapEnd);
-	boxComponent->SetBoxExtent(FVector(120, 100, 60));
+	boxComponent->SetBoxExtent(FVector(60, 50, 30));
 	boxComponent->SetRelativeLocation(FVector(380, 0, 70));
 }
 
