@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 
 #include "Shutter.h"
@@ -18,7 +18,7 @@ AShutter::AShutter()
 	static ConstructorHelpers::FObjectFinder<UMaterial> ironManMat(TEXT("/Game/Assets/ConorAssets/Player/IronMan/IronManColour.IronManColour"));
 	static ConstructorHelpers::FObjectFinder<UMaterial> smileyMat(TEXT("/Game/Assets/ConorAssets/Player/Smiley/SmileyColour.SmileyColour"));
 	static ConstructorHelpers::FObjectFinder<UMaterial> tuxMat(TEXT("/Game/Assets/ConorAssets/Player/Tux/TuxColour.TuxColour"));
-
+	//assign colours of the players to the corresponding shutter
 	red = redMat.Object;
 	blue = blueMat.Object;
 	yellow = yellowMat.Object;
@@ -28,15 +28,12 @@ AShutter::AShutter()
 	ironMan = ironManMat.Object;
 	smiley = smileyMat.Object;
 	tux = tuxMat.Object;
-	
+
 	static ConstructorHelpers::FObjectFinder<UStaticMesh> shutterMesh(TEXT("/Game/Assets/ConorAssets/Shutters/ShutterDoor_1.ShutterDoor_1"));
-
+	//set up root
 	mesh = CreateDefaultSubobject<UStaticMeshComponent>(FName("Mesh"));
-
 	mesh->SetStaticMesh(shutterMesh.Object);
-
 	RootComponent = mesh;
-
 }
 
 // Called when the game starts or when spawned
@@ -60,7 +57,7 @@ void AShutter::Tick(float DeltaTime)
 		currentMoveAmount += amount;
 
 		FVector pos = GetActorLocation();
-		
+
 		if (opening)
 		{
 			pos.Z = FMath::Clamp(pos.Z + amount, minZ, maxZ);
@@ -81,7 +78,7 @@ void AShutter::Tick(float DeltaTime)
 				opening = false;
 				isOpen = true;
 			}
-			
+
 			if (closing)
 			{
 				closing = false;
