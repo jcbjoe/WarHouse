@@ -69,7 +69,7 @@ void ABarGate::Tick(float DeltaTime)
 
 	if (movingDown)
 	{
-		Bar->AddLocalRotation({movementSpeed * DeltaTime, 0,0});
+		Bar->AddLocalRotation({ movementSpeed * DeltaTime, 0,0 });
 		FRotator rot = Bar->GetRelativeRotation();
 		if (rot.Pitch >= 0)
 		{
