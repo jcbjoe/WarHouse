@@ -20,18 +20,6 @@ public:
 
 	UPROPERTY(Category = Gameplay, EditAnywhere, BlueprintReadWrite)
 		UBoxComponent* boxComponent;
-
-protected:
-	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Trigger Purpose")
-		bool IsTurningAround;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Trigger Purpose")
-		bool IsStopping;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Forklift")
-		AWarhouseForklift* Forklift;
-
-public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 	UFUNCTION()
@@ -40,4 +28,14 @@ public:
 		void OnOverlapEnd(UPrimitiveComponent* OverlapComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 	UFUNCTION()
 		void StopForklift();
+protected:
+	// Called when the game starts or when spawned
+	virtual void BeginPlay() override;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Trigger Purpose")
+		bool IsTurningAround;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Trigger Purpose")
+		bool IsStopping;
+	//reference to the forklift in the map
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Forklift")
+		AWarhouseForklift* Forklift;
 };

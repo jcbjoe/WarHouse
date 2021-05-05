@@ -7,7 +7,7 @@
 AWarhouseForkliftTrigger::AWarhouseForkliftTrigger()
 {
 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = true;
+	PrimaryActorTick.bCanEverTick = false;
 	//box component
 	boxComponent = CreateDefaultSubobject<UBoxComponent>(FName("Collision Mesh"));
 	boxComponent->SetWorldLocation(GetActorLocation());
@@ -36,9 +36,11 @@ void AWarhouseForkliftTrigger::OnOverlapBegin(UPrimitiveComponent* OverlapCompon
 {
 	if (OtherActor != nullptr && OtherActor != this && OtherComp != nullptr)
 	{
-		auto otherComponentName = OtherComp->GetName();
+		//get the name of the component that is overlapping
+		FString otherComponentName = OtherComp->GetName();
 		if (OtherActor->IsA(AWarhouseForklift::StaticClass()) && IsStopping)
 		{
+			//only stop forklift if it is the base mesh (prevents multiple colliders activating this functionlaity)
 			if (otherComponentName == "BaseMesh") {
 				StopForklift();
 			}
@@ -46,6 +48,7 @@ void AWarhouseForkliftTrigger::OnOverlapBegin(UPrimitiveComponent* OverlapCompon
 
 		if (OtherActor->IsA(AWarhouseForklift::StaticClass()) && IsTurningAround)
 		{
+			//only stop forklift if it is the base mesh (prevents multiple colliders activating this functionlaity)
 			if (otherComponentName == "BaseMesh") {
 				Forklift->PrepareForkliftForAnotherDelivery();
 			}
