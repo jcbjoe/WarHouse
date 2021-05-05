@@ -38,7 +38,6 @@ void APhysicsProp::BeginPlay()
 	Super::BeginPlay();
 	ParticleSystemComponent->DeactivateSystem();
 	PropMeshComponent->OnComponentHit.AddDynamic(this, &APhysicsProp::OnHit);
-
 	//check properties to see what behaviour should be allowed
 	if (IsFragile)
 	{
@@ -126,7 +125,6 @@ void APhysicsProp::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, 
 		}
 
 		GetWorld()->GetTimerManager().SetTimer(Timer, this, &APhysicsProp::AllowHit, 0.5f, false);
-
 	}
 }
 
