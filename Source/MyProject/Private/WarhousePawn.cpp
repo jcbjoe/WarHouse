@@ -145,15 +145,12 @@ AWarhousePawn::AWarhousePawn()
 void AWarhousePawn::BeginPlay()
 {
 	Super::BeginPlay();
-
 	audioComp->Play();
-
 	beamAudioComp->Play();
-
 	chargingComp->Play();
-
+	//add collision function for when a hit is detected
 	ShipMeshComponent->OnComponentHit.AddDynamic(this, &AWarhousePawn::OnHit);
-
+	//load in user settings
 	if (USettingsSave* LoadedGame = Cast<USettingsSave>(UGameplayStatics::LoadGameFromSlot("SettingsSlot", 0)))
 	{
 		volumeMultiplier = LoadedGame->SFXVolume;
@@ -417,7 +414,7 @@ void AWarhousePawn::Tick(float DeltaSeconds)
 			if (distance > 350) {
 				DropHeldItem();
 			}
-			
+
 			if (heldActor->IsA(APackageBase::StaticClass()))
 			{
 				APackageBase* package = Cast<APackageBase>(heldActor);
