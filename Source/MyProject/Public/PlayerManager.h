@@ -17,15 +17,6 @@ public:
 	// Sets default values for this actor's properties
 	APlayerManager();
 
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "SpawnPoints")
-		TArray<APlayerSpawnPoint*> spawnPoints;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "SpawnPoints")
-		int PlayerCount = 1;
-
 	FVector GetRandomSpawnpoint(bool checkForPlayers = false);
 
 	TArray<AWarhousePawn*> GetPlayers();
@@ -36,7 +27,20 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-	const float PlayerHeight = 25;
+	// Called every frame
+	virtual void Tick(float DeltaTime) override;
+
+	UPROPERTY(EditDefaultsOnly)
+		USceneComponent* subObject;
+	
+	UPROPERTY(EditAnywhere, Category = "SpawnPoints")
+		TArray<APlayerSpawnPoint*> spawnPoints;
+
+	UPROPERTY(EditAnywhere, Category = "SpawnPoints")
+		int PlayerCount = 1;
+
 private:
 	TArray<AWarhousePawn*> playerList;
+
+	const float PlayerHeight = 25;
 };

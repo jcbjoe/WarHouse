@@ -10,7 +10,6 @@ AUISceneManager::AUISceneManager()
 {
 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
-
 }
 
 // Called when the game starts or when spawned
@@ -20,13 +19,13 @@ void AUISceneManager::BeginPlay()
 
 	SetupPlayerControllersForUI();
 
-	if (WarhouseHelpers::GetGameInstance(GetWorldSettings())->hasSplashRan)
+	if (WarhouseHelpers::GetGameInstance(GetWorldSettings())->HasSplashRan())
 	{
 		ChangeActiveWidget("mainmenu");
 	}
 	else
 	{
-		WarhouseHelpers::GetGameInstance(GetWorldSettings())->hasSplashRan = true;
+		WarhouseHelpers::GetGameInstance(GetWorldSettings())->SetSplashRan();
 		ChangeActiveWidget("splashscreen");
 	}
 
@@ -36,7 +35,6 @@ void AUISceneManager::BeginPlay()
 void AUISceneManager::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
 }
 
 void AUISceneManager::UnloadCurrentWidget()

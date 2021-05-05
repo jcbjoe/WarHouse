@@ -76,3 +76,19 @@ EPlayerColours UMyGameInstance::GetPlayerColour(int32 controllerId)
 {
 	return GetPlayerInfo(controllerId).colour;
 }
+
+
+TArray<FPlayerInfo> UMyGameInstance::GetPlayerInfo()
+{
+	return playerInfo;
+}
+
+bool UMyGameInstance::HasSplashRan()
+{
+	return splashRan;
+}
+
+void UMyGameInstance::SetSplashRan()
+{
+	splashRan = true;
+}

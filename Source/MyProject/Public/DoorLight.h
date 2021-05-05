@@ -17,17 +17,22 @@ public:
 	// Sets default values for this actor's properties
 	ADoorLight();
 
+	// Called every frame
+	virtual void Tick(float DeltaTime) override;
+
+	void SetSpinning(bool val);
+	
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Prop Options")
+	UPROPERTY(EditDefaultsOnly)
 		UStaticMeshComponent* lightMesh;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Prop Options")
+	UPROPERTY(EditDefaultsOnly)
 		USpotLightComponent* light1;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Prop Options")
+	UPROPERTY(EditDefaultsOnly)
 		USpotLightComponent* light2;
 private:
 	bool isSpinning = false;
@@ -36,10 +41,4 @@ private:
 	float light2Rotation = 180;
 
 	const float intensity = 160.0;
-public:	
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
-
-	void SetSpinning(bool val);
-
 };

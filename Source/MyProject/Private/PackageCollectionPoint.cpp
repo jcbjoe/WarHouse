@@ -3,7 +3,6 @@
 #include "GameManager.h"
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetMathLibrary.h"
-#include "PackageProgressBar.h"
 #include "SettingsSave.h"
 #include "WarhouseHelpers.h"
 #include "Components/AudioComponent.h"
@@ -14,44 +13,37 @@ APackageCollectionPoint::APackageCollectionPoint()
 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
-	base = CreateDefaultSubobject<UStaticMeshComponent>(FName("Platform"));
-
+	//--- Setting up imports
 	static ConstructorHelpers::FObjectFinder<UStaticMesh> platformMesh(TEXT("/Game/Assets/ConorAssets/DeliveryLift/DeliveryLift.DeliveryLift"));
 	static ConstructorHelpers::FObjectFinder<UMaterial> DeliveryLiftMat(TEXT("/Game/Assets/ConorAssets/DeliveryLift/DeliveryLiftMat.DeliveryLiftMat"));
-
+	static ConstructorHelpers::FObjectFinder<USoundWave> beepSoundObj(TEXT("/Game/Sounds/beep.beep"));
+	static ConstructorHelpers::FObjectFinder<USoundWave> liftSoundObj(TEXT("/Game/Sounds/lift.lift"));
+	
+	//--- Setting up root component
+	base = CreateDefaultSubobject<UStaticMeshComponent>(FName("Platform"));
 	base->SetStaticMesh(platformMesh.Object);
 	base->SetMaterial(0, DeliveryLiftMat.Object);
 
 	RootComponent = base;
 
+	//--- Setting up box component
 	boxComponent = CreateDefaultSubobject<UBoxComponent>(FName("Collision Mesh"));
-
 	boxComponent->SetWorldLocation(GetActorLocation());
-
 	boxComponent->SetupAttachment(RootComponent);
-
 	boxComponent->OnComponentBeginOverlap.AddDynamic(this, &APackageCollectionPoint::OnOverlapBegin);
-
 	boxComponent->OnComponentEndOverlap.AddDynamic(this, &APackageCollectionPoint::OnOverlapEnd);
-
 	boxComponent->SetBoxExtent(FVector(260, 180, 90));
 	boxComponent->SetRelativeLocation(FVector(0, 0, 70));
 	boxComponent->SetRelativeRotation(FRotator(0, 90, 0));
 
-	static ConstructorHelpers::FObjectFinder<USoundWave> beepSoundObj(TEXT("/Game/Sounds/beep.beep"));
-
+	//--- Setting up beep sound
 	beepSound = CreateDefaultSubobject<UAudioComponent>(FName("beepAudio"));
-
 	beepSound->SetVolumeMultiplier(0.0f);
-
 	beepSound->SetSound(beepSoundObj.Object);
 
-	static ConstructorHelpers::FObjectFinder<USoundWave> liftSoundObj(TEXT("/Game/Sounds/lift.lift"));
-
+	//--- Setting up lift sound
 	liftSound = CreateDefaultSubobject<UAudioComponent>(FName("liftAudio"));
-
 	liftSound->SetVolumeMultiplier(0.0f);
-
 	liftSound->SetSound(liftSoundObj.Object);
 }
 
@@ -59,7 +51,6 @@ APackageCollectionPoint::APackageCollectionPoint()
 void APackageCollectionPoint::BeginPlay()
 {
 	Super::BeginPlay();
-	PackageManager = WarhouseHelpers::GetPackageManager(GetWorld());
 
 	if (USettingsSave* LoadedGame = Cast<USettingsSave>(UGameplayStatics::LoadGameFromSlot("SettingsSlot", 0)))
 	{
@@ -117,7 +108,7 @@ void APackageCollectionPoint::Tick(float DeltaTime)
 			if (!found) throw std::exception("This packageCollectionPoint has not been instanced in the GameManager object!");
 
 			//--- Wait for the door to reopen
-			if (!manager->shutters[index]->isShutterOpen()) return;
+			if (!manager->GetShutters()[index]->isShutterOpen()) return;
 
 			int amountOfPackages = packages.Num();
 

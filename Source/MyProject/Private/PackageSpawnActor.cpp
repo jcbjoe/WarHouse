@@ -21,7 +21,6 @@ APackageSpawnActor::APackageSpawnActor()
 void APackageSpawnActor::BeginPlay()
 {
 	Super::BeginPlay();
-
 }
 
 // Called every frame

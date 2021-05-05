@@ -15,52 +15,18 @@ public:
 	// Sets default values for this actor's properties
 	ACameraManager();
 
-protected:
-	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
-
-	UPROPERTY(Category = Gameplay, EditAnywhere, BlueprintReadWrite)
-		ACameraActor* MainCamera;
-	UPROPERTY(Category = Gameplay, EditAnywhere, BlueprintReadWrite)
-		ACameraActor* BillboardCamera;
-	UPROPERTY(Category = Gameplay, EditAnywhere, BlueprintReadWrite)
-		ACameraActor* Bay1Camera;
-	UPROPERTY(Category = Gameplay, EditAnywhere, BlueprintReadWrite)
-		ACameraActor* Bay2Camera;
-	UPROPERTY(Category = Gameplay, EditAnywhere, BlueprintReadWrite)
-		ACameraActor* Bay3Camera;
-	UPROPERTY(Category = Gameplay, EditAnywhere, BlueprintReadWrite)
-		ACameraActor* Bay4Camera;
-	UPROPERTY(Category = Gameplay, EditAnywhere, BlueprintReadWrite)
-		ACameraActor* WinScreenCamera;
-
-public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-	ACameraActor* GetMainCamera() const
-	{
-		return MainCamera;
-	}
+	ACameraActor* GetMainCamera();
 
-	ACameraActor* GetBillboardCamera() const
-	{
-		return BillboardCamera;
-	}
+	ACameraActor* GetBillboardCamera();
 
-	ACameraActor* GetWinScreenCamera() const
-	{
-		return WinScreenCamera;
-	}
+	ACameraActor* GetWinScreenCamera();
 
-	ACameraActor* GetBayCamera(int bay) const;
+	ACameraActor* GetBayCamera(int bay);
 
-	TArray<ACameraActor*> BayCameras;
-
-	TArray<ACameraActor*> GetBayCams()
-	{
-		return BayCameras;
-	}
+	TArray<ACameraActor*> GetBayCams();
 
 	UFUNCTION()
 		void SwitchCamera(ACameraActor* camera, int blendTime = 0);
@@ -68,10 +34,38 @@ public:
 	void SetMainCameraFollowingPlayers(bool isFollowing);
 
 	ACameraActor* GetCurrentCamera();
+
+protected:
+	// Called when the game starts or when spawned
+	virtual void BeginPlay() override;
+
+	UPROPERTY(Category = Cameras, EditAnywhere, BlueprintReadWrite)
+		ACameraActor* MainCamera;
+	
+	UPROPERTY(Category = Cameras, EditAnywhere, BlueprintReadWrite)
+		ACameraActor* BillboardCamera;
+	
+	UPROPERTY(Category = Cameras, EditAnywhere, BlueprintReadWrite)
+		ACameraActor* Bay1Camera;
+	
+	UPROPERTY(Category = Cameras, EditAnywhere, BlueprintReadWrite)
+		ACameraActor* Bay2Camera;
+	
+	UPROPERTY(Category = Cameras, EditAnywhere, BlueprintReadWrite)
+		ACameraActor* Bay3Camera;
+	
+	UPROPERTY(Category = Cameras, EditAnywhere, BlueprintReadWrite)
+		ACameraActor* Bay4Camera;
+	
+	UPROPERTY(Category = Cameras, EditAnywhere, BlueprintReadWrite)
+		ACameraActor* WinScreenCamera;
+
 private:
 	bool isCameraFollowingPlayers = true;
 
 	ACameraActor* currentCamera = nullptr;
 
 	FVector lastGoodPos = {0,0,0};
+
+	TArray<ACameraActor*> BayCameras;
 };

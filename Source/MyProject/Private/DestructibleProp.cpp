@@ -8,15 +8,18 @@ ADestructibleProp::ADestructibleProp()
 {
 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
-	//set base
+	
+	//--- Setting up base component
 	Base = CreateDefaultSubobject<USceneComponent>(TEXT("Base"));
 	RootComponent = Base;
-	//set up mesh
+	
+	//--- Setting up the mesh
 	PropMesh = CreateDefaultSubobject<UDestructibleComponent>(TEXT("propMesh"));
 	PropMesh->SetNotifyRigidBodyCollision(true);
 	PropMesh->SetupAttachment(RootComponent);
 	PropMesh->SetSimulatePhysics(true);
-	//set up radial force
+	
+	//--- Setting up radial force
 	Force = CreateDefaultSubobject<URadialForceComponent>(TEXT("RadialForce")); // minor force component to add some impulse on break
 	Force->SetMobility(EComponentMobility::Movable);
 	Force->SetupAttachment(GetRootComponent());
@@ -38,7 +41,6 @@ void ADestructibleProp::BeginPlay()
 void ADestructibleProp::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
 }
 
 void ADestructibleProp::DestroyProp()

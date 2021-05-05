@@ -5,44 +5,28 @@
 #include "GameManager.h"
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetMathLibrary.h"
-#include "CameraManager.h"
-#include "PackageProgressBar.h"
 #include "SettingsSave.h"
-#include "WarhouseHelpers.h"
 #include "UObject/ConstructorHelpers.h"
 
 // Sets default values
 APackageBase::APackageBase()
 {
 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = false; //package does not need to tick?
+	PrimaryActorTick.bCanEverTick = true;
 
+	//--- Setting up imports
 	static ConstructorHelpers::FObjectFinder<USoundBase> sound(TEXT("/Game/Sounds/Cardboard/DropBox.DropBox"));
-	soundBase = sound.Object;
-
-	PackageMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("packageMesh"));
-
-	RootComponent = PackageMesh;
-
 	static ConstructorHelpers::FObjectFinder<UMaterial> FoundMaterial(TEXT("/Game/Assets/JoeAssets/Package/Glow.Glow"));
-	meshMaterial = FoundMaterial.Object;
-
-	progressBar = CreateDefaultSubobject<UWidgetComponent>(FName("ProgressBar"));
-
-	progressBar->SetupAttachment(RootComponent);
-
-	progressBar->SetWidgetSpace(EWidgetSpace::World);
-
 	static ConstructorHelpers::FClassFinder<UUserWidget> progressbarWidget(TEXT("/Game/UI/PackageCollectionBar"));
 
-	progressBar->SetWidgetClass(progressbarWidget.Class);
+	//--- Setting up root component
+	PackageMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("packageMesh"));
+	RootComponent = PackageMesh;
 
-	progressBar->SetDrawSize(FVector2D(200, 30));
+	//--- Saving references
+	soundBase = sound.Object;
+	meshMaterial = FoundMaterial.Object;
 
-	progressBar->SetVisibility(false);
-
-	PrimaryActorTick.bCanEverTick = true;
-	PrimaryActorTick.bStartWithTickEnabled = true;
 }
 
 void APackageBase::InitialisePackage(FConfigPackage pi)
@@ -68,7 +52,6 @@ void APackageBase::InitialisePackage(FConfigPackage pi)
 	PackageMesh->SetNotifyRigidBodyCollision(true);
 	//assign weight
 	PackageMesh->SetMassOverrideInKg(NAME_None, Package.PackageWeight, true);
-	progressBar->SetWorldScale3D(FVector(1));
 
 	PackageHealth = 100.0f;
 }
@@ -91,18 +74,6 @@ void APackageBase::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	if (progressBar->IsVisible())
-	{
-		ACameraManager* cameraManager = WarhouseHelpers::GetCameraManager(GetWorld());
-
-		auto rot = UKismetMathLibrary::FindLookAtRotation(progressBar->GetComponentLocation(), cameraManager->GetMainCamera()->GetActorLocation());
-		progressBar->SetWorldRotation(rot);
-
-		auto newLoc = GetActorLocation();
-		newLoc.Z += 75;
-		progressBar->SetWorldLocation(newLoc);
-	}
-
 }
 
 void APackageBase::StartHolding(AWarhousePawn* player)
@@ -118,16 +89,6 @@ void APackageBase::EndHolding(AWarhousePawn* player)
 TArray<AWarhousePawn*> APackageBase::GetHeldBy() const
 {
 	return heldBy;
-}
-
-void APackageBase::SetProgressBarFill(float amount)
-{
-	Cast<UPackageProgressBar>(progressBar->GetUserWidgetObject())->progressBarFillAmount = amount;
-}
-
-void APackageBase::SetProgressBarVisability(bool visability)
-{
-	progressBar->SetVisibility(visability);
 }
 
 float APackageBase::GetPackageValue()

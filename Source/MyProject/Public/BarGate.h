@@ -17,6 +17,12 @@ public:
 	// Sets default values for this actor's properties
 	ABarGate();
 
+	// Called every frame
+	virtual void Tick(float DeltaTime) override;
+
+	void MoveUp();
+	void MoveDown();
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -29,10 +35,6 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly)
 		UBoxComponent* boxComponent;
-
-	const float movementSpeed = 100;
-	FRotator RotationSpeedUp = FRotator(-1.25f, 0.0f, 0.0f);
-	FRotator RotationSpeedDown = FRotator(1.25f, 0.0f, 0.0f);
 
 	UFUNCTION()
 		void OnOverlapBegin(class UPrimitiveComponent* OverlapComponent, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
@@ -50,10 +52,5 @@ private:
 
 	float rotationAmount = 0;
 
-public:
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
-
-	void MoveUp();
-	void MoveDown();
+	const float movementSpeed = 100;
 };

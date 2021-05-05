@@ -12,32 +12,33 @@ ABarGate::ABarGate()
 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
+	//--- Object imports
 	static ConstructorHelpers::FObjectFinder<UMaterial> barGateMat(TEXT("/Game/Assets/JoeAssets/BarGate/BarGateMat.BarGateMat"));
-
 	static ConstructorHelpers::FObjectFinder<UStaticMesh> barHolderMesh(TEXT("/Game/Assets/JoeAssets/BarGate/BarHolder.BarHolder"));
+	static ConstructorHelpers::FObjectFinder<UStaticMesh> barMesh(TEXT("/Game/Assets/JoeAssets/BarGate/Bar.Bar"));
+
+	//--- Barholder setup
 	BarHolder = CreateDefaultSubobject<UStaticMeshComponent>(FName("BarHolder"));
 	BarHolder->SetStaticMesh(barHolderMesh.Object);
 	BarHolder->SetMaterial(0, barGateMat.Object);
 
 	RootComponent = BarHolder;
 
-	static ConstructorHelpers::FObjectFinder<UStaticMesh> barMesh(TEXT("/Game/Assets/JoeAssets/BarGate/Bar.Bar"));
+	//--- Bar setup
 	Bar = CreateDefaultSubobject<UStaticMeshComponent>(FName("Bar"));
 	Bar->SetStaticMesh(barMesh.Object);
 	Bar->SetMaterial(0, barGateMat.Object);
 	Bar->SetRelativeLocation({ 0,34,153 });
 	Bar->SetupAttachment(RootComponent);
 
+	//--- Box component (collision) setup
 	boxComponent = CreateDefaultSubobject<UBoxComponent>(FName("Collision Mesh"));
-
 	boxComponent->SetWorldLocation(GetActorLocation());
 	boxComponent->SetupAttachment(RootComponent);
-
 	boxComponent->SetBoxExtent({ 230,250,100 });
 	boxComponent->SetRelativeLocation({ -260,0,100 });
 
 	boxComponent->OnComponentBeginOverlap.AddDynamic(this, &ABarGate::OnOverlapBegin);
-
 	boxComponent->OnComponentEndOverlap.AddDynamic(this, &ABarGate::OnOverlapEnd);
 
 }
@@ -90,6 +91,7 @@ void ABarGate::MoveUp()
 	movingUp = true;
 	movingDown = false;
 }
+
 void ABarGate::MoveDown()
 {
 	if (isDown || movingDown) return;

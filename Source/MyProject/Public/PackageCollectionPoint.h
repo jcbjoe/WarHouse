@@ -19,14 +19,13 @@ class MYPROJECT_API APackageCollectionPoint : public AActor
 public:
 	// Sets default values for this actor's properties
 	APackageCollectionPoint();
+	
+	void ButtonPressed();
 
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-	APackageManager* PackageManager;
-
-public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
@@ -35,7 +34,7 @@ public:
 
 	UPROPERTY(EditDefaultsOnly)
 		UStaticMeshComponent* base;
-	
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Bonus Multiplier")
 		float PackageBonus = 1.0f;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Bonus Multiplier")
@@ -50,9 +49,6 @@ public:
 	UFUNCTION()
 		void OnOverlapEnd(UPrimitiveComponent* OverlapComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 
-	TArray<APackageBase*> packages = TArray<APackageBase*>();
-	TArray<AActor*> OverlappingActors;
-	void ButtonPressed();
 
 private:
 	bool platformMovingUp = false;
@@ -79,4 +75,7 @@ private:
 	const float liftSoundMultipler = 0.6;
 
 	float volumeMultiplier = 1.0;
+
+	TArray<APackageBase*> packages = TArray<APackageBase*>();
+	TArray<AActor*> OverlappingActors;
 };

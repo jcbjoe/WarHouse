@@ -12,8 +12,8 @@ APlayerManager::APlayerManager()
 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
-	const auto subObject = CreateDefaultSubobject<USceneComponent>(TEXT("PlayerSpawnPoint"));
-
+	//--- Setting up route object
+	subObject = CreateDefaultSubobject<USceneComponent>(TEXT("PlayerSpawnPoint"));
 	RootComponent = subObject;
 }
 
@@ -29,7 +29,7 @@ void APlayerManager::SpawnPlayers()
 	auto instance = WarhouseHelpers::GetGameInstance(GetWorld());
 
 	bool instancePlayersFound = false;
-	if (instance->playerInfo.Num() != 0) instancePlayersFound = true;
+	if (instance->GetPlayerInfo().Num() != 0) instancePlayersFound = true;
 
 	TArray<AActor*> playerControllers;
 	UGameplayStatics::GetAllActorsOfClass(GetWorld(), APlayerController::StaticClass(), playerControllers);
@@ -49,7 +49,7 @@ void APlayerManager::SpawnPlayers()
 	spawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
 
 	if (instancePlayersFound) {
-		for (auto playerInfo : instance->playerInfo)
+		for (auto playerInfo : instance->GetPlayerInfo())
 		{
 			APlayerController* playerController = UGameplayStatics::CreatePlayer(GetWorld(), playerInfo.controllerId, true);
 

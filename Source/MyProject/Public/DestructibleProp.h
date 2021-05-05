@@ -21,24 +21,27 @@ public:
 	// Sets default values for this actor's properties
 	ADestructibleProp();
 
-	//void CanHit();
+	// Called every frame
+	virtual void Tick(float DeltaTime) override;
+
+	UFUNCTION()
+		void DestroyProp();
+
+	UFUNCTION()
+		void FireRadialImpulse();
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
-	//properties
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Mesh")
+
+	UPROPERTY(EditDefaultsOnly)
 		UDestructibleComponent* PropMesh;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Radial Force")
+
+	UPROPERTY(EditDefaultsOnly)
 		URadialForceComponent* Force;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Radial Force")
-		float ImpulseForce = 10000.0f;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Base")
+
+	UPROPERTY(EditDefaultsOnly)
 		USceneComponent* Base;
-public:
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
-	UFUNCTION()
-		void DestroyProp();
-	UFUNCTION()
-		void FireRadialImpulse();
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		float ImpulseForce = 10000.0f;
 };

@@ -16,27 +16,23 @@ public:
 	// Sets default values for this actor's properties
 	AUISceneManager();
 
+	void SetupPlayerControllersForUI();
+
+	void UnloadCurrentWidget();
+
+	UFUNCTION(BlueprintCallable)
+		void ChangeActiveWidget(FName widgetName);
+
 protected:
+	// Called every frame
+	virtual void Tick(float DeltaTime) override;
+	
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		TMap<FName, TSubclassOf<UUserWidget>> widgets;
-
-
-
 private:
 
-	void SetupPlayerControllersForUI();
-
 	UUserWidget* currentWidget = nullptr;
-
-public:
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
-	
-	void UnloadCurrentWidget();
-
-	UFUNCTION(BlueprintCallable)
-		void ChangeActiveWidget(FName widgetName);
 };

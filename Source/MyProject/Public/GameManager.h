@@ -26,64 +26,6 @@ public:
 	// Sets default values for this actor's properties
 	AGameManager();
 
-protected:
-	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
-
-	UPROPERTY(Category = Gameplay, EditAnywhere, BlueprintReadWrite)
-		TArray<AFloatingScore*> floatingScores;
-
-	UPROPERTY(Category = Gameplay, EditAnywhere, BlueprintReadWrite)
-		TArray<APackageCollectionPoint*> packageCollectionPoints;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Forklift")
-		AWarhouseForklift* Forklift;
-
-	USceneComponent* base;
-
-	float player0Score;
-	float player1Score;
-	float player2Score;
-	float player3Score;
-	int numOfPlayers;
-	
-		TArray<float> playerScores;
-	
-	UPROPERTY(EditAnywhere)
-		float GameTimer;
-	UPROPERTY(EditAnywhere)
-		float ForkliftTimer;
-	UPROPERTY(EditAnywhere)
-		float CameraSwitchTimer = 5.0f; //how long on each camera
-
-	UPROPERTY(EditAnywhere)
-	USoundBase* backgroundMusicTrack;
-	
-	UPROPERTY(EditAnywhere)
-		UAudioComponent* backgroundMusic;
-
-	//Handle to manage delays
-	FTimerHandle ForkliftTimerHandle;
-
-
-	UPROPERTY(EditAnywhere)
-		AWarhouseClock* ClockTimerText;
-
-	UPROPERTY(EditAnywhere)
-		float WinBillboardUIOffset = -7.5;
-
-	FString LocalCurrencyCode;
-
-	UPROPERTY(EditDefaultsOnly)
-		UWidgetComponent* winScreen;
-
-	UPROPERTY(Category = Gameplay, EditAnywhere, BlueprintReadWrite)
-	AStaticMeshActor* winScreenBillboard;
-
-	
-	TSubclassOf<UUserWidget> winscreenWidget;
-
-public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
@@ -96,21 +38,56 @@ public:
 	APlayerManager* GetPlayerManager() const;
 	APackageManager* GetPackageManager() const;
 
-	UPROPERTY(Category = Gameplay, EditAnywhere, BlueprintReadWrite)
+	TArray<AShutter*> GetShutters();
+
+protected:
+	// Called when the game starts or when spawned
+	virtual void BeginPlay() override;
+
+	//--- Components
+	UPROPERTY(EditDefaultsOnly)
+		USceneComponent* base;
+
+	UPROPERTY(EditDefaultsOnly)
+		UAudioComponent* backgroundMusic;
+
+	UPROPERTY(EditDefaultsOnly)
+		UWidgetComponent* winScreen;
+
+	//--- Editor Variables
+	UPROPERTY(Category = Gameplay, EditAnywhere)
+		TArray<AFloatingScore*> floatingScores;
+
+	UPROPERTY(Category = Gameplay, EditAnywhere)
+		TArray<APackageCollectionPoint*> packageCollectionPoints;
+
+	UPROPERTY(Category = Gameplay, EditAnywhere)
+		AWarhouseForklift* Forklift;
+
+	UPROPERTY(Category = Gameplay, EditAnywhere)
 		TArray<AShutter*> shutters;
 
-	UFUNCTION()
-		void InitGame();
-	UFUNCTION()
-		void OnGameEnd();
-	UFUNCTION()
-		void ReturnToMainMenu(); //could move this into the helper class?
-	UFUNCTION()
-		void ActivateForklift();
-	UFUNCTION()
-		void PlayIntro();
-	UFUNCTION()
-		void InitSpawnPlayers();
+	UPROPERTY(Category = Gameplay, EditAnywhere)
+		AStaticMeshActor* winScreenBillboard;
+
+	UPROPERTY(Category = Gameplay, EditAnywhere)
+		float WinBillboardUIOffset = -7.5;
+
+	UPROPERTY(Category = Gameplay, EditAnywhere)
+		TSubclassOf<UUserWidget> winscreenWidget;
+
+	UPROPERTY(Category = Gameplay, EditAnywhere)
+		USoundBase* backgroundMusicTrack;
+
+	UPROPERTY(Category = Gameplay, EditAnywhere)
+		AWarhouseClock* ClockTimerText;
+
+	UPROPERTY(Category = Timers, EditAnywhere)
+		float GameTimer;
+	UPROPERTY(Category = Timers, EditAnywhere)
+		float ForkliftTimer;
+	UPROPERTY(Category = Timers, EditAnywhere)
+		float CameraSwitchTimer = 5.0f; //how long on each camera
 
 private:
 	bool initialised = false;
@@ -121,4 +98,23 @@ private:
 	TArray<int> playerIdsToIntro;
 
 	void GameStart();
+
+	float player0Score;
+	float player1Score;
+	float player2Score;
+	float player3Score;
+	int numOfPlayers;
+
+	TArray<float> playerScores;
+	
+	FTimerHandle ForkliftTimerHandle;
+
+	FString LocalCurrencyCode;
+
+	void InitGame();
+	void OnGameEnd();
+	void ReturnToMainMenu();
+	void ActivateForklift();
+	void PlayIntro();
+	void InitSpawnPlayers();
 };
