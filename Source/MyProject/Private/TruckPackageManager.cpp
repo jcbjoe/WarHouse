@@ -7,7 +7,7 @@
 ATruckPackageManager::ATruckPackageManager()
 {
 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = true;
+	PrimaryActorTick.bCanEverTick = false;
 
 }
 
@@ -28,6 +28,7 @@ void ATruckPackageManager::Tick(float DeltaTime)
 
 void ATruckPackageManager::IncrementTruckStage(int truckNumber)
 {
+	//activate the various stages of the trucks package capacity
 	switch (truckNumber)
 	{
 	case 1:
