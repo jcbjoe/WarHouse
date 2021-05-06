@@ -59,6 +59,8 @@ void AGameManager::BeginPlay()
 	backgroundMusic->Play();
 
 	InitGame();
+	//set clock timer text
+	ClockTimerText->SetTime(GameTimer);
 }
 
 // Called every frame
