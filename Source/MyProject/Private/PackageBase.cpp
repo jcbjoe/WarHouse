@@ -62,11 +62,8 @@ void APackageBase::BeginPlay()
 	Super::BeginPlay();
 
 	PackageMesh->OnComponentHit.AddDynamic(this, &APackageBase::OnHit);
-
-	if (USettingsSave* LoadedGame = Cast<USettingsSave>(UGameplayStatics::LoadGameFromSlot("SettingsSlot", 0)))
-	{
-		volumeMultiplier = LoadedGame->SFXVolume;
-	}
+	//prevent package sound playing before game starts
+	GetWorld()->GetTimerManager().SetTimer(SoundTimer, this, &APackageBase::EnableSounds, 5.0f, false);
 }
 
 // Called every frame
@@ -184,4 +181,14 @@ void APackageBase::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, 
 void APackageBase::AllowHit()
 {
 	canRegisterHit = true;
+}
+
+void APackageBase::EnableSounds()
+{
+	if (USettingsSave* LoadedGame = Cast<USettingsSave>(UGameplayStatics::LoadGameFromSlot("SettingsSlot", 0)))
+	{
+		volumeMultiplier = LoadedGame->SFXVolume;
+	}
+	else
+		volumeMultiplier = 1.0f;
 }
