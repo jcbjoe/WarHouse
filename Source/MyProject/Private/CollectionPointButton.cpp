@@ -104,13 +104,11 @@ void ACollectionPointButton::OnOverlapEnd(UPrimitiveComponent* OverlapComponent,
 		if (!CollidingPlayers.Contains(player)) return;
 		CollidingPlayers.Remove(player);
 
-		try {
+		if(player != nullptr && player->InputComponent != nullptr)
+		{
 			player->InputComponent->RemoveActionBinding("AButtonPressed", IE_Pressed);
 		}
-		catch (...)
-		{
-			//--- Sometimes this fails, Not sure why. But stops the game crashing though
-		}
+			
 	}
 }
 
