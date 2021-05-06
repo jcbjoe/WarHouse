@@ -163,7 +163,7 @@ void APhysicsProp::Explode()
 			UStaticMeshComponent* mesh = Cast<UStaticMeshComponent>((hit.GetActor()->GetRootComponent()));
 			if (mesh)
 				mesh->AddRadialImpulse(Location, ImpactRadius, RadialImpactForce, ERadialImpulseFalloff::RIF_Constant, true);
-			//if the actor is destructible, activate that props radial force component
+			//or if the actor is destructible, activate that props radial force component (destructible meshes dont have a static mesh)
 			ADestructibleProp* destructible = Cast<ADestructibleProp>(hit.GetActor());
 			if (destructible)
 			{
