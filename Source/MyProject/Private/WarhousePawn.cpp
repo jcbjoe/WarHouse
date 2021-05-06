@@ -295,9 +295,9 @@ void AWarhousePawn::Tick(float DeltaSeconds)
 			if (canVibrate) {
 				auto pc = Cast<AMyPlayerController>(GetController());
 				if ((ArmForwardValue + ArmRightValue) < 0.0f)
-					pc->PlayDynamicForceFeedback((ArmForwardValue + ArmRightValue) * -1, RumbleDuration, true, true, true, true, EDynamicForceFeedbackAction::Start); // change first 2 floats for vibration intenisty and duration, 4 bools are diff motors
+					pc->PlayDynamicForceFeedback(((ArmForwardValue + ArmRightValue) - 0.2) * -1, RumbleDuration, true, true, true, true, EDynamicForceFeedbackAction::Start); // change first 2 floats for vibration intenisty and duration, 4 bools are diff motors
 				else
-					pc->PlayDynamicForceFeedback((ArmForwardValue + ArmRightValue), RumbleDuration, true, true, true, true, EDynamicForceFeedbackAction::Start); // change first 2 floats for vibration intenisty and duration, 4 bools are diff motors
+					pc->PlayDynamicForceFeedback(((ArmForwardValue + ArmRightValue) - 0.2), RumbleDuration, true, true, true, true, EDynamicForceFeedbackAction::Start); // change first 2 floats for vibration intenisty and duration, 4 bools are diff motors
 			}
 			//--- Check if an item is held
 			float distance = FVector::Dist(sourceLoc, targetLoc);
