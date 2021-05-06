@@ -90,7 +90,7 @@ protected:
 		float PlayerSwitchTimer = 7.5f; //how long on each camera
 
 	UPROPERTY(Category = Timers, EditAnywhere)
-		float InstructionsSwitchTimer = 4f; //how long on each camera
+		float InstructionsSwitchTimer = 4.f; //how long on each camera
 
 private:
 	bool initialised = false;
