@@ -1,0 +1,77 @@
+﻿{
+  "GameTimer": 100,
+  "packages": [
+    {
+      "PackageName": "BigBox",
+      "ModelReference": "/Game/Assets/ConorAssets/Boxes/Boxes/BigBox/bigBox.bigBox",
+      "MaterialReferences": [
+        "/Game/Assets/ConorAssets/Boxes/Boxes/BigBox/BigBoxMat.BigBoxMat"
+      ],
+      "SpecialMaterialReferences": [
+        "/Game/Assets/ConorAssets/SpecialPackages/SpecialMaterials/BigSpecial.BigSpecial"
+      ],
+      "Scale": 1.0,
+      "ValueRange": [
+        20,
+        50
+      ],
+      "Rarity": 10,
+      "PackageWeight": 10,
+      "PackageSizeID": 1
+    },
+    {
+      "PackageName": "MediumBox",
+      "ModelReference": "/Game/Assets/ConorAssets/Boxes/Boxes/MediumBox/mediumBox.mediumBox",
+      "MaterialReferences": [
+        "/Game/Assets/ConorAssets/Boxes/Boxes/MediumBox/MediumBoxMat.MediumBoxMat"
+      ],
+      "SpecialMaterialReferences": [
+        "/Game/Assets/ConorAssets/SpecialPackages/SpecialMaterials/MedSpecial.MedSpecial"
+      ],
+      "Scale": 1.0,
+      "ValueRange": [
+        10,
+        25
+      ],
+      "Rarity": 4,
+      "PackageWeight": 5,
+      "PackageSizeID": 2
+    },
+    {
+      "PackageName": "SmallBox",
+      "ModelReference": "/Game/Assets/ConorAssets/Boxes/Boxes/SmallBox/smallBox.smallBox",
+      "MaterialReferences": [
+        "/Game/Assets/ConorAssets/Boxes/Boxes/SmallBox/SmalBoxMat.SmalBoxMat"
+      ],
+      "SpecialMaterialReferences": [
+        "/Game/Assets/ConorAssets/SpecialPackages/SpecialMaterials/RectangleSpecial.RectangleSpecial"
+      ],
+      "Scale": 1.0,
+      "ValueRange": [
+        5,
+        15
+      ],
+      "Rarity": 6,
+      "PackageWeight": 1,
+      "PackageSizeID": 3
+    },
+    {
+      "PackageName": "RectangleBox",
+      "ModelReference": "/Game/Assets/ConorAssets/Boxes/Boxes/RectangleBox/rectanglebox.rectanglebox",
+      "MaterialReferences": [
+        "/Game/Assets/ConorAssets/Boxes/Boxes/RectangleBox/RectBoxMat.RectBoxMat"
+      ],
+      "SpecialMaterialReferences": [
+        "/Game/Assets/ConorAssets/SpecialPackages/SpecialMaterials/SmallSpecial.SmallSpecial"
+      ],
+      "Scale": 1.0,
+      "ValueRange": [
+        10,
+        20
+      ],
+      "Rarity": 6,
+      "PackageWeight": 5,
+      "PackageSizeID": 4
+    }
+  ]
+}
