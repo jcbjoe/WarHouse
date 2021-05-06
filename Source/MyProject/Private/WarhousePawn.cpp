@@ -361,6 +361,11 @@ void AWarhousePawn::Tick(float DeltaSeconds)
 		//--- If non-zero size, move this actor
 		if (Movement.SizeSquared() > 0.0f)
 		{
+			//vibrate on movement
+			if (canVibrate) {
+				auto pc = Cast<AMyPlayerController>(GetController());
+				pc->PlayDynamicForceFeedback(0.1f, RumbleDuration, true, true, true, true, EDynamicForceFeedbackAction::Start);
+			}
 			//--- Change the audio volume when moving
 			audioComp->SetVolumeMultiplier(audioMovingVolume * volumeMultiplier);
 
