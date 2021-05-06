@@ -29,7 +29,7 @@ APhysicsProp::APhysicsProp()
 	ImpactRadius = 500.0f;
 	RadialImpactForce = 2000.0f;
 	//set up audio
-	static ConstructorHelpers::FObjectFinder<USoundBase> sound(TEXT("/Game/Extras/Audio/Explosion_Cue.Explosion_Cue"));
+	static ConstructorHelpers::FObjectFinder<USoundBase> sound(TEXT("/Game/Extras/Audio/Explosion02.Explosion02"));
 	soundBase = sound.Object;
 }
 
@@ -139,7 +139,7 @@ void APhysicsProp::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, 
 void APhysicsProp::Explode()
 {
 	//play sound
-	UGameplayStatics::PlaySoundAtLocation(GetWorld(), soundBase, this->GetActorLocation(), 0.5f);
+	UGameplayStatics::PlaySoundAtLocation(GetWorld(), soundBase, this->GetActorLocation(), 1.0f);
 	//activate particles
 	ActivateParticles();
 	//get this props location
