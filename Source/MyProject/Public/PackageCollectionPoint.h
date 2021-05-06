@@ -19,7 +19,7 @@ class MYPROJECT_API APackageCollectionPoint : public AActor
 public:
 	// Sets default values for this actor's properties
 	APackageCollectionPoint();
-	
+
 	void ButtonPressed();
 
 protected:
@@ -57,7 +57,7 @@ private:
 
 	bool platformMovingDown = false;
 
-	float moveIncrement = 0.5;
+	float moveIncrement = 50.0;
 
 	float amountToMove = 163;
 

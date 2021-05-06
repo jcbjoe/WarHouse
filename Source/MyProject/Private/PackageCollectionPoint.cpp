@@ -18,7 +18,7 @@ APackageCollectionPoint::APackageCollectionPoint()
 	static ConstructorHelpers::FObjectFinder<UMaterial> DeliveryLiftMat(TEXT("/Game/Assets/ConorAssets/DeliveryLift/DeliveryLiftMat.DeliveryLiftMat"));
 	static ConstructorHelpers::FObjectFinder<USoundWave> beepSoundObj(TEXT("/Game/Sounds/beep.beep"));
 	static ConstructorHelpers::FObjectFinder<USoundWave> liftSoundObj(TEXT("/Game/Sounds/lift.lift"));
-	
+
 	//--- Setting up root component
 	base = CreateDefaultSubobject<UStaticMeshComponent>(FName("Platform"));
 	base->SetStaticMesh(platformMesh.Object);
@@ -69,8 +69,8 @@ void APackageCollectionPoint::Tick(float DeltaTime)
 
 		auto actorPos = GetActorLocation();
 
-		actorPos.Z += moveIncrement;
-
+		//actorPos.Z += moveIncrement;
+		actorPos.Z = actorPos.Z + moveIncrement * DeltaTime;
 		SetActorLocation(actorPos);
 
 		if ((actorPos.Z - originalPos.Z) >= amountToMove)
@@ -147,8 +147,8 @@ void APackageCollectionPoint::Tick(float DeltaTime)
 	{
 		auto actorPos = GetActorLocation();
 
-		actorPos.Z -= moveIncrement;
-
+		//actorPos.Z -= moveIncrement;
+		actorPos.Z = actorPos.Z - moveIncrement * DeltaTime;
 		SetActorLocation(actorPos);
 
 		if ((actorPos.Z - originalPos.Z) <= 0)
