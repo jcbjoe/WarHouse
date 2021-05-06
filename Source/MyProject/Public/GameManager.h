@@ -87,10 +87,10 @@ protected:
 	UPROPERTY(Category = Timers, EditAnywhere)
 		float ForkliftTimer;
 	UPROPERTY(Category = Timers, EditAnywhere)
-		float PlayerSwitchTimer = 7.5f; //how long on each camera
+		float PlayerSwitchTimer = 4.0f; //how long on each camera
 
 	UPROPERTY(Category = Timers, EditAnywhere)
-		float InstructionsSwitchTimer = 4.0f; //how long on each camera
+		float InstructionsSwitchTimer = 10.0f; //how long on each camera
 
 private:
 	bool initialised = false;
