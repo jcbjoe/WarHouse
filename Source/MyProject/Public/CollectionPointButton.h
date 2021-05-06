@@ -6,6 +6,7 @@
 #include "GameFramework/Actor.h"
 #include "Components/BoxComponent.h"
 #include "PackageCollectionPoint.h"
+#include "Components/BillboardComponent.h"
 #include "CollectionPointButton.generated.h"
 
 UCLASS()
