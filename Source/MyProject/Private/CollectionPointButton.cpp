@@ -32,7 +32,7 @@ ACollectionPointButton::ACollectionPointButton()
 	boxComponent->SetupAttachment(RootComponent);
 	boxComponent->SetBoxExtent(FVector(120, 120, 120));
 	boxComponent->SetRelativeLocation(FVector(0, 0, 120));
-	
+
 	boxComponent->OnComponentBeginOverlap.AddDynamic(this, &ACollectionPointButton::OnOverlapBegin);
 	boxComponent->OnComponentEndOverlap.AddDynamic(this, &ACollectionPointButton::OnOverlapEnd);
 
@@ -67,18 +67,20 @@ void ACollectionPointButton::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	if(packageCollectionPoint->IsHidden())
+	if (packageCollectionPoint->IsHidden())
 	{
 		SetActorHiddenInGame(true);
-	} else
+	}
+	else
 	{
 		SetActorHiddenInGame(false);
 	}
 
-	if(CollidingPlayers.Num() > 0)
+	if (CollidingPlayers.Num() > 0)
 	{
 		BillboardComponent->SetHiddenInGame(false);
-	} else
+	}
+	else
 	{
 		BillboardComponent->SetHiddenInGame(true);
 	}
@@ -91,7 +93,7 @@ void ACollectionPointButton::OnOverlapBegin(UPrimitiveComponent* OverlapComponen
 		AWarhousePawn* player = Cast<AWarhousePawn>(OtherActor);
 		if (CollidingPlayers.Contains(player)) return;
 		CollidingPlayers.Add(player);
-		
+
 		player->InputComponent->BindAction("AButtonPressed", IE_Pressed, this, &ACollectionPointButton::AButtonPressed);
 	}
 }
@@ -101,8 +103,14 @@ void ACollectionPointButton::OnOverlapEnd(UPrimitiveComponent* OverlapComponent,
 		AWarhousePawn* player = Cast<AWarhousePawn>(OtherActor);
 		if (!CollidingPlayers.Contains(player)) return;
 		CollidingPlayers.Remove(player);
-		
-		player->InputComponent->RemoveActionBinding("AButtonPressed", IE_Pressed);
+
+		try {
+			player->InputComponent->RemoveActionBinding("AButtonPressed", IE_Pressed);
+		}
+		catch (...)
+		{
+			//--- Sometimes this fails, Not sure why. But stops the game crashing though
+		}
 	}
 }
 
