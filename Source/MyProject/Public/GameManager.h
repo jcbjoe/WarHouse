@@ -83,7 +83,7 @@ protected:
 		AWarhouseClock* ClockTimerText;
 
 	UPROPERTY(Category = Timers, EditAnywhere)
-		float GameTimer;
+		float GameTimer = 120;
 	UPROPERTY(Category = Timers, EditAnywhere)
 		float ForkliftTimer;
 	UPROPERTY(Category = Timers, EditAnywhere)
@@ -106,7 +106,7 @@ private:
 	int numOfPlayers;
 
 	TArray<float> playerScores;
-	
+
 	FTimerHandle ForkliftTimerHandle;
 
 	FString LocalCurrencyCode;
