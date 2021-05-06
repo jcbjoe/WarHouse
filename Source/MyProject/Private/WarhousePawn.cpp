@@ -527,6 +527,10 @@ void AWarhousePawn::DropHeldItem()
 
 void AWarhousePawn::KillPlayer()
 {
+	if (canVibrate) {
+		auto pc = Cast<AMyPlayerController>(GetController());
+		pc->PlayDynamicForceFeedback(DeathRumble, RumbleDuration, true, true, true, true, EDynamicForceFeedbackAction::Start);
+	}
 	//--- Player has ran out of battery
 	isDead = true;
 	respawnCounter = 0;
