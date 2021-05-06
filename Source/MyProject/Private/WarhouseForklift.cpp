@@ -86,6 +86,8 @@ void AWarhouseForklift::ResumeMovement()
 {
 	isMoving = true;
 	Speed = DefaultSpeed;
+	//play the audio
+	AudioComponent->Play();
 }
 
 void AWarhouseForklift::GetReadyToDeliver()
