@@ -22,30 +22,33 @@ public:
 	APackageBase();
 
 	void InitialisePackage(FConfigPackage pds);
-	
+
 	void StartHolding(AWarhousePawn* player);
-	
+
 	void EndHolding(AWarhousePawn* player);
-	
+
 	TArray<AWarhousePawn*> GetHeldBy() const;
-	
+
 	float GetPackageValue();
-	
+
 	float GetPackageWeight();
-	
+
 	float GetPackageHealth();
-	
+
 	bool GetIsBeingCollected();
-	
+
 	void SetIsBeingCollected(bool collected);
-	
+
 	void SetPackageSpecial();
-	
+
 	FConfigPackage GetPackageDetails();
-	
+
 	bool GetIsSpecial();
-	
+
 	void AllowHit();
+
+	UFUNCTION()
+		void EnableSounds();
 
 protected:
 	// Called when the game starts or when spawned
@@ -57,7 +60,7 @@ protected:
 	//--- Components
 	UPROPERTY(EditDefaultsOnly)
 		UStaticMeshComponent* PackageMesh;
-	
+
 	UPROPERTY(EditDefaultsOnly)
 		UBoxComponent* collisionMesh = nullptr;
 
@@ -79,7 +82,7 @@ protected:
 	UFUNCTION()
 		void OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
 private:
-	float volumeMultiplier = 1.0;
+	float volumeMultiplier = 0.0f;
 
 	const float packageDropSoundMultiplier = 0.5;
 
@@ -90,4 +93,5 @@ private:
 	bool canRegisterHit = true;
 
 	FTimerHandle timer;
+	FTimerHandle SoundTimer;
 };
