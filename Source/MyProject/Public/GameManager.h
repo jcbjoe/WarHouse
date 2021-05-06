@@ -109,8 +109,6 @@ private:
 
 	FTimerHandle ForkliftTimerHandle;
 
-	FString LocalCurrencyCode;
-
 	void InitGame();
 	void OnGameEnd();
 	void ReturnToMainMenu();

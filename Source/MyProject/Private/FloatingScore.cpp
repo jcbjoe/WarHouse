@@ -13,12 +13,12 @@ AFloatingScore::AFloatingScore()
 	//--- Setting up Root component
 	base = CreateDefaultSubobject<USceneComponent>(FName("Root"));
 	RootComponent = base;
-	
+
 	//--- Setting up text component
 	text = CreateDefaultSubobject<UTextRenderComponent>(FName("Text"));
 	text->SetupAttachment(RootComponent);
-	FString LocalCurrencyCode = UKismetSystemLibrary::GetLocalCurrencyCode();
-	text->SetText(FText::AsCurrencyBase(0.00, LocalCurrencyCode));
+	//FString LocalCurrencyCode = UKismetSystemLibrary::GetLocalCurrencyCode();
+	text->SetText(FText::AsCurrencyBase(0.00, TEXT("GBP")));
 }
 
 // Called when the game starts or when spawned

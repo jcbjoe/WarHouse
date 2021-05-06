@@ -17,7 +17,7 @@ AGameManager::AGameManager()
 
 	//--- Setting up imports
 	static ConstructorHelpers::FClassFinder<UUserWidget> winScreenWidgetObj(TEXT("/Game/UI/Menus/WinScreen/WinScreenWidget"));
-	
+
 	//--- Setting up root scene component
 	base = CreateDefaultSubobject<USceneComponent>(FName("Root"));
 	RootComponent = base;
@@ -48,7 +48,7 @@ void AGameManager::BeginPlay()
 	check(backgroundMusicTrack != nullptr);
 
 	float soundVol = 0.1;
-	
+
 	if (USettingsSave* LoadedGame = Cast<USettingsSave>(UGameplayStatics::LoadGameFromSlot("SettingsSlot", 0)))
 	{
 		soundVol = soundVol * LoadedGame->MusicVolume;
@@ -157,16 +157,16 @@ void AGameManager::UpdateScores()
 		switch (index)
 		{
 		case 0:
-			floating->SetText(FText::AsCurrencyBase(player0Score * 100, LocalCurrencyCode));
+			floating->SetText(FText::AsCurrencyBase(player0Score * 100, TEXT("GBP")));
 			break;
 		case 1:
-			floating->SetText(FText::AsCurrencyBase(player1Score * 100, LocalCurrencyCode));
+			floating->SetText(FText::AsCurrencyBase(player1Score * 100, TEXT("GBP")));
 			break;
 		case 2:
-			floating->SetText(FText::AsCurrencyBase(player2Score * 100, LocalCurrencyCode));
+			floating->SetText(FText::AsCurrencyBase(player2Score * 100, TEXT("GBP")));
 			break;
 		case 3:
-			floating->SetText(FText::AsCurrencyBase(player3Score * 100, LocalCurrencyCode));
+			floating->SetText(FText::AsCurrencyBase(player3Score * 100, TEXT("GBP")));
 			break;
 
 		}
@@ -181,7 +181,6 @@ TArray<APackageCollectionPoint*> AGameManager::GetCollectionPoints() const
 
 void AGameManager::InitGame()
 {
-	LocalCurrencyCode = UKismetSystemLibrary::GetLocalCurrencyCode();
 	auto instance = WarhouseHelpers::GetGameInstance(GetWorld());
 
 	for (auto shutter : shutters)
@@ -253,7 +252,7 @@ void AGameManager::InitGame()
 			shutters[controllerId]->SetColour(instance->GetPlayerInfo()[i].colour);
 		}
 	}
-	
+
 	PlayIntro();
 
 	initialised = true;
