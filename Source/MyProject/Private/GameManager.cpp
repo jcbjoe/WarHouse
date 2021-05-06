@@ -75,7 +75,7 @@ void AGameManager::Tick(float DeltaTime)
 
 				introTimer += DeltaTime;
 
-				if (introTimer > CameraSwitchTimer)
+				if (introTimer > InstructionsSwitchTimer)
 				{
 					introTimer = 0.0;
 					playingBillboard = false;
@@ -100,7 +100,7 @@ void AGameManager::Tick(float DeltaTime)
 
 					introTimer += DeltaTime;
 
-					if (introTimer > CameraSwitchTimer)
+					if (introTimer > PlayerSwitchTimer)
 					{
 						playerIdsToIntro.RemoveAt(0);
 						introTimer = 0.0;
