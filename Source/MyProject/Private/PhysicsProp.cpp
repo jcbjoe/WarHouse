@@ -19,7 +19,6 @@ APhysicsProp::APhysicsProp()
 	PropHealth = 100.0f;
 	//simulate physics
 	PropMeshComponent->SetSimulatePhysics(true);
-	PropMeshComponent->SetMassOverrideInKg(NAME_None, 20);
 	RootComponent = PropMeshComponent;
 	//set up particles
 	ParticleSystemComponent = CreateDefaultSubobject<UParticleSystemComponent>(FName("ParticleEmitter"));
@@ -37,6 +36,9 @@ APhysicsProp::APhysicsProp()
 void APhysicsProp::BeginPlay()
 {
 	Super::BeginPlay();
+
+	PropMeshComponent->SetMassOverrideInKg(NAME_None, 20);
+	
 	//stop particles playing
 	ParticleSystemComponent->DeactivateSystem();
 	//add collision function for when a hit is detected

@@ -3,7 +3,6 @@
 #include "WarhousePawn.h"
 
 #include "PackageBase.h"
-#include "EditorCategoryUtils.h"
 #include "UObject/ConstructorHelpers.h"
 #include "Camera/CameraComponent.h"
 #include "Components/StaticMeshComponent.h"
