@@ -364,7 +364,7 @@ void AWarhousePawn::Tick(float DeltaSeconds)
 			//vibrate on movement
 			if (canVibrate) {
 				auto pc = Cast<AMyPlayerController>(GetController());
-				pc->PlayDynamicForceFeedback(0.1f, RumbleDuration, true, true, true, true, EDynamicForceFeedbackAction::Start);
+				pc->PlayDynamicForceFeedback(MovementRumble, RumbleDuration, true, true, true, true, EDynamicForceFeedbackAction::Start);
 			}
 			//--- Change the audio volume when moving
 			audioComp->SetVolumeMultiplier(audioMovingVolume * volumeMultiplier);
@@ -457,6 +457,10 @@ void AWarhousePawn::Tick(float DeltaSeconds)
 		//--- Set the charging pad volume and the charge rate
 		if (isOnChargingPad)
 		{
+			if (canVibrate) {
+				auto pc = Cast<AMyPlayerController>(GetController());
+				pc->PlayDynamicForceFeedback(ChargingPadRumble, RumbleDuration, true, true, true, true, EDynamicForceFeedbackAction::Start);
+			}
 			_batteryCharge += (chargingPadRate * DeltaSeconds);
 			chargingComp->SetVolumeMultiplier(audioChargingVolume * volumeMultiplier);
 		}

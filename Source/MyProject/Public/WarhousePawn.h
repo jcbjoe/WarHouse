@@ -80,7 +80,9 @@ private:
 	//rumble variables
 	const float RumbleFrequency = 0.12f;
 	const float RumbleDuration = 0.15f;
-
+	const float MovementRumble = 0.1f;
+	const float DeathRumble = 2.5f;
+	const float ChargingPadRumble = 0.25f;
 	const float respawnSeconds = 5;
 	const float DefaultMoveSpeed = 1000.0f;
 
