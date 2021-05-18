@@ -268,7 +268,7 @@ void AWarhousePawn::Tick(float DeltaSeconds)
 		}
 
 		//--- Check for if the thumbsticks are currently being moved
-		if (ArmForwardValue > -0.5 && ArmForwardValue < 0.5 && ArmRightValue > -0.5 && ArmRightValue < 0.5)
+		if (ArmForwardValue > -0.25 && ArmForwardValue < 0.25 && ArmRightValue > -0.25 && ArmRightValue < 0.25)
 		{
 			//--- Thumbsticks idle (Not moving)
 			//--- Silence beam sfx, hide beam emitter and floor decal (Crosshair)
@@ -380,7 +380,7 @@ void AWarhousePawn::Tick(float DeltaSeconds)
 			_batteryCharge -= (MovingBatteryDrain * DeltaSeconds);
 
 			//--- Check if we are colliding and that the actor colliding with is not a package. Dont want to deflect from the package
-			if (Hit.IsValidBlockingHit() && Hit.Actor != nullptr && !Hit.Actor->GetClass()->IsChildOf(APackageBase::StaticClass()))
+			if (Hit.IsValidBlockingHit() && Hit.Actor != nullptr && !Hit.Actor->IsA(APackageBase::StaticClass()))
 			{
 				//--- Calculate the deflection
 				const FVector Normal2D = Hit.Normal.GetSafeNormal2D() * 1.3;
@@ -559,16 +559,16 @@ void AWarhousePawn::KillPlayer()
 
 void AWarhousePawn::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
 {
-	if (OtherActor != nullptr && OtherActor->IsA(APackageBase::StaticClass()))
-	{
-		if ((PhysicsHandle->GetGrabbedComponent() != nullptr && PhysicsHandle->GetGrabbedComponent()->GetOwner() == OtherActor)
-			|| OtherActor == lastHeldPackage)
-		{
-			DropHeldItem();
-			Cast<UStaticMeshComponent>(OtherActor->GetRootComponent())->SetSimulatePhysics(false);
-			Cast<UStaticMeshComponent>(OtherActor->GetRootComponent())->SetSimulatePhysics(true);
+	//if (OtherActor != nullptr && OtherActor->IsA(APackageBase::StaticClass()))
+	//{
+	//	if ((PhysicsHandle->GetGrabbedComponent() != nullptr && PhysicsHandle->GetGrabbedComponent()->GetOwner() == OtherActor)
+	//		|| OtherActor == lastHeldPackage)
+	//	{
+	//		DropHeldItem();
+	//		Cast<UStaticMeshComponent>(OtherActor->GetRootComponent())->SetSimulatePhysics(false);
+	//		Cast<UStaticMeshComponent>(OtherActor->GetRootComponent())->SetSimulatePhysics(true);
 
-			lastHeldPackage = nullptr;
-		}
-	}
+	//		lastHeldPackage = nullptr;
+	//	}
+	//}
 }

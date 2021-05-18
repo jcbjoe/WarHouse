@@ -42,5 +42,5 @@ protected:
 private:
 	TArray<AWarhousePawn*> playerList;
 
-	const float PlayerHeight = 25;
+	const float PlayerHeight = 30;
 };

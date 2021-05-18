@@ -66,7 +66,7 @@ private:
 	const float SingleHoldingBatteryDrain = -5.0;
 	const float MultiHoldingBatteryDrain = -10.0;
 	const float chargingPadRate = 20.0f;
-	const float maxUpDownVal = 125;
+	const float maxUpDownVal = 140;
 
 	const float audioStationaryVolume = 0.05f;
 	const float audioMovingVolume = 0.1f;
