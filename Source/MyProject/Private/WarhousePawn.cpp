@@ -414,8 +414,9 @@ void AWarhousePawn::Tick(float DeltaSeconds)
 			}
 
 			//--- If the distance is 350 away stop holding the package
-			float distance = FVector::Dist(GetActorLocation(), heldActor->GetActorLocation());
-			if (distance > 350) {
+			float distance = FVector::Dist(beamTarget->GetComponentLocation(), heldActor->GetActorLocation());
+
+			if (distance > 300) {
 				DropHeldItem();
 			}
 
