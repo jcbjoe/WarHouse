@@ -15,6 +15,7 @@ APhysicsProp::APhysicsProp()
 	//set up mesh
 	PropMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("packageMesh"));
 	PropMeshComponent->SetNotifyRigidBodyCollision(true);
+	PropMeshComponent->SetCollisionResponseToChannel(ECollisionChannel::ECC_GameTraceChannel1, ECollisionResponse::ECR_Block);
 	//set health
 	PropHealth = 100.0f;
 	//simulate physics
@@ -30,6 +31,7 @@ APhysicsProp::APhysicsProp()
 	//set up audio
 	static ConstructorHelpers::FObjectFinder<USoundBase> sound(TEXT("/Game/Extras/Audio/Explosion02.Explosion02"));
 	soundBase = sound.Object;
+
 }
 
 // Called when the game starts or when spawned

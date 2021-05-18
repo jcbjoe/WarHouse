@@ -21,6 +21,8 @@ APackageBase::APackageBase()
 
 	//--- Setting up root component
 	PackageMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("packageMesh"));
+
+	PackageMesh->SetCollisionResponseToChannel(ECollisionChannel::ECC_GameTraceChannel1, ECollisionResponse::ECR_Block);
 	RootComponent = PackageMesh;
 
 	//--- Saving references

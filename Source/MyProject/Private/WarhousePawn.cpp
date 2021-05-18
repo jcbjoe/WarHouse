@@ -308,20 +308,20 @@ void AWarhousePawn::Tick(float DeltaSeconds)
 				//--- Pickup package logic
 				if (distance > 150) {
 					//--- Setup trace params
-					FHitResult hit = FHitResult(ForceInit);
-					FCollisionQueryParams TraceParams(FName(TEXT("InteractTrace")), true, this);
+					FHitResult hit;
+					//FCollisionQueryParams TraceParams(FName(TEXT("InteractTrace")), true, this);
 
-					//--- Loop through every actor in the world, If it is not a package add it to the ignored actor list
-					//--- The ignored actor list is a list of actors which will NOT trigger a hit on the trace
-					for (TActorIterator<AActor> actor(GetWorld()); actor; ++actor)
-					{
-						if (!actor->IsA(APackageBase::StaticClass()) && !actor->IsA(APhysicsProp::StaticClass())) {
-							TraceParams.AddIgnoredActor(*actor);
-						}
-					}
+					////--- Loop through every actor in the world, If it is not a package add it to the ignored actor list
+					////--- The ignored actor list is a list of actors which will NOT trigger a hit on the trace
+					//for (TActorIterator<AActor> actor(GetWorld()); actor; ++actor)
+					//{
+					//	if (!actor->IsA(APackageBase::StaticClass()) && !actor->IsA(APhysicsProp::StaticClass())) {
+					//		TraceParams.AddIgnoredActor(*actor);
+					//	}
+					//}
 
 					//--- Create the line trace
-					bool bIsHit = GetWorld()->LineTraceSingleByChannel(hit, GetActorLocation(), beamTarget->GetComponentLocation(), ECC_GameTraceChannel3, TraceParams);
+					bool bIsHit = GetWorld()->LineTraceSingleByChannel(hit, beamSource->GetComponentLocation(), beamTarget->GetComponentLocation(), ECC_GameTraceChannel1);
 					if (bIsHit && hit.Actor != nullptr)
 					{
 						//--- We are colliding with a actor
