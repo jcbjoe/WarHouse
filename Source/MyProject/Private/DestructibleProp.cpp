@@ -18,6 +18,7 @@ ADestructibleProp::ADestructibleProp()
 	PropMesh->SetNotifyRigidBodyCollision(true);
 	PropMesh->SetupAttachment(RootComponent);
 	PropMesh->SetSimulatePhysics(true);
+	//PropMesh->LargeChunkThreshold = 50;
 	
 	//--- Setting up radial force
 	Force = CreateDefaultSubobject<URadialForceComponent>(TEXT("RadialForce")); // minor force component to add some impulse on break
