@@ -15,9 +15,6 @@ AGameManager::AGameManager()
 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
-	//--- Setting up imports
-	static ConstructorHelpers::FClassFinder<UUserWidget> winScreenWidgetObj(TEXT("/Game/UI/Menus/WinScreen/WinScreenWidget"));
-
 	//--- Setting up root scene component
 	base = CreateDefaultSubobject<USceneComponent>(FName("Root"));
 	RootComponent = base;
@@ -26,7 +23,6 @@ AGameManager::AGameManager()
 	winScreen = CreateDefaultSubobject<UWidgetComponent>(FName("WinScreen"));
 	winScreen->SetupAttachment(RootComponent);
 	winScreen->SetWidgetSpace(EWidgetSpace::World);
-	winscreenWidget = winScreenWidgetObj.Class;
 
 	//--- Setting up background music
 	backgroundMusic = CreateDefaultSubobject<UAudioComponent >(FName("BackgroundMusic"));
@@ -114,13 +110,22 @@ void AGameManager::Tick(float DeltaTime)
 			if (!gameEnded) {
 				//decrease timer over delta time
 				GameTimer -= DeltaTime;
-				if (GameTimer <= 0)
+				if (GameTimer <= 1)
 				{
 					GameTimer = 0;
 					OnGameEnd();
 				}
 				//set clock timer text
 				ClockTimerText->SetTime(GameTimer);
+
+				if (!countdownStarted && FMath::CeilToInt(GameTimer) == 4)
+				{
+					countdownWidget->StaticClass();
+
+					UUserWidget* widget = CreateWidget(UGameplayStatics::GetPlayerController(GetWorld(), 0), countdownWidget);
+					widget->AddToViewport();
+					countdownStarted = true;
+				}
 			}
 		}
 	}

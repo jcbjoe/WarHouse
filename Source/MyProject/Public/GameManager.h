@@ -77,6 +77,9 @@ protected:
 		TSubclassOf<UUserWidget> winscreenWidget;
 
 	UPROPERTY(Category = Gameplay, EditAnywhere)
+		TSubclassOf<UUserWidget> countdownWidget;
+
+	UPROPERTY(Category = Gameplay, EditAnywhere)
 		USoundBase* backgroundMusicTrack;
 
 	UPROPERTY(Category = Gameplay, EditAnywhere)
@@ -99,6 +102,8 @@ private:
 	float introTimer = 0.0;
 	bool gameEnded = false;
 	TArray<int> playerIdsToIntro;
+
+	bool countdownStarted = false;
 
 	void GameStart();
 
