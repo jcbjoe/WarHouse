@@ -92,3 +92,8 @@ void UMyGameInstance::SetSplashRan()
 {
 	splashRan = true;
 }
+
+int UMyGameInstance::GetPlayerCount()
+{
+	return playerInfo.Num();
+}

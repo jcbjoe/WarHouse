@@ -59,6 +59,9 @@ public:
 	UFUNCTION(BlueprintCallable)
 		void WipePlayerList();
 
+	UFUNCTION(BlueprintPure)
+		int GetPlayerCount();
+
 private:
 	bool splashRan = false;
 	TArray<FPlayerInfo> playerInfo;
